@@ -5,13 +5,14 @@ np.random.seed(123)
 class Demandable:
     def __init__(self, holding_cost, fixed_cost, s, S):
         self.inv_level = {}  ## Each item has multiple inv level
+        self.inv_pos = {}
         self.upstream = []  ## Each upstream Demandables
         self.holding_cost = holding_cost  ## Possibly change for each item. perhaps a multiplier?
         
         self.backorder = 0
         self.fixed_cost = fixed_cost
         self.lead_time = 2
-        self.inv_pos = {}
+
         self.arrivals = []
         self.s = s
         self.S = S
@@ -44,12 +45,13 @@ class Demandable:
         return items_out
            
     def add_upstream(self, demandable: "Demandable") -> None:
-        self.upstream.append(demandable)
         
         new_item = Item(str(np.random.randint(1,1000)), 10)
         demandable.add_item(new_item, 5000) # Test only
         self.upstream.append(demandable)
-        self.inv_level[new_item] = np.random.randint(1000, 10000)
+        start_inventory_level = np.random.randint(1000, 10000)
+        self.inv_level[new_item] = start_inventory_level
+        self.inv_pos[new_item] = start_inventory_level
           # Change later, perhaps random starting inventory ISSUE here
 
     def add_item(self, item: "Item", amt: int):

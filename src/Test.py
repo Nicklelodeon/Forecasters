@@ -10,4 +10,9 @@ print(a.get_totalhc())
 
 for i in range(10):
     a.demand(1000, i)
+    print("cycle ", i, "a inventory level",a.inv_level)
+    print("cycle ", i, "b inventory level",b.inv_level)
+
+
+    
 
