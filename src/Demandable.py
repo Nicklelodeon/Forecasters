@@ -16,6 +16,8 @@ class Demandable:
         self.arrivals = []
         self.s = s
         self.S = S
+        
+    """ def __str__ """
 
     def change_s(self, new_s):
         self.s = new_s
@@ -47,7 +49,7 @@ class Demandable:
     def add_upstream(self, demandable: "Demandable") -> None:
         
         new_item = Item(str(np.random.randint(1,1000)), 10)
-        demandable.add_item(new_item, 5000) # Test only
+        demandable.add_item(new_item, np.random.randint(4000,7000)) # Test only
         self.upstream.append(demandable)
         start_inventory_level = np.random.randint(1000, 10000)
         self.inv_level[new_item] = start_inventory_level
