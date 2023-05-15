@@ -6,6 +6,9 @@ class Item:
     def get_name(self):
         return self.name
 
+    def get_cost(self):
+        return self.cost
+
     def __repr__(self):
         return "Item()"
 
