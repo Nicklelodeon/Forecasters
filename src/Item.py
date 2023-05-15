@@ -18,7 +18,7 @@ class Item:
     def __eq__(self, other):
         """Overrides the default implementation"""
         if isinstance(other, Item):
-            return self.name == other.name
+            return self.name == other.name and self.cost == other.cost
         return False
 
     def __hash__(self):

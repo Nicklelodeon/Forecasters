@@ -1,5 +1,6 @@
 import numpy as np
-
+from Item import Item
+np.random.seed(123)
 
 class Demandable:
     def __init__(self, holding_cost, fixed_cost, s, S):
@@ -52,13 +53,25 @@ class Demandable:
 
     def add_upstream(self, demandable: "Demandable") -> None:
         self.upstream.append(demandable)
-        self.inv_level.append(
-            50000
-        )  # Change later, perhaps random starting inventory ISSUE here
+        
+        new_item = Item(str(np.random.randint(1,1000)), 10)
+        demandable.add_item(new_item, 5000) # Test only
+        self.upstream.append(demandable)
+        self.inv_level[new_item] = np.random.randint(1000, 10000)
+          # Change later, perhaps random starting inventory ISSUE here
+
+    def add_item(self, item: "Item", amt: int):
+        self.inv_level[item] = amt
+        
 
     def get_hc(self) -> int:
-        return sum(self.inv_level) * self.holding_cost
-
+        total = 0
+        for item in self.inv_level:
+            item_cost = item.get_cost()
+            item_amt = self.inv_level[item]
+            total += item_cost * item_amt
+        return total * self.holding_cost
+            
     def get_totalhc(self) -> int:  # Get all holding cost upstream
         total = self.get_hc()
         for demandable in self.upstream:

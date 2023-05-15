@@ -5,5 +5,5 @@ class Retailer(Demandable):
         super().__init__(holding_cost)
         self.backorder = 0
     
-print(1)
+
         
