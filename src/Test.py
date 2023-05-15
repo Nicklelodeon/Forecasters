@@ -6,7 +6,8 @@ b = Demandable(200, 100, 50, 100)
 a.add_upstream(b)
 print(a.get_totalhc())
 
+# b --> a 
 
-item_a = Item("a", 10)
-item_a2 = Item("a", 10)
-print(item_a == item_a2)
+for i in range(10):
+    a.demand(1000, i)
+
