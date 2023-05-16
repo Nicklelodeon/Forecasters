@@ -10,7 +10,7 @@ class Item:
         return self.cost
 
     def __repr__(self):
-        return "Item()"
+        return "Item({})".format(self.name)
 
     def __str__(self):
         return "Item {} has cost of {}".format(self.name, self.cost)
