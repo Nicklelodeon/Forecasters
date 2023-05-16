@@ -25,7 +25,7 @@ a.add_upstream(c)
 print(a.get_totalhc())
 
 for i in range(10):
-    a.demand(1000, i)
+    a.update_all_demand(1000, i)
     print("cycle ", i, "a inventory level", a.inv_level)
     print("cycle ", i, "b inventory level", b.inv_level)
     print("cycle ", i, "c inventory level", c.inv_level)

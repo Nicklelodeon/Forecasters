@@ -19,9 +19,13 @@ def State():
             end_demandable.add_item_downstream(rand_item)
 
 
-    def update_state(self, t):
-        root.update_all_states(t)
-        
+    def update_state(self, demand, t):
+        self.root.update_all_states(t)
+        self.root.update_all_demand(demand)
+        self.root.update_all_order(t)
+        self.root.update_all_cost(t)
+
+    
     
 
 

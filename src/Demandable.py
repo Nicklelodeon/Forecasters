@@ -39,7 +39,7 @@ class Demandable:
 
 
 
-    def demand(self, num_demands: int, t) -> None:
+    def update_all_demand(self, num_demands: int, t) -> None:
         """Request stock from upstream
 
         Args:
@@ -47,15 +47,14 @@ class Demandable:
             t (int): time stamp
         """
         ## For each upstream Demandable, ask for this amount
+        
         for demandable in self.upstream:
-            new_items = demandable.get_items(num_demands)
+            new_items = demandable.update_demand(num_demands)
             for item in new_items:
                 # Increase inv level of items
-                self.inv_level[item] += new_items[item]
-                # Update inv_pos with new level of items
-                self.inv_pos[item] += new_items[item]
+                self.arrivals.append([t + self.lead_time, item, new_items[item]])
 
-    def get_items(self, num_get: int):
+    def update_demand(self, num_get: int):
         """Update inv level and inv pos for upstream
 
         Args:
@@ -139,24 +138,22 @@ class Demandable:
             t (int): timestamp
 
         """
-        self.arrivals.append([t + lead_time, item, amt])
-        ordering_cost = amt * item.get_cost + self.fixed_cost
-        self.costs[t] += ordering_cost
+        self.update_all_demand(amt, t)
+        ordering_cost = amt * item.get_cost() + self.fixed_cost
+        self.costs.append(ordering_cost)
         
-    def order(self, item, amt, t):
+    def update_all_order(self, t):
         """Orders for curr demandable and all upstream demandable
 
         Args:
-            item (Item): item to be ordered
-            amt (int): amount to order
             t (int): timestamp
         """
-        self.check_s(item, amt, t)
+        self.check_s(t)
         for demandable in self.upstream:
-            demandable.check_s(item, amt, t)
+            demandable.update_all_order(t)
 
 
-    def check_s(self, item, amt, t):
+    def check_s(self, t):
         """Orders if curr inv level < s
 
         Args:
@@ -164,9 +161,9 @@ class Demandable:
             amt (int): amount to order
             t (int): timestamp
         """
-        for item in inv_level:
-            if inv_level[item] < s:
-                self.update_order(item, self.S - inv_level[item], t)
+        for item in self.inv_level:
+            if self.inv_pos[item] < self.s:
+                self.update_order(item, self.S - self.inv_pos[item], t)
 
 
     def update_inventory(self, t):
@@ -187,15 +184,12 @@ class Demandable:
         """Updates inv level for all upstream demandables
 
         Args:
-            t (int): _description_
+            t (int): timestamp
         """
         self.update_inventory(t)
         for demandable in self.upstream:
-            demandable.update_inventory()
-
-    def 
-        
-
+            demandable.update_all_inventory(t)
+ 
     def get_hc(self) -> int:
         """Returns holding cost for current demandable
 
@@ -232,14 +226,19 @@ class Demandable:
         Returns:
             int: cost at specified time stamp
         """
-        return self.costs[t - 1]
+        return self.costs[t]
 
-    def calculate_cost(self, t):
+    def update_all_cost(self, t):
         """Add hc into total cost
 
         Args:
             t (int): curr timestamp
         """
-        self.costs[t] += self.get_hc()
+        if (len(self.costs) == t + 1):
+            self.costs[t] += self.get_hc()
+        else:
+            self.costs.append(self.get_hc())
+        for demandable in self.upstream:
+            demandable.update_all_cost(t)
 
     

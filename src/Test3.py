@@ -4,10 +4,10 @@ import numpy as np
 
 np.random.seed(1234)
 
-a = Demandable(10, 100, 50, 100)
-b = Demandable(20, 100, 50, 100)
-c = Demandable(20, 100, 50, 100)
-d = Demandable(30, 100, 50, 100)
+a = Demandable(10, 100, 4500, 7500)
+b = Demandable(20, 100, 4500, 7500)
+c = Demandable(20, 100, 4500, 7500)
+d = Demandable(30, 100, 4500, 7500)
 
 a.add_upstream(b)
 a.add_upstream(c)
@@ -22,8 +22,15 @@ for end_demandable in list_end_upstream:
     end_demandable.add_item_downstream(rand_item)
 
 for i in range(10):
-    a.demand(1000, i)
+    a.update_all_inventory(i)
+    a.update_all_demand(1000, i)
+    a.update_all_order(i)
+    a.update_all_cost(i)
     print("cycle ", i, "a inventory level", a.inv_level)
     print("cycle ", i, "b inventory level", b.inv_level)
     print("cycle ", i, "c inventory level", c.inv_level)
     print("cycle ", i, "d inventory level", d.inv_level)
+    print("order ", i, "a inventory level", a.arrivals)
+    print("order ", i, "b inventory level", b.arrivals)
+    print("order ", i, "c inventory level", c.arrivals)
+    print("d ", i, "d inventory level", d.arrivals)
