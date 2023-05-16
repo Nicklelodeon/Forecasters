@@ -9,9 +9,8 @@ class Demandable:
         self.inv_level = {}  ## Each item has multiple inv level
         self.inv_pos = {}
         self.upstream = []  ## Each upstream Demandables
-        self.holding_cost = (
-            holding_cost  ## Possibly change for each item. perhaps a multiplier?
-        )
+        self.downstream = [] ## Each downstream Demandables
+        self.holding_cost = holding_cost  ## Possibly change for each item. perhaps a multiplier
 
         self.backorder = 0
         self.fixed_cost = fixed_cost
@@ -52,7 +51,7 @@ class Demandable:
         """
         ## For each upstream Demandable, ask for this amount
         for demandable in self.upstream:
-            new_items = demandable.get_items(num_demands, t)
+            new_items = demandable.get_items(num_demands)
             for item in new_items:
                 # Increase inv level of items
                 self.inv_level[item] += new_items[item]
@@ -88,7 +87,33 @@ class Demandable:
         demandable.add_downstream(self)
         # Change later, perhaps random starting inventory ISSUE here
 
-    def add_item(self, item: "Item", amt: int):
+        
+    def add_downstream(self, demandable: "Demandable") -> None:
+        self.downstream.append(demandable)
+    
+    #Add items downstream with random amount
+    def add_item_downstream(self, item: "Item"):
+        self.add_item(item, np.random.randint(4000, 7000))
+        if self.downstream: # Check if list empty
+            self.downstream[0].add_item_downstream(item)
+    
+    def find_end_upstream(self) -> list:
+        leaves = []
+        if self.upstream: #upstream not empty
+            for demandable in self.upstream:
+                leaves += demandable.find_end_upstream()
+        else:
+            leaves += [self]
+        return leaves
+            
+
+    def add_item(self, item: "Item", amt = 0):
+        """Add item to demandable and its downstream, create inv level and inv pos
+
+        Args:
+            item (Item): Item added
+            amt (int): Amount of item to be added
+        """
         self.inv_level[item] = amt
         self.inv_pos[item] = amt
 
