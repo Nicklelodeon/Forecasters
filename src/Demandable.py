@@ -89,15 +89,31 @@ class Demandable:
 
         
     def add_downstream(self, demandable: "Demandable") -> None:
+        """Adds a demandable into downstream, called after
+        add_upstream function
+
+        Args:
+            demandable (Demandable): demandable
+        """
         self.downstream.append(demandable)
     
     #Add items downstream with random amount
     def add_item_downstream(self, item: "Item"):
+        """Adds items to all the downstream
+
+        Args:
+            item (Item): Item added
+        """
         self.add_item(item, np.random.randint(4000, 7000))
         if self.downstream: # Check if list empty
             self.downstream[0].add_item_downstream(item)
     
     def find_end_upstream(self) -> list:
+        """Finds the topmost upstream demandable
+
+        Returns:
+            list of demandables 
+        """
         leaves = []
         if self.upstream: #upstream not empty
             for demandable in self.upstream:
@@ -132,12 +148,17 @@ class Demandable:
         return amt * item.get_cost + self.fixed_cost
 
     def update_inventory(self, t):
+        """_summary_
+
+        Args:
+            t (_type_): _description_
+        """
         self.inv_pos = self.inv_level.copy()
         for arrival in self.arrivals:
             time, item, amt = arrival
             if t == time:
                 self.inv_level[item] += amt
-                arrivals.remove(arrival)
+                self.arrivals.remove(arrival)
             self.inv_pos[item] += amt
 
     def get_hc(self) -> int:
