@@ -15,15 +15,11 @@ class Demandable:
         self.backorder = 0
         self.fixed_cost = fixed_cost
         self.lead_time = 2
-
+        self.costs = []
         self.arrivals = []
         self.s = s
         self.S = S
         
-
-    
-    
-    
 
     def change_s(self, new_s):
         """Changes lower bound s
@@ -40,6 +36,7 @@ class Demandable:
             new_S (int): new S
         """
         self.S = new_S
+
 
 
     def demand(self, num_demands: int, t) -> None:
@@ -133,25 +130,50 @@ class Demandable:
         self.inv_level[item] = amt
         self.inv_pos[item] = amt
 
-    def order_cost(self, item, amt, t):
-        """Adds order and returns cost of ordering
+    def update_order(self, item, amt, t):
+        """Adds order and updates cost of ordering
 
         Args:
             item (Item): item to be ordered
             amt (int): amount to order
             t (int): timestamp
 
-        Returns:
-            int: total order cost
         """
         self.arrivals.append([t + lead_time, item, amt])
-        return amt * item.get_cost + self.fixed_cost
-
-    def update_inventory(self, t):
-        """_summary_
+        ordering_cost = amt * item.get_cost + self.fixed_cost
+        self.costs[t] += ordering_cost
+        
+    def order(self, item, amt, t):
+        """Orders for curr demandable and all upstream demandable
 
         Args:
-            t (_type_): _description_
+            item (Item): item to be ordered
+            amt (int): amount to order
+            t (int): timestamp
+        """
+        self.check_s(item, amt, t)
+        for demandable in self.upstream:
+            demandable.check_s(item, amt, t)
+
+
+    def check_s(self, item, amt, t):
+        """Orders if curr inv level < s
+
+        Args:
+            item (Item): item to be ordered
+            amt (int): amount to order
+            t (int): timestamp
+        """
+        for item in inv_level:
+            if inv_level[item] < s:
+                self.update_order(item, self.S - inv_level[item], t)
+
+
+    def update_state(self, t):
+        """Updates inv level and inv pos
+
+        Args:
+            t (int): timestamp
         """
         self.inv_pos = self.inv_level.copy()
         for arrival in self.arrivals:
@@ -160,8 +182,14 @@ class Demandable:
                 self.inv_level[item] += amt
                 self.arrivals.remove(arrival)
             self.inv_pos[item] += amt
+        
 
     def get_hc(self) -> int:
+        """Returns holding cost for current demandable
+
+        Returns:
+            int: holding cost for current demandable
+        """
         total = 0
         for item in self.inv_level:
             item_cost = item.get_cost()
@@ -169,8 +197,37 @@ class Demandable:
             total += item_cost * item_amt
         return total * self.holding_cost
 
-    def get_totalhc(self) -> int:  # Get all holding cost upstream
-        total = self.get_hc()
+    def get_total_cost(self, t) -> int: 
+        """Returns total cost for all upstream demandable
+
+        Args:
+            t (int): timestamp
+
+        Returns:
+            int: total cost incurred by all upstream demandable
+        """
+        total = self.get_curr_cost(t)
         for demandable in self.upstream:
-            total += demandable.get_totalhc()
+            total += demandable.get_total_cost(t)
         return total
+
+    def get_curr_cost(self, t):
+        """Retrieves total cost at specified time stamp for curr demandable
+
+        Args:
+            t (int): time stamp
+
+        Returns:
+            int: cost at specified time stamp
+        """
+        return self.costs[t - 1]
+
+    def calculate_cost(self, t):
+        """Add hc into total cost
+
+        Args:
+            t (int): curr timestamp
+        """
+        self.costs[t] += self.get_hc()
+
+    
