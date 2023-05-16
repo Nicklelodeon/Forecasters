@@ -9,6 +9,7 @@ class Demandable:
         self.inv_level = {}  ## Each item has multiple inv level
         self.inv_pos = {}
         self.upstream = []  ## Each upstream Demandables
+        self.downstream = [] ## Each downstream Demandables
         self.holding_cost = (
             holding_cost  ## Possibly change for each item. perhaps a multiplier?
         )
@@ -52,8 +53,27 @@ class Demandable:
 
     def add_upstream(self, demandable: "Demandable") -> None:
         self.upstream.append(demandable)
+        demandable.add_downstream(self)
         # Change later, perhaps random starting inventory ISSUE here
-
+        
+    def add_downstream(self, demandable: "Demandable") -> None:
+        self.downstream.append(demandable)
+    
+    #Add items downstream with random amount
+    def add_item_downstream(self, item: "Item"):
+        self.add_item(item, np.random.randint(4000, 7000))
+        if self.downstream: # Check if list empty
+            self.downstream[0].add_item_downstream(item)
+    
+    def find_end_upstream(self) -> list:
+        leaves = []
+        if self.upstream: #upstream not empty
+            for demandable in self.upstream:
+                leaves += demandable.find_end_upstream()
+        else:
+            leaves += [self]
+        return leaves
+            
     def add_item(self, item: "Item", amt: int):
         self.inv_level[item] = amt
         self.inv_pos[item] = amt
