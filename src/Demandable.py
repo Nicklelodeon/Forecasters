@@ -169,7 +169,7 @@ class Demandable:
                 self.update_order(item, self.S - inv_level[item], t)
 
 
-    def update_state(self, t):
+    def update_inventory(self, t):
         """Updates inv level and inv pos
 
         Args:
@@ -182,6 +182,18 @@ class Demandable:
                 self.inv_level[item] += amt
                 self.arrivals.remove(arrival)
             self.inv_pos[item] += amt
+
+    def update_all_inventory(self, t):
+        """Updates inv level for all upstream demandables
+
+        Args:
+            t (int): _description_
+        """
+        self.update_inventory(t)
+        for demandable in self.upstream:
+            demandable.update_inventory()
+
+    def 
         
 
     def get_hc(self) -> int:
