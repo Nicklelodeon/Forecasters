@@ -193,8 +193,6 @@ class Demandable:
         for demandable in self.upstream:
             demandable.update_inventory()
 
-    def 
-        
 
     def get_hc(self) -> int:
         """Returns holding cost for current demandable

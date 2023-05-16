@@ -1,26 +1,34 @@
-def State():
+from Demandable import Demandable
+from Item import Item
+import numpy as np
+
+class State:
 
     def __init__(self, root):
         self.root = root
 
     def create_state(self, demandables):
-        a = Demandable(10, 100, 50, 100)
-        b = Demandable(20, 100, 50, 100)
-        c = Demandable(20, 100, 50, 100)
-        d = Demandable(30, 100, 50, 100)
+        """create state
 
-        a.add_upstream(b)
-        a.add_upstream(c)
-        b.add_upstream(d)
-        list_end_upstream = a.find_end_upstream()
-
+        Args:
+            demandables (list<int>): list of integers
+        """
+        head = self.root
+        network_list = [head]
+        for i in range(1, len(demandables)):
+            new_demandable = Demandable(20, 100, 50 ,100)
+            network_list.append(new_demandable)
+            current_demandable = network_list[demandables[i]]
+            current_demandable.add_upstream(new_demandable)
+        list_end_upstream = head.find_end_upstream()
+        
         for end_demandable in list_end_upstream:
             rand_item = Item(str(np.random.randint(1, 1000)), 10)
             end_demandable.add_item_downstream(rand_item)
-
-
+        
+            
     def update_state(self, t):
-        root.update_all_states(t)
+        self.root.update_all_states(t)
         
     
 
