@@ -5,7 +5,8 @@ np.random.seed(123)
 
 
 class Demandable:
-    def __init__(self, holding_cost, fixed_cost, s, S):
+    def __init__(self, name, holding_cost, fixed_cost, s, S):
+        self.name = name
         self.inv_level = {}  ## Each item has multiple inv level
         self.inv_pos = {}
         self.inv_map = {} ## Has the inventory to Demandable
@@ -64,7 +65,6 @@ class Demandable:
     def produce_order(self, item, amt):
         items_out = self.update_demand(amt)
         return items_out
-
 
 
     def update_demand(self, num_get: int):
