@@ -45,7 +45,7 @@ class State:
     def helper_print(self, root, string):
         string += str(root)
         for demandable in root.upstream:
-            return helper_print(demandable, string, t)
+            return helper_print(demandable, string)
 
 
 
