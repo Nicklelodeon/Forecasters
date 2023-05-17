@@ -86,7 +86,7 @@ class Demandable:
                 if len(self.costs) == t + 1:
                     self.costs[t] += ordered_amt * item.get_cost() + self.fixed_cost
                 else:
-                    self.costs.append(ordered_amt * item.get_cost()) + self.fixed_cost
+                    self.costs.append(ordered_amt * item.get_cost() + self.fixed_cost)
                 if ordered_amt > 0:
                     self.arrivals.append([t + self.lead_time, item, ordered_amt])
                 demandable.check_s(item, t)

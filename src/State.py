@@ -39,7 +39,8 @@ class State:
         self.root.update_all_cost(t)
     
     def print_state(self, t):
-        return self.helper_print(self.root, "t: ")
+        string = "t: " + str(t)
+        return self.helper_print(self.root, string)
 
     def helper_print(self, root, string):
         string += str(root)

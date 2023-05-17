@@ -25,3 +25,6 @@ class Basic(Demandable):
         else: ## Has both upstream and downstream return distcentre
             return self.make_distcentre()
 
+    def __str__(self):
+        return name
+
