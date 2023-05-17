@@ -93,7 +93,7 @@ class Demandable:
         """
         self.downstream.append(demandable)
     
-    #Add items downstream with random amount
+    #Adds items downstream with random amount
     def add_item_downstream(self, item: "Item"):
         """Adds items to all the downstream
 
