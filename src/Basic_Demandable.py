@@ -12,4 +12,12 @@ class Basic(Demandable):
     
     def make_distcentre(self):
         return Distribution_Centre(self.name)
+    
+    def define_demandable(self):
+        if not self.upstream: ## Upstream is empty return supplier
+            return self.make_supplier()
+        elif not self.downstream: ## Downstream is empty return retailer
+            return self.make_retailer()
+        else: ## Has both upstream and downstream return distcentre
+            return self.make_distcentre()
 
