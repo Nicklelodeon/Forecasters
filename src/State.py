@@ -8,9 +8,8 @@ from Item import Item
 import numpy as np
 
 class State:
-
-    def __init__(self, root):
-        self.root = root
+    def __init__(self):
+        self.root = Basic(chr(65))
 
     def create_state(self, demandables):
         """create state
@@ -35,17 +34,18 @@ class State:
             end_demandable.add_item_downstream(rand_item)
 
     def update_state(self, demand, t):
-        self.root.update_all_inventory(i)
+        self.root.update_all_inventory(t)
         self.root.update_all_demand(demand, t)
         self.root.update_all_cost(t)
     
     def print_state(self, t):
-        return helper_print(self.root, "t: ")
+        return self.helper_print(self.root, "t: ")
 
     def helper_print(self, root, string):
         string += str(root)
         for demandable in root.upstream:
-            return helper_print(demandable, string)
+            return self.helper_print(demandable, string)
+        return string
 
 
 
