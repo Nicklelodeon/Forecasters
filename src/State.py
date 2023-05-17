@@ -1,4 +1,9 @@
 from Demandable import Demandable
+from Supplier import Supplier
+from DistributionCenter import DistributionCenter
+from Retailer import Retailer
+from Basic import Basic
+
 from Item import Item
 import numpy as np
 
@@ -16,11 +21,14 @@ class State:
         head = self.root
         network_list = [head]
         for i in range(1, len(demandables)):
-            new_demandable = Demandable(20, 100, 50 ,100)
+            new_demandable = Basic(chr(i + 65))
             network_list.append(new_demandable)
             current_demandable = network_list[demandables[i]]
             current_demandable.add_upstream(new_demandable)
         list_end_upstream = head.find_end_upstream()
+        
+        for i in range(len(network_list)):
+            network_list[i] = network_list[i].define_demandable()
         
         for end_demandable in list_end_upstream:
             rand_item = Item(str(np.random.randint(1, 1000)), 10)
@@ -38,11 +46,6 @@ class State:
         string += str(root)
         for demandable in root.upstream:
             return helper_print(demandable, string, t)
-
-
-    
-
-    
 
 
 
