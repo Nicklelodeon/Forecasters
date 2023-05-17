@@ -8,6 +8,8 @@ class Demandable:
     def __init__(self, holding_cost, fixed_cost, s, S):
         self.inv_level = {}  ## Each item has multiple inv level
         self.inv_pos = {}
+        self.inv_map = {} ## Has the inventory to Demandable
+        
         self.upstream = []  ## Each upstream Demandables
         self.downstream = [] ## Each downstream Demandables
         self.holding_cost = holding_cost  ## Possibly change for each item. perhaps a multiplier
@@ -93,6 +95,15 @@ class Demandable:
         """
         self.downstream.append(demandable)
     
+    def add_item_map(self, item, Demandable):
+        """Maps item to Demandable in self.inv_map
+
+        Args:
+            item (Item): An Item
+            Demandable (Demandable): Direct upstream Demandable
+        """
+        self.inv_map[item] = Demandable
+        
     #Add items downstream with random amount
     def add_item_downstream(self, item: "Item"):
         """Adds items to all the downstream
@@ -100,9 +111,12 @@ class Demandable:
         Args:
             item (Item): Item added
         """
+        
         self.add_item(item, np.random.randint(4000, 7000))
         if self.downstream: # Check if list empty
-            self.downstream[0].add_item_downstream(item)
+            downstream_demandable = self.downstream[0]
+            downstream_demandable.add_item_map(item, self)
+            downstream_demandable.add_item_downstream(item)            
     
     def find_end_upstream(self) -> list:
         """Finds the topmost upstream demandable
