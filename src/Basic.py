@@ -1,4 +1,8 @@
 from Demandable import Demandable
+from Supplier import Supplier
+from Retailer import Retailer
+from DistributionCenter import DistributionCenter
+
 
 class Basic(Demandable):
     def __init__(self, name):
@@ -11,7 +15,7 @@ class Basic(Demandable):
         return Retailer(self.name)
     
     def make_distcentre(self):
-        return Distribution_Centre(self.name)
+        return DistributionCenter(self.name)
     
     def define_demandable(self):
         if not self.upstream: ## Upstream is empty return supplier
