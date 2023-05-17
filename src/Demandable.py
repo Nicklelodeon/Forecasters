@@ -5,7 +5,7 @@ np.random.seed(123)
 
 
 class Demandable:
-    def __init__(self, name, holding_cost, fixed_cost, s, S):
+    def __init__(self, name, holding_cost, fixed_cost, backorder_cost, s, S):
         self.name = name
         self.inv_level = {}  ## Each item has multiple inv level
         self.inv_pos = {}
@@ -251,5 +251,21 @@ class Demandable:
         self.costs[t] += self.backorder * self.backorder_cost
         for demandable in self.upstream:
             demandable.update_all_cost(t)
+
+    def print_inv_level(self):
+        return "inv level: " + str(self.inv_level)
+
+    def print_inv_pos(self):
+        return "inv pos: " + str(self.inv_pos)
+
+    def print_orders(self):
+        s = ''.join([str(x) for x in self.arrivals])
+        return "orders: " + s
+    
+    def print_cost(self):
+        return "cost: " + str(self.costs[len(self.costs) - 1])
+    
+    def __str__(self):
+        return self.name + "\n" + self.print_inv_level() + "\n" + self.print_inv_pos() + "\n" + self.print_orders() + "\n" + self.print_cost()
 
     
