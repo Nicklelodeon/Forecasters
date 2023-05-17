@@ -28,7 +28,9 @@ for i in range(10):
     #print("b cycle ", i, "d inventory level", d.inv_level)
     a.update_all_inventory(i)
     a.update_all_demand(1000, i)
+    
     a.update_all_cost(i)
+    """
     print("a cycle ", i, "a inventory level", a.inv_level)
     print("a cycle ", i, "b inventory level", b.inv_level)
     print("a cycle ", i, "c inventory level", c.inv_level)
@@ -38,4 +40,5 @@ for i in range(10):
     print("order ", i, "c inventory level", c.arrivals)
     print("d ", i, "d inventory level", d.arrivals)
     print("cost", i, a.get_total_cost(i))
+    """
     print(a)
