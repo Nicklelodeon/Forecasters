@@ -10,28 +10,46 @@ import numpy as np
 class State:
     def __init__(self):
         self.root = Basic(chr(65))
-
+        
+    def create_network(self, demandables, network):
+        for i in range(1,len(demandables)):
+            current_demandable = network[demandables[i]]
+            current_demandable.add_upstream(network[i])
+        return network
+            
+        
     def create_state(self, demandables):
         """create state
 
         Args:
             demandables (list<int>): list of integers
         """
-        head = self.root
-        network_list = [head]
-        for i in range(1, len(demandables)):
+        #head = self.root
+        network_list = []
+        for i in range(len(demandables)):   
             new_demandable = Basic(chr(i + 65))
             network_list.append(new_demandable)
-            current_demandable = network_list[demandables[i]]
-            current_demandable.add_upstream(new_demandable)
-        list_end_upstream = head.find_end_upstream()
+        network_list = self.create_network(demandables, network_list)
         
         for i in range(len(network_list)):
             network_list[i] = network_list[i].define_demandable()
+        network_list = self.create_network(demandables, network_list)
+        #print("HERE AT LINE 37 PRINT 2",network_list)
+
+     
+        self.root = network_list[0]
+        print("ROOT" + str(self.root))
+        #print("PRINT 3", head.upstream)
+        list_end_upstream = self.root.find_end_upstream()
+        #print("LINE 46", list_end_upstream)
+        #print("LINE 45")
+        
         
         for end_demandable in list_end_upstream:
             rand_item = Item(str(np.random.randint(1, 1000)), 10)
             end_demandable.add_item_downstream(rand_item)
+        print("END DEMANDABLE",list_end_upstream[0].inv_level, list_end_upstream[0].downstream[0].inv_level)
+            
 
     def update_state(self, demand, t):
         self.root.update_all_inventory(t)

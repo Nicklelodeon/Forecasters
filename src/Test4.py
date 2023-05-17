@@ -11,6 +11,7 @@ state = State()
 state.create_state(demandable_state)
 print("HERE AT LINE 11", state)
 
-for i in range(20):
+for i in range(5):
+    print("I is", i)
     state.update_state(1000, i)
     print(state.print_state(i))

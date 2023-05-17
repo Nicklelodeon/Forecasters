@@ -13,4 +13,8 @@ class Supplier(Demandable):
             downstream_demandable.add_item_map(item, self)
             downstream_demandable.add_item_downstream(item)
     
+    def update_demand(self, num_get: int):
+        return num_get
+        
+    
         
