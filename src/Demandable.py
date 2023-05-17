@@ -63,7 +63,12 @@ class Demandable:
         Returns:
             items_out (int): amount available to be ordered
         """
-        min_item = min(min(list(self.inv_level.values())), num_get)
+        print("SELF INV LEVEL LINE 66", self.inv_level)
+        if self.inv_level:
+            min_item = min(min(list(self.inv_level.values())), num_get)
+        else:
+            min_item = num_get
+            
         curr_backorder = num_get - min_item
         self.backorder += curr_backorder
         for item in self.inv_level:
@@ -177,6 +182,9 @@ class Demandable:
         self.inv_pos[item] = amt
 
 
+
+        
+
     def update_inventory(self, t):
         """Updates inv level and inv pos
 
@@ -270,6 +278,6 @@ class Demandable:
         return "cost: " + str(self.costs[len(self.costs) - 1])
     
     def __str__(self):
-        return self.name + "\n" + self.print_inv_level() + "\n" + self.print_inv_pos() + "\n" + self.print_orders() + "\n" + self.print_cost()
+        return self.name + "\n" + self.print_inv_level() + "\n" + self.print_inv_pos() + "\n" + self.print_orders() + "\n" #+ self.print_cost()
 
     
