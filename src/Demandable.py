@@ -15,6 +15,7 @@ class Demandable:
         self.holding_cost = holding_cost  ## Possibly change for each item. perhaps a multiplier
 
         self.backorder = 0
+        self.backorder_cost = backorder_cost
         self.fixed_cost = fixed_cost
         self.lead_time = 2
         self.costs = []
@@ -42,39 +43,56 @@ class Demandable:
 
 
     def update_all_demand(self, num_demands: int, t) -> None:
-        """Request stock from upstream
+        """Updates inv level and pos for all items for curr and upstream
 
         Args:
             num_demands (int): amount requested
             t (int): time stamp
         """
-        items_out = self.update_demand(num_demands)
+        self.update_demand(num_demands)
         for item in self.inv_level:
             self.check_s(item, t)
 
 
     def check_s(self, item, t):
+        """recursively checks if inv pos < s for all upstream demandables
+
+        Args:
+            item (Item): item to be ordered
+            t (int): time stamp
+        """
         if self.inv_pos[item] < self.s:
-            if item in inv_map:
+            if item in self.inv_map:
                 demandable = self.inv_map[item]
-                amt = self.S - inv_pos[item]
+                amt = self.S - self.inv_pos[item]
                 ordered_amt = demandable.produce_order(item, amt)
-                self.arrivals.append([t + self.lead_time, item, ordered_amt])
+                if ordered_amt > 0:
+                    self.arrivals.append([t + self.lead_time, item, ordered_amt])
                 demandable.check_s(item, t)
 
+
     def produce_order(self, item, amt):
+        """Determine amount to be ordered
+
+        Args:
+            item (Item): item to be ordered
+            amt (int): amount requested
+
+        Returns:
+            int: amount available to be ordered
+        """
         items_out = self.update_demand(amt)
         return items_out
 
 
     def update_demand(self, num_get: int):
-        """Update inv level and inv pos for upstream
+        """Update inv level and inv pos 
 
         Args:
-            num_get (int): amount requested from downstream
+            num_get (int): amount requested 
 
         Returns:
-            items_out (int): amount that each upstream demandable can provide 
+            items_out (int): amount available to be ordered
         """
         min_item = min(min(list(self.inv_level.values())), num_get)
         curr_backorder = num_get - min_item
@@ -162,12 +180,15 @@ class Demandable:
             t (int): timestamp
         """
         self.inv_pos = self.inv_level.copy()
-        for arrival in self.arrivals:
+        index = []
+        for i in range(len(self.arrivals)):
+            arrival = self.arrivals[i]
             time, item, amt = arrival
             if t == time:
                 self.inv_level[item] += amt
-                self.arrivals.remove(arrival)
+                index.append(i)
             self.inv_pos[item] += amt
+        self.arrivals = [arrival for i, arrival in enumerate(self.arrivals) if i not in index]
 
     def update_all_inventory(self, t):
         """Updates inv level for all upstream demandables
@@ -227,6 +248,7 @@ class Demandable:
             self.costs[t] += self.get_hc()
         else:
             self.costs.append(self.get_hc())
+        self.costs[t] += self.backorder * self.backorder_cost
         for demandable in self.upstream:
             demandable.update_all_cost(t)
 
