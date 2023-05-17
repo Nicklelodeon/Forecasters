@@ -84,6 +84,7 @@ class Demandable:
         items_out = self.update_demand(amt)
         return items_out
 
+
     def update_demand(self, num_get: int):
         """Update inv level and inv pos 
 
