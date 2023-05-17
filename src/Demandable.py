@@ -63,7 +63,6 @@ class Demandable:
         Returns:
             items_out (int): amount available to be ordered
         """
-        print("SELF INV LEVEL LINE 66", self.inv_level)
         if self.inv_level:
             min_item = min(min(list(self.inv_level.values())), num_get)
         else:
@@ -91,7 +90,7 @@ class Demandable:
                 if len(self.costs) == t + 1:
                     self.costs[t] += ordered_amt * item.get_cost() + self.fixed_cost
                 else:
-                    self.costs.append(ordered_amt * item.get_cost()) + self.fixed_cost
+                    self.costs.append(ordered_amt * item.get_cost() + self.fixed_cost) ## CHECK 
                 if ordered_amt > 0:
                     self.arrivals.append([t + self.lead_time, item, ordered_amt])
                 demandable.check_s(item, t)
@@ -181,10 +180,6 @@ class Demandable:
         self.inv_level[item] = amt
         self.inv_pos[item] = amt
 
-
-
-        
-
     def update_inventory(self, t):
         """Updates inv level and inv pos
 
@@ -264,6 +259,13 @@ class Demandable:
         for demandable in self.upstream:
             demandable.update_all_cost(t)
 
+    def print_upstream(self):
+        name = [self.name]
+        if self.upstream:
+            for demandable in self.upstream:
+                name += demandable.print_upstream()
+        return name
+
     def print_inv_level(self):
         return "inv level: " + str(self.inv_level)
 
@@ -275,9 +277,15 @@ class Demandable:
         return "orders: " + s
     
     def print_cost(self):
-        return "cost: " + str(self.costs[len(self.costs) - 1])
+        return "cost: " + str(self.costs[len(self.costs) - 1]) ##Bug with at t = 0
+    
+    def print_upstream_state(self):
+        string = str(self)
+        for demandable in self.upstream:
+            string += "\n" + demandable.print_upstream_state()
+        return string
     
     def __str__(self):
-        return self.name + "\n" + self.print_inv_level() + "\n" + self.print_inv_pos() + "\n" + self.print_orders() + "\n" #+ self.print_cost()
+        return self.name + "\n" + self.print_inv_level() + "\n" + self.print_inv_pos() + "\n" + self.print_orders() #+ "\n" + self.print_cost()
 
     

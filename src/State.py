@@ -38,7 +38,7 @@ class State:
 
      
         self.root = network_list[0]
-        print("ROOT" + str(self.root))
+        #print("ROOT", str(self.root))
         #print("PRINT 3", head.upstream)
         list_end_upstream = self.root.find_end_upstream()
         #print("LINE 46", list_end_upstream)
@@ -48,22 +48,28 @@ class State:
         for end_demandable in list_end_upstream:
             rand_item = Item(str(np.random.randint(1, 1000)), 10)
             end_demandable.add_item_downstream(rand_item)
-        print("END DEMANDABLE",list_end_upstream[0].inv_level, list_end_upstream[0].downstream[0].inv_level)
+        #print("END DEMANDABLE",list_end_upstream[0].inv_level, list_end_upstream[0].downstream[0].inv_level)
+        
+    def print_network(self):
+        """Debugging function to print Demandables in network
+        """
+        print(self.root.print_upstream())
             
-
     def update_state(self, demand, t):
         self.root.update_all_inventory(t)
         self.root.update_all_demand(demand, t)
         self.root.update_all_cost(t)
     
     def print_state(self, t):
-        return self.helper_print(self.root, "t: ")
+        return "time " + str(t) +": \n" + self.root.print_upstream_state()
+    
+    """ self.helper_print(self.root, "time " + str(t) +": \n")
 
     def helper_print(self, root, string):
         string += str(root)
         for demandable in root.upstream:
-            return self.helper_print(demandable, string)
-        return string
+            return string + self.helper_print(demandable, string)
+        return string """
 
 
 
