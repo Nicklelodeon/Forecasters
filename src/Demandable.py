@@ -87,12 +87,9 @@ class Demandable:
                 demandable = self.inv_map[item]
                 amt = self.S - self.inv_pos[item]
                 ordered_amt = demandable.produce_order(item, amt)
-                if len(self.costs) == t + 1:
-                    self.costs[t] += ordered_amt * item.get_cost() + self.fixed_cost
-                else:
-                    self.costs.append(ordered_amt * item.get_cost() + self.fixed_cost) ## CHECK 
                 if ordered_amt > 0:
                     self.arrivals.append([t + self.lead_time, item, ordered_amt])
+                    self.ordering_costs[t] += ordered_amt * item.get_cost() + self.fixed_cost
                 demandable.check_s(item, t)
 
 
@@ -203,6 +200,11 @@ class Demandable:
         Args:
             t (int): timestamp
         """
+        #initialise cost to 0 at curr t 
+        self.costs.append(0)
+        self.backorder_costs.append(0)
+        self.ordering_costs.append(0)
+        self.holding_costs.append(0)
         self.update_inventory(t)
         for demandable in self.upstream:
             demandable.update_all_inventory(t)
@@ -215,9 +217,8 @@ class Demandable:
         """
         total = 0
         for item in self.inv_level:
-            item_cost = item.get_cost()
             item_amt = self.inv_level[item]
-            total += item_cost * item_amt
+            total += item_amt
         return total * self.holding_cost
 
     def get_total_cost(self, t) -> int: 
@@ -251,11 +252,12 @@ class Demandable:
         Args:
             t (int): curr timestamp
         """
-        if len(self.costs) == t + 1:
-            self.costs[t] += self.get_hc()
-        else:
-            self.costs.append(self.get_hc())
-        self.costs[t] += self.backorder * self.backorder_cost
+        #if len(self.costs) == t + 1:
+        self.holding_costs[t] += self.get_hc()
+        #else:
+            #self.costs.append(self.get_hc())
+        self.backorder_costs[t] += self.backorder * self.backorder_cost
+        self.costs[t] = self.holding_costs[t] + self.backorder_costs[t] + self.ordering_costs[t]
         for demandable in self.upstream:
             demandable.update_all_cost(t)
 
@@ -276,8 +278,20 @@ class Demandable:
         s = ''.join([str(x) for x in self.arrivals])
         return "orders: " + s
     
-    def print_cost(self):
-        return "cost: " + str(self.costs[len(self.costs) - 1]) ##Bug with at t = 0
+    def print_total_cost(self):
+        return "total cost: " + str(self.costs[max(0, len(self.costs) - 1)])
+
+    def print_holding_cost(self):
+        return "holding cost: " + str(self.holding_costs[max(0, len(self.holding_costs) - 1)])
+    
+    def print_ordering_cost(self):
+        return "ordering cost: " + str(self.ordering_costs[max(0, len(self.ordering_costs) - 1)])
+    
+    def print_backorder_cost(self):
+        return "backorder cost: " + str(self.backorder_costs[max(0, len(self.backorder_costs) - 1)])
+
+    def print_inv_map(self):
+        return "inv map: " + str(self.inv_map)
     
     def print_upstream_state(self):
         string = str(self)
@@ -286,6 +300,7 @@ class Demandable:
         return string
     
     def __str__(self):
-        return self.name + "\n" + self.print_inv_level() + "\n" + self.print_inv_pos() + "\n" + self.print_orders() #+ "\n" + self.print_cost()
+        return self.name + "\n" + self.print_inv_level() + "\n" + self.print_inv_pos() + "\n" + self.print_orders() + "\n" + self.print_total_cost() \
+        + "\n" + self.print_holding_cost() + "\n" + self.print_ordering_cost() + "\n" + self.print_backorder_cost() + "\n" + self.print_inv_map()
 
     

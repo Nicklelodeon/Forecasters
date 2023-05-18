@@ -15,6 +15,9 @@ class Supplier(Demandable):
     
     def update_demand(self, num_get: int):
         return num_get
+
+    def update_all_cost(self, t):
+        return 
         
     
         
