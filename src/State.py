@@ -34,12 +34,9 @@ class State:
         for i in range(len(network_list)):
             network_list[i] = network_list[i].define_demandable()
         network_list = self.create_network(demandables, network_list)
-        #print("HERE AT LINE 37 PRINT 2",network_list)
 
      
         self.root = network_list[0]
-        #print("ROOT", str(self.root))
-        #print("PRINT 3", head.upstream)
         list_end_upstream = self.root.find_end_upstream()
         #print("LINE 46", list_end_upstream)
         #print("LINE 45")

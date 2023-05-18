@@ -1,23 +1,19 @@
 from Demandable import Demandable
 from Item import Item
 import numpy as np
+from State import State
+from Retailer import Retailer
 
 np.random.seed(1234)
 
-print(Item("123", 50))
+demandable_state = [-1, 0, 0, 1, 1]
 
-a = Demandable(10, 100, 50, 100)
-b = Demandable(20, 100, 50, 100)
-item1 = Item(str(np.random.randint(1, 1000)), 10)
+state = State()
+state.create_state(demandable_state)
+state.print_network()
 
-a.add_item(item1, np.random.randint(4000, 7000))
-b.add_item(item1, np.random.randint(4000, 7000))
-a.add_upstream(b)
-print(a.get_totalhc())
 
-# b --> a
-
-for i in range(10):
-    a.update_all_demand(1000, i)
-    print("cycle ", i, "a inventory level", a.inv_level)
-    print("cycle ", i, "b inventory level", b.inv_level)
+for i in range(6): ## Forcing backorder cost
+    state.update_state(3000, i)
+    print(state.print_state(i))
+    

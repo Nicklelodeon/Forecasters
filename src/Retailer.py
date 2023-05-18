@@ -20,6 +20,9 @@ class Retailer(Demandable):
     
     def calculate_profit(self, t):
         return self.amount_sold * self.selling_price - super.arrivals[t]
+    
+    def __repr__(self):
+        return "Retailer({})".format(self.name)
 
 
 

@@ -18,6 +18,8 @@ class Supplier(Demandable):
 
     def update_all_cost(self, t):
         return 
-        
+    
+    def __repr__(self):
+        return "Supplier({})".format(self.name)
     
         

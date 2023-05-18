@@ -26,5 +26,5 @@ class Basic(Demandable):
             return self.make_distcentre()
 
     def __str__(self):
-        return name
+        return self.name
 
