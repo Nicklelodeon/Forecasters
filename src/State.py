@@ -65,6 +65,7 @@ class State:
     
     """ self.helper_print(self.root, "time " + str(t) +": \n")
 
+
     def helper_print(self, root, string):
         string += str(root)
         for demandable in root.upstream:
