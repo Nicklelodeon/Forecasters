@@ -1,6 +1,6 @@
 def Main():
 
-    def __init__(self, state):
+    def __init__(self, state, demand):
         self.state = state
         self.demand = demand
     

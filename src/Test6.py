@@ -9,3 +9,4 @@ synthetic.simulate(3) #Simulating 3 years
 demand_list = synthetic.get_demand()
 
 print(demand_list)
+print(len(demand_list))
