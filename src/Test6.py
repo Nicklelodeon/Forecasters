@@ -14,10 +14,10 @@ demandable_state = [-1, 0, 0, 1, 1]
 
 state = State()
 state.create_state(demandable_state)
-state.print_network()
+#tate.print_network()
 print(demand_list)
 
-""" for i in range(len(demand_list)):
+for i in range(len(demand_list)):
     print("Demand " , demand_list[i])
     state.update_state(demand_list[i], i)
-    print(state.print_state(i)) """
+    print(state.print_state(i))
