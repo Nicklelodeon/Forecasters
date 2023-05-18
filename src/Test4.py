@@ -14,5 +14,6 @@ state.print_network()
 
 
 for i in range(6):
+
     state.update_state(1000, i)
     print(state.print_state(i))
