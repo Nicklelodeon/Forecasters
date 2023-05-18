@@ -63,6 +63,7 @@ class Demandable:
         Returns:
             items_out (int): amount available to be ordered
         """
+
         if self.inv_level:
             min_item = min(min(list(self.inv_level.values())), num_get)
         else:
@@ -103,8 +104,11 @@ class Demandable:
         Returns:
             int: amount available to be ordered
         """
-        items_out = self.update_demand(amt)
-        return items_out
+        amt_avail = self.inv_level[item]
+        amt_supplied = min(amt_avail, amt)
+        self.inv_level[item] -= amt_supplied
+        self.inv_pos[item] -= amt_supplied
+        return amt_supplied
 
 
     def add_upstream(self, demandable: "Demandable") -> None:
@@ -193,6 +197,12 @@ class Demandable:
                 index.append(i)
             self.inv_pos[item] += amt
         self.arrivals = [arrival for i, arrival in enumerate(self.arrivals) if i not in index]
+        if self.backorder > 0:
+            amt_backordered = min(self.backorder, min(list(self.inv_level.values())))
+            for item in self.inv_level:
+                self.inv_level[item] -= amt_backordered
+            self.backorder -= amt_backordered
+
 
     def update_all_inventory(self, t):
         """Updates inv level for all upstream demandables
@@ -252,10 +262,7 @@ class Demandable:
         Args:
             t (int): curr timestamp
         """
-        #if len(self.costs) == t + 1:
         self.holding_costs[t] += self.get_hc()
-        #else:
-            #self.costs.append(self.get_hc())
         self.backorder_costs[t] += self.backorder * self.backorder_cost
         self.costs[t] = self.holding_costs[t] + self.backorder_costs[t] + self.ordering_costs[t]
         for demandable in self.upstream:
