@@ -152,7 +152,6 @@ class Demandable:
         self.add_item(item, np.random.randint(4000, 7000))
         if self.downstream: # Check if list empty
             downstream_demandable = self.downstream[0]
-            downstream_demandable.add_item_map(item, self)
             downstream_demandable.add_item_downstream(item)    
     
     def find_end_upstream(self) -> list:
