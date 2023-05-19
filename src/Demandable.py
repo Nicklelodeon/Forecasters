@@ -1,7 +1,7 @@
 import numpy as np
 from Item import Item
 
-np.random.seed(123)
+np.random.seed(1234)
 
 
 class Demandable:
@@ -150,7 +150,7 @@ class Demandable:
             item (Item): Item added
         """
         
-        self.add_item(item, np.random.randint(4000, 7000))
+        self.add_item(item, np.random.randint(100, 200))
         if self.downstream: # Check if list empty
             downstream_demandable = self.downstream[0]
             downstream_demandable.add_item_map(item, self)
