@@ -26,6 +26,15 @@ class Demandable:
         self.s = s
         self.S = S
         
+    def change_order_point(self, new_small_s, new_big_s):
+        """Changes lower and upper bound s and S
+
+        Args:
+            new_small_s (int): new small s
+            new_big_s (int): new big S
+        """
+        self.change_s(new_small_s)
+        self.change_S(new_big_s)
 
     def change_s(self, new_s):
         """Changes lower bound s
@@ -131,8 +140,19 @@ class Demandable:
         """
         self.downstream.append(demandable)
     
-    
-    
+    def find_changeable_network(self):
+        """Finds retailers and distribution centres in the network
+
+        Returns:
+            List<Demandable>: list of retailers and distribution centres
+        """
+        list = []
+        if self.upstream:
+            list += [self]
+            for demandable in self.upstream:
+                list += demandable.find_changeable_network
+        return list
+            
     def add_item_map(self, item, demandable):
         """Maps item to Demandable in self.inv_map
 
