@@ -27,6 +27,3 @@ class GenerateDemandMonthly:
     
     def get_demand(self):
         return self.demand
-abc = GenerateDemandMonthly()
-abc.simulate(1)
-print(abc.get_demand())
