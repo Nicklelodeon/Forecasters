@@ -3,10 +3,11 @@ from Item import Item
 import numpy as np
 from State import State
 from SyntheticDemand import GenerateDemand
+from Monthly_Interval import GenerateDemandMonthly
 
 np.random.seed(1234)
 
-synthetic = GenerateDemand()
+synthetic = GenerateDemandMonthly()
 synthetic.simulate(1) #Simulating 1 year
 demand_list = synthetic.get_demand()
 

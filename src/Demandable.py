@@ -150,7 +150,7 @@ class Demandable:
         if self.upstream:
             list += [self]
             for demandable in self.upstream:
-                list += demandable.find_changeable_network
+                list += demandable.find_changeable_network()
         return list
             
     def add_item_map(self, item, demandable):

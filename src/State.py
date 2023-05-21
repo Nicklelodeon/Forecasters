@@ -17,6 +17,17 @@ class State:
         self.demand_list = self.demand_class.get_demand()
         
     def create_network(self, demandables, network):
+        """Creates the network of demandables based on demandables list
+
+        Args:
+            demandables (list<int>): list of integers s.t list[i] <= list[j] for i <= j and 
+            list[-1] == -1 which represents the root (retailer)
+            network (list<Demandable>): list of Demandables, len(demandables) == len(network) 
+
+        Returns:
+            list<Demandable>: returns list of Demandables with complete connection based
+            on demandables list
+        """
         for i in range(1,len(demandables)):
             current_demandable = network[demandables[i]]
             current_demandable.add_upstream(network[i])
