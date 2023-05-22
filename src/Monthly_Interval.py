@@ -27,3 +27,5 @@ class GenerateDemandMonthly:
     
     def get_demand(self):
         return self.demand
+
+    

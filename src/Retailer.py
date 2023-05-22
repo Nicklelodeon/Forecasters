@@ -6,6 +6,17 @@ class Retailer(Demandable):
         self.amount_sold = []
         self.selling_price = selling_price
 
+    def reset():
+        self.inv_level  = dict.fromkeys(self.inv_level, 0)
+        self.inv_pos = dict.fromkeys(self.inv_pos, 0)
+        self.ordering_costs = []
+        self.holding_costs = []
+        self.backorder_costs = []
+        self.backorder = 0
+        self.costs = []
+        self.arrivals = []
+        self.amount_sold = []
+
     def update_all_demand(self, num_demands: int, t) -> None:
         """Updates inv level and pos for all items for curr and upstream
 

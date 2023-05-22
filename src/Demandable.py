@@ -25,6 +25,18 @@ class Demandable:
         self.arrivals = []
         self.s = s
         self.S = S
+
+    def reset():
+        self.inv_level  = dict.fromkeys(self.inv_level, 0)
+        self.inv_pos = dict.fromkeys(self.inv_pos, 0)
+        self.ordering_costs = []
+        self.holding_costs = []
+        self.backorder_costs = []
+        self.backorder = 0
+        self.costs = []
+        self.arrivals = []
+
+
         
     def change_order_point(self, new_small_s, new_big_s):
         """Changes lower and upper bound s and S
