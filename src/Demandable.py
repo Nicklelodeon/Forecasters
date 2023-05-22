@@ -27,8 +27,8 @@ class Demandable:
         self.S = S
 
     def reset(self):
-        self.inv_level  = dict.fromkeys(self.inv_level, 0)
-        self.inv_pos = dict.fromkeys(self.inv_pos, 0)
+        self.inv_level  = dict.fromkeys(self.inv_level, 65)
+        self.inv_pos = dict.fromkeys(self.inv_pos, 65)
         self.ordering_costs = []
         self.holding_costs = []
         self.backorder_costs = []
@@ -182,7 +182,7 @@ class Demandable:
             item (Item): Item added
         """
         
-        self.add_item(item, np.random.randint(100, 200))
+        self.add_item(item, 65)
         if self.downstream: # Check if list empty
             downstream_demandable = self.downstream[0]
             downstream_demandable.add_item_map(item, self)
