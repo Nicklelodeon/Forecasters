@@ -131,7 +131,8 @@ class State:
     def reset(self):
         """Resets state
         """
-        self.root.reset_all()
+        for demandable in self.changeable_network:
+            demandable.reset()
         self.s_S_list = None
         self.rewards = []
         
