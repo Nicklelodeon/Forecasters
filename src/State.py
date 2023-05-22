@@ -127,6 +127,14 @@ class State:
             small_s = self.s_S_list[point]
             big_S = self.s_S_list[point + 1]
             demandable.change_order_point(small_s, big_S)
+            
+    def reset(self):
+        """Resets state
+        """
+        self.root.reset_all()
+        self.s_S_list = None
+        self.rewards = []
+        
         
     def update_state(self, t):
         """Discrete update state
