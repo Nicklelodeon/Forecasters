@@ -18,15 +18,15 @@ class GenerateDemandMonthly:
             for i in range(1, 13):
                 
                 if i in [1, 2, 3, 5, 6, 10]:
-                    arr = [round(x) for x in np.random.normal(50, math.sqrt(50), 1)]
+                    arr = [round(x) for x in np.random.normal(20, math.sqrt(20), 1)]
                     self.demand.extend(arr)
-                    dist = scipy.stats.norm.ppf( [.25, .75], 50, math.sqrt(50)) 
+                    dist = scipy.stats.norm.ppf( [.25, .75], 20, math.sqrt(20)) 
                     self.quantiles.append(dist)
                 
                 else:
-                    arr = [round(x) for x in np.random.normal(65, math.sqrt(65), 1)]
+                    arr = [round(x) for x in np.random.normal(30, math.sqrt(30), 1)]
                     self.demand.extend(arr)
-                    dist = scipy.stats.norm.ppf( [.25, .75], 65, math.sqrt(65)) 
+                    dist = scipy.stats.norm.ppf( [.25, .75], 30, math.sqrt(30)) 
                     self.quantiles.append(dist)
     
     def get_demand(self):

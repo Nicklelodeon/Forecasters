@@ -16,6 +16,7 @@ class State:
         self.demand_class.simulate(1)
         self.demand_list = self.demand_class.get_demand()
         self.s_S_list = None
+        self.rewards = []
         
     def create_network(self, demandables, network):
         """Creates the network of demandables based on demandables list
@@ -70,10 +71,18 @@ class State:
         """
         self.s_S_list = array
     
-    def score(self):
+    def score(self, t):
         """returns score
         """
-        return
+        return self.rewards[t]
+
+    def total_sum(self):
+        """returns cumulative score
+
+        Returns:
+           int: sum of all rewards up to this point in time
+        """
+        return sum(self.rewards)
         
     def print_network(self):
         """Debugging function to print Demandables in network
@@ -104,10 +113,8 @@ class State:
         self.root.update_all_inventory(t)
         self.root.update_all_demand(demand, t)
         self.root.update_all_cost(t)
-        print("costs: " + str(self.root.print_upstream_cost(t)))
-        print("profit: " + str(self.root.calculate_profit(t)))
-        print("amount sold: " + str(self.root.amount_sold))
-        print("quantiles: " + str(self.demand_class.quantiles))
+        self.rewards.append(self.root.calculate_profit(t))
+
     
     def print_state(self, t):
         return "time " + str(t) +": \n" + self.root.print_upstream_state()
