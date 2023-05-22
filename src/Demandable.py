@@ -344,10 +344,14 @@ class Demandable:
         for demandable in self.upstream:
             string += "\n" + demandable.print_upstream_state()
         return string
+
+    def print_s(self):
+        return "s: " + str(self.s) + "\n" + "S: " + str(self.S)
     
     def __str__(self):
         return self.name + "\n" + self.print_inv_level() + "\n" + self.print_inv_pos() + "\n" + self.print_orders() + "\n" + self.print_total_cost() \
-        + "\n" + self.print_holding_cost() + "\n" + self.print_ordering_cost() + "\n" + self.print_backorder_cost() + "\n" + self.print_inv_map()
+        + "\n" + self.print_holding_cost() + "\n" + self.print_ordering_cost() + "\n" + self.print_backorder_cost() + "\n" + self.print_inv_map() \
+        + "\n" + self.print_s()
     
     def __repr__(self):
         return "Demandable({})".format(self.name)

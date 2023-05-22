@@ -75,7 +75,7 @@ class State:
 
     def create_array(self, s_min, s_max, S_min, S_max):
         arr = []
-        for x in range(len(self.changable_network)):
+        for x in range(len(self.changeable_network)):
             s = random.sample([x for x in range(s_min, s_max + 1)], 12)
             S = random.sample([x for x in range(S_min, S_max + 1)], 12)
             for i in range(12):
@@ -107,14 +107,14 @@ class State:
         Args:
             t (int): time
         """
-        for i in range(len(self.changable_network)):
-            demandable = self.changable_network[i]
+        for i in range(len(self.changeable_network)):
+            demandable = self.changeable_network[i]
             point = i * 24 + (2 * t)
             small_s = self.s_S_list[point]
             big_S = self.s_S_list[point + 1]
             demandable.change_order_point(small_s, big_S)
         
-    def update_state(self, demand, t):
+    def update_state(self, t):
         """Discrete update state
 
         Args:
@@ -123,7 +123,7 @@ class State:
         """
         self.update_order_point(t)
         self.root.update_all_inventory(t)
-        self.root.update_all_demand(demand, t)
+        self.root.update_all_demand(self.demand_list[t], t)
         self.root.update_all_cost(t)
         self.rewards.append(self.root.calculate_profit(t))
 
