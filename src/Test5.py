@@ -7,11 +7,6 @@ np.random.seed(1234)
 
 state = State()
 state.create_state([-1,0, 1, 1, 2, 2])
-<<<<<<< HEAD
-state.create_array(40, 60, 80, 100)
-print(state.changable_network)
-print(state.s_S_list)
-
-=======
 print(state.changeable_network)
->>>>>>> refs/remotes/origin/main
+
+
