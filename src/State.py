@@ -70,18 +70,13 @@ class State:
         self.root.update_all_inventory(t)
         self.root.update_all_demand(demand, t)
         self.root.update_all_cost(t)
+        print("costs: " + str(self.root.print_upstream_cost(t)))
+        print("profit: " + str(self.root.calculate_profit(t)))
+        print("amount sold: " + str(self.root.amount_sold))
     
     def print_state(self, t):
         return "time " + str(t) +": \n" + self.root.print_upstream_state()
     
-    """ self.helper_print(self.root, "time " + str(t) +": \n")
-
-
-    def helper_print(self, root, string):
-        string += str(root)
-        for demandable in root.upstream:
-            return string + self.helper_print(demandable, string)
-        return string """
 
 
 

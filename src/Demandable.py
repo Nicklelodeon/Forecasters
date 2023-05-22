@@ -295,6 +295,13 @@ class Demandable:
                 name += demandable.print_upstream()
         return name
 
+    def print_upstream_cost(self, t):
+        cost = [self.name, self.get_curr_cost(t)]
+        if self.upstream:
+            for demandable in self.upstream:
+                cost += demandable.print_upstream_cost(t)
+        return cost
+
     def print_inv_level(self):
         return "inv level: " + str(self.inv_level)
 
