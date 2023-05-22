@@ -87,6 +87,19 @@ class State:
         """returns score
         """
         return self.rewards[t]
+    
+    def valid_check(self):
+        """Checks the validity of s_S List
+
+        Returns:
+            boolean: True if valid else False
+        """
+        for i in range(len(self.s_S_list)//2):
+            index = 2 * i
+            if self.s_S_list[index] > self.s_S_list[index + 1]:
+                return False
+        return True
+        
 
     def total_sum(self):
         """returns cumulative score
@@ -94,6 +107,7 @@ class State:
         Returns:
            int: sum of all rewards up to this point in time
         """
+        self.valid_check()
         return sum(self.rewards)
         
     def print_network(self):
