@@ -15,6 +15,7 @@ class State:
         self.demand_class = GenerateDemandMonthly()
         self.demand_class.simulate(1)
         self.demand_list = self.demand_class.get_demand()
+        self.s_S_list = None
         
     def create_network(self, demandables, network):
         """Creates the network of demandables based on demandables list
@@ -61,12 +62,45 @@ class State:
         
         self.create_changeable_network()
         
+    def take_vector(self, array):
+        """Assign the array to the s_S_list
+
+        Args:
+            array (list<int>): list of integers
+        """
+        self.s_S_list = array
+    
+    def score(self):
+        """returns score
+        """
+        return
+        
     def print_network(self):
         """Debugging function to print Demandables in network
         """
         print(self.root.print_upstream())
-            
+        
+    def update_order_point(self, t):
+        """Changes small and big s and S
+
+        Args:
+            t (int): time
+        """
+        for i in range(len(self.changable_network)):
+            demandable = self.changable_network[i]
+            point = i * 24 + (2 * t)
+            small_s = self.s_S_list[point]
+            big_S = self.s_S_list[point + 1]
+            demandable.change_order_point(small_s, big_S)
+        
     def update_state(self, demand, t):
+        """Discrete update state
+
+        Args:
+            demand (_type_): _description_
+            t (int): time
+        """
+        self.update_order_point(t)
         self.root.update_all_inventory(t)
         self.root.update_all_demand(demand, t)
         self.root.update_all_cost(t)
