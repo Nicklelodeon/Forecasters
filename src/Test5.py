@@ -7,4 +7,4 @@ np.random.seed(1234)
 
 state = State()
 state.create_state([-1,0, 1, 1, 2, 2])
-
+print(state.changeable_network)
