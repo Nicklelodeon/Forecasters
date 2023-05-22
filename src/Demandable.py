@@ -26,7 +26,7 @@ class Demandable:
         self.s = s
         self.S = S
 
-    def reset():
+    def reset(self):
         self.inv_level  = dict.fromkeys(self.inv_level, 0)
         self.inv_pos = dict.fromkeys(self.inv_pos, 0)
         self.ordering_costs = []

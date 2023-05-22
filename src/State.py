@@ -107,6 +107,7 @@ class State:
         print("costs: " + str(self.root.print_upstream_cost(t)))
         print("profit: " + str(self.root.calculate_profit(t)))
         print("amount sold: " + str(self.root.amount_sold))
+        print("quantiles: " + str(self.demand_class.quantiles))
     
     def print_state(self, t):
         return "time " + str(t) +": \n" + self.root.print_upstream_state()
