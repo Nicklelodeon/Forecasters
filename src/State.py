@@ -7,6 +7,7 @@ from Monthly_Interval import GenerateDemandMonthly
 
 from Item import Item
 import numpy as np
+import random
 
 class State:
     def __init__(self):
@@ -70,6 +71,13 @@ class State:
             array (list<int>): list of integers
         """
         self.s_S_list = array
+
+    def create_array(self, s_min, s_max, S_min, S_max):
+        arr = []
+        arr.extend(random.sample([x for x in range(s_min, s_max + 1)], 12))
+        for i in range(len(self.changable_network) - 1):
+            arr.extend(random.sample([x for x in range(S_min, S_max + 1)], 12))
+        self.take_vector(arr)
     
     def score(self, t):
         """returns score
