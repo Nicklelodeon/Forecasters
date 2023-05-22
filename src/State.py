@@ -12,7 +12,7 @@ import random
 class State:
     def __init__(self):
         self.root = Basic(chr(65))
-        self.changable_network = []
+        self.changeable_network = []
         self.demand_class = GenerateDemandMonthly()
         self.demand_class.simulate(1)
         self.demand_list = self.demand_class.get_demand()
@@ -38,6 +38,7 @@ class State:
     
     def create_changeable_network(self):
         self.changeable_network = self.root.find_changeable_network()
+        
         
     def create_state(self, demandables):
         """create state
