@@ -74,9 +74,12 @@ class State:
 
     def create_array(self, s_min, s_max, S_min, S_max):
         arr = []
-        arr.extend(random.sample([x for x in range(s_min, s_max + 1)], 12))
-        for i in range(len(self.changable_network) - 1):
-            arr.extend(random.sample([x for x in range(S_min, S_max + 1)], 12))
+        for x in range(len(self.changable_network)):
+            s = random.sample([x for x in range(s_min, s_max + 1)], 12)
+            S = random.sample([x for x in range(S_min, S_max + 1)], 12)
+            for i in range(12):
+                arr.append(s[i])
+                arr.append(S[i])
         self.take_vector(arr)
     
     def score(self, t):
