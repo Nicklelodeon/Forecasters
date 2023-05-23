@@ -135,6 +135,10 @@ class State:
             demandable.reset()
         self.s_S_list = None
         self.rewards = []
+    
+    def run(self):
+        for i in range(len(self.demand_list)):
+            self.update_state(i)
         
         
     def update_state(self, t):
