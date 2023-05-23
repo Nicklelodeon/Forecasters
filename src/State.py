@@ -111,6 +111,7 @@ class State:
             return sum(self.rewards)
         else:
             return -np.inf
+
         
     def print_network(self):
         """Debugging function to print Demandables in network
