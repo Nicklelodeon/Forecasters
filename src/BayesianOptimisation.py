@@ -5,6 +5,8 @@ import numpy as np
 
 np.random.seed(1234)
 def BayesianOptimisation(s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+    if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
+        return -100000000
     state = BayesianState()
     state.create_state([-1 ,0, 1, 1, 2, 2])
     state.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
