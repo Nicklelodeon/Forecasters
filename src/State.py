@@ -107,7 +107,6 @@ class State:
         Returns:
            int: sum of all rewards up to this point in time
         """
-        self.valid_check()
         return sum(self.rewards)
         
     def print_network(self):
@@ -144,7 +143,7 @@ class State:
             demand (_type_): _description_
             t (int): time
         """
-        self.update_order_point(t)
+        #self.update_order_point(t)
         self.root.update_all_inventory(t)
         self.root.update_all_demand(self.demand_list[t], t)
         self.root.update_all_cost(t)
