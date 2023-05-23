@@ -101,16 +101,14 @@ class State:
         return True
         
 
-    def total_sum(self, X):
+    def total_sum(self):
         """returns cumulative score
 
         Returns:
            int: sum of all rewards up to this point in time
         """
-        if self.valid_check(X):
-            return sum(self.rewards)
-        else:
-            return -np.inf
+        return sum(self.rewards)
+
 
         
     def print_network(self):
@@ -150,7 +148,7 @@ class State:
         for i in range(len(self.demand_list)):
             self.update_state(i)
             
-        return self.total_sum(X)
+        return self.total_sum()
     
     
         
