@@ -88,26 +88,30 @@ class State:
         """
         return self.rewards[t]
     
-    def valid_check(self):
+    def valid_check(self, X):
         """Checks the validity of s_S List
 
         Returns:
             boolean: True if valid else False
         """
-        for i in range(len(self.s_S_list)//2):
+        for i in range(len(X)//2):
             index = 2 * i
-            if self.s_S_list[index] > self.s_S_list[index + 1]:
+            if X[index] > X[index + 1]:
                 return False
         return True
         
 
-    def total_sum(self):
+    def total_sum(self, X):
         """returns cumulative score
 
         Returns:
            int: sum of all rewards up to this point in time
         """
-        return sum(self.rewards)
+        if self.valid_check(X):
+            return sum(self.rewards)
+        else:
+            return -np.inf
+
         
     def print_network(self):
         """Debugging function to print Demandables in network
@@ -135,9 +139,20 @@ class State:
         self.s_S_list = None
         self.rewards = []
     
-    def run(self):
+    def run(self, X):
+        for j in range(len(self.changeable_network)):
+            small_s = X[2 * j]
+            big_S = X[2 * j + 1]
+            demandable = self.changeable_network[j]
+            demandable.change_order_point(small_s, big_S)
+        self.reset()
+                
         for i in range(len(self.demand_list)):
             self.update_state(i)
+            
+        return self.total_sum(X)
+    
+    
         
         
     def update_state(self, t):
