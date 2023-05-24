@@ -3,7 +3,7 @@ from Supplier import Supplier
 from DistributionCenter import DistributionCenter
 from Retailer import Retailer
 from Basic import Basic
-from Monthly_Interval import GenerateDemandMonthly
+from GenerateDemandMonthly import GenerateDemandMonthly
 
 from Item import Item
 import numpy as np
@@ -14,7 +14,7 @@ class State:
         self.root = Basic(chr(65))
         self.changeable_network = []
         self.demand_class = GenerateDemandMonthly()
-        self.demand_class.simulate(1)
+        self.demand_class.simulate_normal(1)
         self.demand_list = self.demand_class.get_demand()
         self.s_S_list = None
         self.rewards = []
