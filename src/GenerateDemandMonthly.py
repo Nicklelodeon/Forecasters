@@ -55,7 +55,8 @@ class GenerateDemandMonthly:
         dist = scipy.stats.poisson.ppf( [.25, .75], mean)
         return (arr, dist)
 
-    
+    def clear(self):
+        self.demand = []
 
 
     def get_demand(self):
