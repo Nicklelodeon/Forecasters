@@ -39,8 +39,9 @@ class State:
     def create_changeable_network(self):
         self.changeable_network = self.root.find_changeable_network()
         
+
         
-    def create_state(self, demandables):
+    def create_state(self, demandables, amount=65, cost=10):
         """create state
 
         Args:
@@ -60,11 +61,13 @@ class State:
         list_end_upstream = self.root.find_end_upstream()
 
         for end_demandable in list_end_upstream:
-            rand_item = Item(str(np.random.randint(1, 1000)), 10)
-            end_demandable.add_item_downstream(rand_item)
+            rand_item = Item(str(np.random.randint(1, 1000)), cost)
+            end_demandable.add_item_downstream(rand_item, amount)
         
         self.create_changeable_network()
         
+
+    
     def take_vector(self, array):
         """Assign the array to the s_S_list
 
