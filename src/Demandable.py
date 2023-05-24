@@ -175,18 +175,19 @@ class Demandable:
         self.inv_map[item] = demandable
         
     #Adds items downstream with random amount
-    def add_item_downstream(self, item: "Item"):
+    def add_item_downstream(self, item, amount):
         """Adds items to all the downstream
 
         Args:
             item (Item): Item added
+            amount (int): amount of item to be adde
         """
         
-        self.add_item(item, 65)
+        self.add_item(item, amount)
         if self.downstream: # Check if list empty
             downstream_demandable = self.downstream[0]
             downstream_demandable.add_item_map(item, self)
-            downstream_demandable.add_item_downstream(item)    
+            downstream_demandable.add_item_downstream(item, amount)    
     
     def find_end_upstream(self) -> list:
         """Finds the topmost upstream demandable
