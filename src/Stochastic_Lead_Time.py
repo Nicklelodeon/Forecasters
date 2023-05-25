@@ -4,11 +4,9 @@ class Stochastic_Lead_Time:
     
     def __init__(self):
         self.distribution = "Triangle"
-        self.low = 0.5
-        self.high = 4.5
-        self.mode = 2
+        self.low = 1
+        self.high = 5
+        self.mode = 2.5
         
     def get_lead_time(self):
-        return round(np.random.triangular(self.low, self.mode, self.high, 1)[0])
-        
-    
+        return np.floor(np.random.triangular(self.low, self.mode, self.high, 1)[0])
