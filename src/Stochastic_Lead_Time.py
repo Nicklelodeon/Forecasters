@@ -1,6 +1,6 @@
 import numpy as np
 
-class Stochastic_Lead_time:
+class Stochastic_Lead_Time:
     
     def __init__(self):
         self.distribution = "Triangle"
