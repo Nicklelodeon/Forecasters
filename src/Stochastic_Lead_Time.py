@@ -10,11 +10,6 @@ class Stochastic_Lead_time:
         
     def get_lead_time(self):
         print("jere")
-        return round(np.random.triangular(0, 1, 5, 1)[0])
-
-stl = Stochastic_Lead_time()
-print(stl.get_lead_time())
-
-round(np.random.triangular(0, 1, 5, 1000))
+        return round(np.random.triangular(self.low, self.mode, self.high, 1)[0])
         
     
