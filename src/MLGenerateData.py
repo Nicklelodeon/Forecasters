@@ -32,12 +32,10 @@ class MLGenerateData:
         new_lst = data[0]
         new_lst.extend(data[1])
         new_lst.append(data[2])
-        print(new_lst)
         df.loc[len(df.index)] = new_lst
         return df
 
     def create_data(self):
-        print(Path.cwd())
         data = pd.read_csv('./src/data.csv')
         for i in data['Order_Demand']:
             elements = re.findall(r'\d+', i)

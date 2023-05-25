@@ -8,7 +8,6 @@ df[['Year', 'Month', 'Day']] = df.Date.str.split("/", expand = True)
 bo = df.groupby(['Product_Code']).count()["Warehouse"]>1000
 index = bo[bo == True].index
 final_df = df[df['Product_Code'].isin(index)]
-print(final_df)
 final_df['Order_Demand'] = final_df['Order_Demand'].apply(lambda x: x.replace('(','').replace(')',''))
 final_df['Order_Demand'] = final_df['Order_Demand'].astype('int')
 #print(final_df)
