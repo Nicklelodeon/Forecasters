@@ -7,9 +7,9 @@ class Retailer(Demandable):
         self.amount_sold = []
         self.selling_price = selling_price
 
-    def reset(self):
-        self.inv_level  = dict.fromkeys(self.inv_level, 65)
-        self.inv_pos = dict.fromkeys(self.inv_pos, 65)
+    def reset(self, amount = 65):
+        self.inv_level  = dict.fromkeys(self.inv_level, amount)
+        self.inv_pos = dict.fromkeys(self.inv_pos, amount)
         self.ordering_costs = []
         self.holding_costs = []
         self.backorder_costs = []

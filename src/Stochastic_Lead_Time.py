@@ -1,4 +1,5 @@
 import numpy as np
+np.random.seed(1234)
 
 class Stochastic_Lead_Time:
     

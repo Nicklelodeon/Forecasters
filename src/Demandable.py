@@ -1,6 +1,6 @@
 import numpy as np
 from Item import Item
-from Stochastic_Lead_Time import Stochastic_Lead_time
+from Stochastic_Lead_Time import Stochastic_Lead_Time
 
 np.random.seed(1234)
 
@@ -178,7 +178,7 @@ class Demandable:
         self.inv_map[item] = demandable
         
     #Adds items downstream with random amount
-    def add_item_downstream(self, item, amount):
+    def add_item_downstream(self, item, amount=65):
         """Adds items to all the downstream
 
         Args:

@@ -16,7 +16,7 @@ class MLGenerateData:
 
     def logic(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1, demand):
         if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
-            return [demand, [s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1],-100000000]
+            return None
         amount = max(demand)
         state = MLState()
         state.create_state([-1 ,0, 1, 1, 2, 2], amount)
@@ -42,14 +42,20 @@ class MLGenerateData:
             demand = [int(x) for x in elements]
             if (len(demand) == 12):
                 demand.sort()
-                self.df = self.update_df(self.df, self.logic(random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), \
-                    random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), demand))
+                log1 = self.logic(random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), \
+                    random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), demand)
+                if log1 is not None:
+                    self.df = self.update_df(self.df, log1)
                 normal_demand = self.demand_generator.simulate_normal(1, demand[5])
                 poisson_demand = self.demand_generator.simulate_poisson(1, demand[5])
-                self.df = self.update_df(self.df, self.logic(random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), \
-                        random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), normal_demand))
-                self.df = self.update_df(self.df, self.logic(random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), \
-                        random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), poisson_demand))
+                log2 = self.logic(random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), \
+                        random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), normal_demand)
+                if log2 is not None:
+                    self.df = self.update_df(self.df, log2)
+                log3 = self.logic(random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), \
+                        random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), poisson_demand)
+                if log3 is not None:
+                    self.df = self.update_df(self.df, log3)
 
 
 

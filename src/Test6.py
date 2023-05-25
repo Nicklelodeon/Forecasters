@@ -3,22 +3,22 @@ from Item import Item
 import numpy as np
 from State import State
 from SyntheticDemand import GenerateDemand
-from Monthly_Interval import GenerateDemandMonthly
+from GenerateDemandMonthly import GenerateDemandMonthly
 
 np.random.seed(1234)
 
 synthetic = GenerateDemandMonthly()
-synthetic.simulate(1) #Simulating 1 year
+synthetic.simulate_normal(1) #Simulating 1 year
 demand_list = synthetic.get_demand()
 
 demandable_state = [-1, 0, 0, 1, 1]
 
 state = State()
 state.create_state(demandable_state)
-#tate.print_network()
-print(demand_list)
+print(state.demand_list)
 
-for i in range(len(demand_list)):
-    print("Demand " , demand_list[i])
-    state.update_state(demand_list[i], i)
+for i in range(len(state.demand_list)):
+    print("-----------------------------")
+    print("Demand " , state.demand_list[i])
+    state.update_state(i)
     print(state.print_state(i))

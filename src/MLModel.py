@@ -17,14 +17,14 @@ n_cols = predictors.shape[1]
 
 
 model = keras.Sequential()
-model.add(layers.Dense(12, activation='relu', input_shape=(n_cols,)))
+model.add(layers.Dense(12, activation='selu', input_shape=(n_cols,)))
 model.add(layers.BatchNormalization())
-model.add(layers.Dense(12, activation='relu'))
+model.add(layers.Dense(12, activation='selu'))
 model.add(layers.BatchNormalization())
 #model.add(layers.Dropout(0.25))
-model.add(layers.Dense(1, activation='relu'))
+model.add(layers.Dense(1, activation='selu'))
 
-model.compile(optimizer='adam', loss='root_mean_squared_error', metrics=['mean_absolute_percentage_error'])
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mean_squared_error'])
 model.fit(X_train, y_train)
 #results = model.predict(X_test)
 #print(results)

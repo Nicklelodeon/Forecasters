@@ -14,5 +14,5 @@ state.print_network()
 print(state.demand_list)
 
 for i in range(6):
-    state.update_state(25, i)
+    state.update_state(i)
     print(state.print_state(i))
