@@ -9,7 +9,6 @@ class Stochastic_Lead_time:
         self.mode = 2
         
     def get_lead_time(self):
-        print("jere")
         return round(np.random.triangular(self.low, self.mode, self.high, 1)[0])
         
     
