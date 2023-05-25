@@ -13,6 +13,7 @@ class Basic(Demandable):
     
     def make_retailer(self):
         return Retailer(self.name, 700) 
+
     
     def make_distcentre(self):
         return DistributionCenter(self.name)

@@ -22,3 +22,5 @@ for i in range(len(state.demand_list)):
     print("Demand " , state.demand_list[i])
     state.update_state(i)
     print(state.print_state(i))
+
+print(state.total_sum())
