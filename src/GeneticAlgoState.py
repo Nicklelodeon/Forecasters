@@ -6,9 +6,10 @@ class GeneticAlgoState(State):
     def __init__(self):
         super().__init__()
         self.demand_class = GenerateDemandMonthly()
-        self.demand_class.simulate_normal(10)
+        self.iteration = 30
+        self.demand_class.simulate_normal(self.iteration)
         self.demand_temp = np.array(self.demand_class.get_demand())
-        self.demand_matrix = np.reshape(self.demand_temp, (10, 12))
+        self.demand_matrix = np.reshape(self.demand_temp, (self.iteration, 12))
     
     def GArun(self, X):
         if not self.check_valid(X):
@@ -33,7 +34,7 @@ class GeneticAlgoState(State):
             
             totalsum += self.total_sum()
 
-        return totalsum / 10
+        return totalsum / self.iteration
     
     def total_sum(self):
         return sum(self.rewards)
