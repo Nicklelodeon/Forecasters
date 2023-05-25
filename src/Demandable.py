@@ -1,5 +1,6 @@
 import numpy as np
 from Item import Item
+from Stochastic_Lead_Time import Stochastic_Lead_time
 
 np.random.seed(1234)
 
@@ -20,7 +21,8 @@ class Demandable:
         self.backorder = 0
         self.backorder_cost = backorder_cost
         self.fixed_cost = fixed_cost
-        self.lead_time = 2
+        self.stochastic_lead_time = Stochastic_Lead_Time()
+        #self.lead_time = 2
         self.costs = []
         self.arrivals = []
         self.s = s
@@ -110,7 +112,8 @@ class Demandable:
                 amt = self.S - self.inv_pos[item]
                 ordered_amt = demandable.produce_order(item, amt)
                 if ordered_amt > 0:
-                    self.arrivals.append([t + self.lead_time, item, ordered_amt])
+                    lead_time = self.stochastic_lead_time.get_lead_time()
+                    self.arrivals.append([t + lead_time, item, ordered_amt])
                     self.ordering_costs[t] += ordered_amt * item.get_cost() + self.fixed_cost
                 demandable.check_s(item, t)
 
