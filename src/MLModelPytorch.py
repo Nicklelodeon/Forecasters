@@ -12,10 +12,11 @@ from sklearn.model_selection import train_test_split
 data = MLGenerateData()
 data.create_data()
 
-largest = max(data.df['profit'])
-if abs(min(data.df['profit'])) > largest:
-    largest = abs(min(data.df['profit']))
-target_df = data.df['profit'] / largest
+# largest = max(data.df['profit'])
+# if abs(min(data.df['profit'])) > largest:
+#     largest = abs(min(data.df['profit']))
+# target_df = data.df['profit'] / largest
+target_df = data.df['profit']
 target = torch.tensor(target_df)
 predictors = torch.tensor(data.df.drop(['profit'], axis=1).to_numpy(dtype=np.float64))
 X_train, X_test, y_train, y_test = train_test_split(predictors, target, test_size=0.33, random_state=42)
@@ -43,7 +44,7 @@ model = nn.Sequential(
 )
  
 # loss function and optimizer
-loss_fn = nn.MSELoss()  # mean square error
+loss_fn = nn.L1Loss()  # mean square error
 optimizer = optim.Adam(model.parameters(), lr=0.0001)
  
 n_epochs = 100   # number of epochs to run

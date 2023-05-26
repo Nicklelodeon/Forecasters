@@ -8,7 +8,7 @@ class GenerateDemandMonthly:
         self.demand = []
         self.quantiles = []
 
-    def simulate_normal(self, year, mean=20):
+    def simulate_normal(self, year, mean=20, std=2):
         """Creates random demand with a monthly demand with z amt of years
         
         Args:
@@ -18,12 +18,12 @@ class GenerateDemandMonthly:
         for z in range(year):
             for i in range(1, 13):
                 if i in [1, 2, 3, 5, 6, 10]:
-                    demand, quantile = self.normal_distribution(mean * 0.75, math.sqrt(mean * 0.75), 1)
+                    demand, quantile = self.normal_distribution(mean * 0.75, std * 0.75, 1)
                     self.demand.extend(demand)
                     return_demand.extend(demand)
                     self.quantiles.extend(quantile)
                 else:
-                    demand, quantile = self.normal_distribution(mean * 1.5, math.sqrt(mean * 1.5), 1)
+                    demand, quantile = self.normal_distribution(mean * 1.5, std * 1.5, 1)
                     self.demand.extend(demand)
                     return_demand.extend(demand)
                     self.quantiles.extend(quantile)
