@@ -84,10 +84,6 @@ class State:
                 arr.append(s[i])
                 arr.append(S[i])
         self.take_vector(arr)
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/main
     
     def valid_check(self, X):
         """Checks the validity of s_S List
