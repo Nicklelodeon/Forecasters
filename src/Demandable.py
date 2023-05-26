@@ -6,7 +6,7 @@ np.random.seed(1234)
 
 
 class Demandable:
-    def __init__(self, name, holding_cost, fixed_cost, backorder_cost, s, S):
+    def __init__(self, name, holding_cost, backorder_cost, s, S):
         self.name = name
         self.inv_level = {}  ## Each item has multiple inv level
         self.inv_pos = {}
@@ -20,23 +20,24 @@ class Demandable:
 
         self.backorder = 0
         self.backorder_cost = backorder_cost
-        self.fixed_cost = fixed_cost
         self.stochastic_lead_time = Stochastic_Lead_Time()
         #self.lead_time = 2
         self.costs = []
         self.arrivals = []
         self.s = s
         self.S = S
+        self.total_costs = 0
 
-    def reset(self):
-        self.inv_level  = dict.fromkeys(self.inv_level, 65)
-        self.inv_pos = dict.fromkeys(self.inv_pos, 65)
+    def reset(self, amount=65):
+        self.inv_level  = dict.fromkeys(self.inv_level, amount)
+        self.inv_pos = dict.fromkeys(self.inv_pos, amount)
         self.ordering_costs = []
         self.holding_costs = []
         self.backorder_costs = []
         self.backorder = 0
         self.costs = []
         self.arrivals = []
+        self.total_costs = 0
 
 
         
@@ -114,7 +115,8 @@ class Demandable:
                 if ordered_amt > 0:
                     lead_time = self.stochastic_lead_time.get_lead_time()
                     self.arrivals.append([t + lead_time, item, ordered_amt])
-                    self.ordering_costs[t] += ordered_amt * item.get_cost() + self.fixed_cost
+                    self.ordering_costs[t] += ordered_amt * item.get_cost() 
+                    self.total_costs += ordered_amt * item.get_cost()
                 demandable.check_s(item, t)
 
 
@@ -267,18 +269,22 @@ class Demandable:
             total += item_amt
         return total * self.holding_cost
 
-    def get_total_cost(self, t) -> int: 
+    def get_total_cost(self) -> int: 
         """Returns total cost for all upstream demandable
 
-        Args:
-            t (int): timestamp
 
         Returns:
             int: total cost incurred by all upstream demandable
         """
+        total = self.total_costs
+        for demandable in self.upstream:
+            total += demandable.total_costs
+        return total
+
+    def get_curr_total_costs(self, t):
         total = self.get_curr_cost(t)
         for demandable in self.upstream:
-            total += demandable.get_total_cost(t)
+            total += demandable.get_curr_cost(t)
         return total
 
     def get_curr_cost(self, t):
@@ -299,7 +305,9 @@ class Demandable:
             t (int): curr timestamp
         """
         self.holding_costs[t] += self.get_hc()
+        self.total_costs += self.get_hc()
         self.backorder_costs[t] += self.backorder * self.backorder_cost
+        self.total_costs += self.backorder * self.backorder_cost
         self.costs[t] = self.holding_costs[t] + self.backorder_costs[t] + self.ordering_costs[t]
         for demandable in self.upstream:
             demandable.update_all_cost(t)

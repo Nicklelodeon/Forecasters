@@ -13,11 +13,9 @@ class State:
     def __init__(self):
         self.root = Basic(chr(65))
         self.changeable_network = []
-        self.demand_class = GenerateDemandMonthly()
-        self.demand_class.simulate_normal(1)
-        self.demand_list = self.demand_class.get_demand()
+        self.demand_list = None
         self.s_S_list = None
-        self.rewards = []
+        self.rewards = 0
         
     def create_network(self, demandables, network):
         """Creates the network of demandables based on demandables list
@@ -39,7 +37,8 @@ class State:
     def create_changeable_network(self):
         self.changeable_network = self.root.find_changeable_network()
         
-
+    def set_demand_list(self, demand_list):
+        self.demand_list = demand_list
         
     def create_state(self, demandables, amount=65, cost=10):
         """create state
@@ -85,11 +84,7 @@ class State:
                 arr.append(s[i])
                 arr.append(S[i])
         self.take_vector(arr)
-    
-    def score(self, t):
-        """returns score
-        """
-        return self.rewards[t]
+
     
     def valid_check(self, X):
         """Checks the validity of s_S List
@@ -110,7 +105,7 @@ class State:
         Returns:
            int: sum of all rewards up to this point in time
         """
-        return sum(self.rewards)
+        return self.rewards
 
 
         
@@ -137,8 +132,9 @@ class State:
         """
         for demandable in self.changeable_network:
             demandable.reset()
+        self.demand_list = None
         self.s_S_list = None
-        self.rewards = []
+        self.rewards = 0
     
     def run(self, X):
         for j in range(len(self.changeable_network)):
@@ -167,8 +163,10 @@ class State:
         self.root.update_all_inventory(t)
         self.root.update_all_demand(self.demand_list[t], t)
         self.root.update_all_cost(t)
-        self.rewards.append(self.root.calculate_profit(t))
+        self.rewards += self.root.calculate_curr_profit(t)
 
+    def calculate_profits(self):
+        return self.root.calculate_profit()
     
     def print_state(self, t):
         return "time " + str(t) +": \n" + self.root.print_upstream_state()

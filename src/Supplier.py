@@ -4,7 +4,7 @@ from Item import Item
 
 class Supplier(Demandable):
     def __init__(self, name):
-        super().__init__(name, 0, 0, 0, 0, 0)
+        super().__init__(name, 0, 0, 0, 0)
     
     def add_item_downstream(self, item, amount=65):
         self.add_item(item, np.inf)

@@ -9,18 +9,19 @@ np.random.seed(1234)
 
 synthetic = GenerateDemandMonthly()
 synthetic.simulate_normal(1) #Simulating 1 year
-demand_list = synthetic.get_demand()
+demand_list = synthetic.simulate_poisson(1)
 
 demandable_state = [-1, 0, 0, 1, 1]
 
 state = State()
 state.create_state(demandable_state)
 print(state.demand_list)
-
+state.set_demand_list(demand_list)
 for i in range(len(state.demand_list)):
     print("-----------------------------")
     print("Demand " , state.demand_list[i])
     state.update_state(i)
     print(state.print_state(i))
 
-print(state.total_sum())
+print(state.root.calculate_profit())
+print(state.rewards)

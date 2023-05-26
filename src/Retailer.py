@@ -2,10 +2,11 @@ from Demandable import Demandable
 
 class Retailer(Demandable):
     def __init__(self, name, selling_price):
-        super().__init__(name, 5, 10, 10, 40, 90)
+        super().__init__(name, 5, 35, 40, 90)
         #super().__init__(name, 1, 2, 3, 40, 90)
         self.amount_sold = []
         self.selling_price = selling_price
+        self.amount_sold_total = 0
 
     def reset(self, amount = 65):
         self.inv_level  = dict.fromkeys(self.inv_level, amount)
@@ -17,6 +18,7 @@ class Retailer(Demandable):
         self.costs = []
         self.arrivals = []
         self.amount_sold = []
+        self.amount_sold_total = 0
 
     def update_all_demand(self, num_demands: int, t) -> None:
         """Updates inv level and pos for all items for curr and upstream
@@ -27,11 +29,15 @@ class Retailer(Demandable):
         """
         amount_sold = self.update_demand(num_demands)
         self.amount_sold.append(amount_sold)
+        self.amount_sold_total += amount_sold
         for item in self.inv_level:
             self.check_s(item, t)
     
-    def calculate_profit(self, t):
-        return self.amount_sold[t] * self.selling_price - super().get_total_cost(t)
+    def calculate_profit(self):
+        return self.amount_sold_total * self.selling_price - super().get_total_cost()
+
+    def calculate_curr_profit(self, t):
+        return self.amount_sold[t] * self.selling_price - super().get_curr_total_costs(t)
     
     def __repr__(self):
         return "Retailer({})".format(self.name)

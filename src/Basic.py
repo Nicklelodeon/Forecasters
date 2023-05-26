@@ -6,7 +6,7 @@ from DistributionCenter import DistributionCenter
 
 class Basic(Demandable):
     def __init__(self, name):
-        super().__init__(name, 0, 0, 0 ,0 ,0)
+        super().__init__(name, 0, 0, 0, 0)
     
     def make_supplier(self):
         return Supplier(self.name)
