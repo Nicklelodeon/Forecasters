@@ -40,7 +40,7 @@ class State:
     def set_demand_list(self, demand_list):
         self.demand_list = demand_list
         
-    def create_state(self, demandables, amount=65, cost=10):
+    def create_state(self, demandables, amount=65, cost=1):
         """create state
 
         Args:
