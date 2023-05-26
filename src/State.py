@@ -84,7 +84,10 @@ class State:
                 arr.append(s[i])
                 arr.append(S[i])
         self.take_vector(arr)
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/main
     
     def valid_check(self, X):
         """Checks the validity of s_S List
@@ -149,9 +152,6 @@ class State:
             
         return self.total_sum()
     
-    
-        
-        
     def update_state(self, t):
         """Discrete update state
 
@@ -164,6 +164,7 @@ class State:
         self.root.update_all_demand(self.demand_list[t], t)
         self.root.update_all_cost(t)
         self.rewards += self.root.calculate_curr_profit(t)
+
 
     def calculate_profits(self):
         return self.root.calculate_profit()
