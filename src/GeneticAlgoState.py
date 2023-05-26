@@ -8,12 +8,13 @@ class GeneticAlgoState(State):
         self.demand_class = GenerateDemandMonthly()
         self.iteration = 30
         self.demand_class.simulate_normal(self.iteration)
+        print(np.array(self.demand_class.get_demand()))
         self.demand_temp = np.array(self.demand_class.get_demand())
         self.demand_matrix = np.reshape(self.demand_temp, (self.iteration, 12))
     
     def GArun(self, X):
         if not self.check_valid(X):
-            return -np.inf
+            return -2147483648
         for j in range(len(self.changeable_network)):
             small_s = X[2 * j]
             big_S = X[2 * j + 1]
@@ -23,12 +24,11 @@ class GeneticAlgoState(State):
         #self.demand_list = self.demand_class.get_demand()
         
         totalsum = 0
+        #print("here")
         for k in range(len(self.demand_matrix)):
-            self.demand_list = self.demand_matrix[k]
             self.reset()
-            #print(self.demand_list)
-            
-            
+            self.set_demand_list(self.demand_matrix[k])
+
             for i in range(len(self.demand_list)):
                 self.update_state(i)
             
@@ -37,7 +37,7 @@ class GeneticAlgoState(State):
         return totalsum / self.iteration
     
     def total_sum(self):
-        return sum(self.rewards)
+        return self.rewards
     
     def check_valid(self, X):
         for i in range(len(X)//2):
