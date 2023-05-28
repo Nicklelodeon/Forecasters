@@ -3,14 +3,22 @@ from geneticalgorithm import geneticalgorithm as ga
 from State import State
 from GenerateDemandMonthly import GenerateDemandMonthly
 from GeneticAlgoState import GeneticAlgoState
+import time
 
 
 genstate = GeneticAlgoState()
 genstate.create_state([-1,0, 1, 1, 2, 2])
 
+start_time = time.time()
 
+for i in range(10):
+    print(-1 * genstate.GArun([79, 88, 51, 53, 41, 43]))
 
-#print(-1 * genstate.GArun([79, 88, 51, 53, 41, 43]))
+end_time = time.time()
+
+run = (end_time - start_time)/10
+
+print("On average, Program Ran for:", run)
 
 def f(X):
     return -1 * genstate.GArun(X)
@@ -26,6 +34,6 @@ algorithm_param = {'max_num_iteration': 500,\
                    'crossover_type':'uniform',\
                    'max_iteration_without_improv':None}
 
-model=ga(function=f,dimension=6,variable_type='int',variable_boundaries=varbound, algorithm_parameters=algorithm_param)
+#model=ga(function=f,dimension=6,variable_type='int',variable_boundaries=varbound, algorithm_parameters=algorithm_param)
 
-model.run()
+#model.run()
