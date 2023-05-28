@@ -15,8 +15,8 @@ demandable_state = [-1, 0, 0, 1, 1]
 
 state = State()
 state.create_state(demandable_state)
-print(state.demand_list)
 state.set_demand_list(demand_list)
+print(state.demand_list)
 for i in range(len(state.demand_list)):
     print("-----------------------------")
     print("Demand " , state.demand_list[i])
@@ -25,3 +25,4 @@ for i in range(len(state.demand_list)):
 
 print(state.root.calculate_profit())
 print(state.rewards)
+#78094

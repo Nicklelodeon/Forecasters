@@ -1,4 +1,5 @@
 from Demandable import Demandable
+import queue
 
 class Retailer(Demandable):
     def __init__(self, name, selling_price):
@@ -16,7 +17,7 @@ class Retailer(Demandable):
         self.backorder_costs = []
         self.backorder = 0
         self.costs = []
-        self.arrivals = []
+        self.arrivals = queue.PriorityQueue()
         self.amount_sold = []
         self.amount_sold_total = 0
 
