@@ -20,7 +20,7 @@ class Demandable:
 
         self.backorder = 0
         self.backorder_cost = backorder_cost
-        self.stochastic_lead_time = Stochastic_Lead_Time()
+        self.stochastic_lead_time = None
         #self.lead_time = 2
         self.costs = []
         self.arrivals = []
@@ -39,7 +39,13 @@ class Demandable:
         self.arrivals = []
         self.total_costs = 0
 
+    def add_lead_time(self, stl):
+        """Assign stochastic lead time
 
+        Args:
+            stl (Stochastic Lead Time): Samples lead time from distribution
+        """
+        self.stochastic_lead_time = stl
         
     def change_order_point(self, new_small_s, new_big_s):
         """Changes lower and upper bound s and S
@@ -115,10 +121,9 @@ class Demandable:
                 if ordered_amt > 0:
                     lead_time = self.stochastic_lead_time.get_lead_time()
                     self.arrivals.append([t + lead_time, item, ordered_amt])
-                    self.ordering_costs[t] += ordered_amt * item.get_cost() 
+                    self.ordering_costs[t] += ordered_amt * item.get_cost()
                     self.total_costs += ordered_amt * item.get_cost()
                 demandable.check_s(item, t)
-
 
     def produce_order(self, item, amt):
         """Determine amount to be ordered
@@ -136,7 +141,6 @@ class Demandable:
         self.inv_pos[item] -= amt_supplied
         return amt_supplied
 
-
     def add_upstream(self, demandable: "Demandable") -> None:
         """Adds a demandable into upstream
 
@@ -147,7 +151,6 @@ class Demandable:
         demandable.add_downstream(self)
         # Change later, perhaps random starting inventory ISSUE here
 
-        
     def add_downstream(self, demandable: "Demandable") -> None:
         """Adds a demandable into downstream, called after
         add_upstream function
@@ -179,7 +182,6 @@ class Demandable:
         """
         self.inv_map[item] = demandable
         
-    #Adds items downstream with random amount
     def add_item_downstream(self, item, amount=65):
         """Adds items to all the downstream
 
@@ -208,7 +210,6 @@ class Demandable:
             leaves += [self]
         return leaves
             
-
     def add_item(self, item: "Item", amt = 0):
         """Add item to demandable and its downstream, create inv level and inv pos
 
@@ -241,7 +242,6 @@ class Demandable:
                 self.inv_level[item] -= amt_backordered
             self.backorder -= amt_backordered
 
-
     def update_all_inventory(self, t):
         """Updates inv level for all upstream demandables
 
@@ -257,6 +257,17 @@ class Demandable:
         for demandable in self.upstream:
             demandable.update_all_inventory(t)
  
+    def find_optimal_cost(self):
+        curr_cost = 0
+        if self.upstream:
+            expected_holding_time = self.stochastic_lead_time.get_expected_value()
+            curr_cost += expected_holding_time * self.holding_cost
+            for item in self.inv_map:
+                curr_cost += item.get_cost()
+            for demandable in self.upstream:
+                curr_cost += demandable.find_optimal_cost()
+        return curr_cost
+
     def get_hc(self) -> int:
         """Returns holding cost for current demandable
 
