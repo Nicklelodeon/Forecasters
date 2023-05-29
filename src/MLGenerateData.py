@@ -10,8 +10,8 @@ from pathlib import Path
 
 class MLGenerateData:
     def __init__(self):
-        self.df = pd.DataFrame(columns=['month_1', 'month_2', 'month_3', 'month_4', 'month_5', 'month_6', 'month_7', 'month_8', 'month_9', 'month_10', \
-        'month_11', 'month_12', 's_DC1', 'S_DC1', 's_DC2', 'S_DC2', 's_r1', 'S_r1', 'profit'])
+        
+        self.df = pd.DataFrame()
         self.demand_generator = GenerateDemandMonthly()
 
     #convert to indiv col in df
@@ -52,13 +52,31 @@ class MLGenerateData:
         return [demand, [s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1], total/runs]
 
     def update_df(self, df, data):
-        new_lst = data[0]
-        new_lst.extend(data[1])
+        new_lst = []
+        new_lst.extend(data[0])
+        new_lst.extend([x for sub_list in data[1] for x in sub_list])
         new_lst.append(data[2])
         df.loc[len(df.index)] = new_lst
         return df
 
+    def create_df_cols(self, string):
+        return [string + str(x) for x in range(1, 13)]
+
+    def create_df_col_names(self):
+        lst = []
+        lst.extend(self.create_df_cols("month"))
+        lst.extend(self.create_df_cols("s_DC1_"))
+        lst.extend(self.create_df_cols("S_DC1_"))
+        lst.extend(self.create_df_cols("s_DC2_"))
+        lst.extend(self.create_df_cols("S_DC2_"))
+        lst.extend(self.create_df_cols("s_r1_"))
+        lst.extend(self.create_df_cols("S_r2_"))
+        lst.append('profit')
+        self.df = pd.concat([self.df, pd.DataFrame(columns=lst)])
+        
+    
     def create_data(self):
+        self.create_df_col_names()
         data = pd.read_csv('./src/data.csv')
         for i in data['Order_Demand']:
             elements = re.findall(r'\d+', i)
@@ -82,7 +100,6 @@ class MLGenerateData:
                 log3 = self.logic_poisson(s, S, s, S, s, S, mean, 30)
                 if log3 is not None:
                     self.df = self.update_df(self.df, log3)
-
 
 
 

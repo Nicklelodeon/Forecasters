@@ -8,18 +8,23 @@ import torch.nn as nn
 import torch.optim as optim
 import tqdm
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from torchmetrics import MeanAbsolutePercentageError
  
-data = MLGenerateData()
-data.create_data()
+data = pd.read_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
 
 # largest = max(data.df['profit'])
 # if abs(min(data.df['profit'])) > largest:
 #     largest = abs(min(data.df['profit']))
 # target_df = data.df['profit'] / largest
-target_df = data.df['profit']
+target_df = data['profit']
 target = torch.tensor(target_df)
-predictors = torch.tensor(data.df.drop(['profit'], axis=1).to_numpy(dtype=np.float64))
-X_train, X_test, y_train, y_test = train_test_split(predictors, target, test_size=0.33, random_state=42)
+predictors = torch.tensor(data.drop(['profit'], axis=1).to_numpy(dtype=np.float64))
+X_train_raw, X_test_raw, y_train, y_test = train_test_split(predictors, target, test_size=0.33, random_state=42)
+scaler = StandardScaler()
+scaler.fit(X_train_raw)
+X_train = scaler.transform(X_train_raw)
+X_test = scaler.transform(X_test_raw)
 n_cols = predictors.shape[1]
  
 
@@ -31,23 +36,21 @@ y_test = torch.tensor(y_test, dtype=torch.float32).reshape(-1, 1)
  
 # Define the model
 model = nn.Sequential(
-    nn.Linear(18, 24),
+    nn.Linear(85, 800),
     nn.ReLU(),
-    nn.BatchNorm1d(24),
-    nn.Linear(24, 12),
+    nn.Linear(800, 400),
     nn.ReLU(),
-    nn.BatchNorm1d(12),
-    nn.Linear(12, 6),
+    nn.Linear(400, 200),
     nn.ReLU(),
-    nn.BatchNorm1d(6),
-    nn.Linear(6, 1)
+    nn.Linear(200, 1)
 )
- 
+# for param in model.parameters():
+#     param.requires_grad = True
 # loss function and optimizer
-loss_fn = nn.L1Loss()  # mean square error
-optimizer = optim.Adam(model.parameters(), lr=0.0001)
+loss_fn = MeanAbsolutePercentageError()  # mean square error
+optimizer = optim.Adam(model.parameters(), lr=0.001)
  
-n_epochs = 100   # number of epochs to run
+n_epochs = 2000   # number of epochs to run
 batch_size = 10  # size of each batch
 batch_start = torch.arange(0, len(X_train), batch_size)
  
@@ -57,6 +60,7 @@ best_weights = None
 history = []
  
 for epoch in range(n_epochs):
+    print(epoch)
     model.train()
     with tqdm.tqdm(batch_start, unit="batch", mininterval=0, disable=True) as bar:
         bar.set_description(f"Epoch {epoch}")
@@ -83,7 +87,7 @@ for epoch in range(n_epochs):
     if mse < best_mse:
         best_mse = mse
         best_weights = copy.deepcopy(model.state_dict())
- 
+
 # restore model and return best accuracy
 model.load_state_dict(best_weights)
 new_pred = model(X_test)
@@ -92,3 +96,13 @@ print("MSE: %.2f" % best_mse)
 print("RMSE: %.2f" % np.sqrt(best_mse))
 plt.plot(history)
 plt.show()
+
+# model.eval()
+# with torch.no_grad():
+#     # Test out inference with 5 samples
+#     for i in range(5):
+#         X_sample = X_test_raw[i: i+1]
+#         X_sample = scaler.transform(X_sample)
+#         X_sample = torch.tensor(X_sample, dtype=torch.float32)
+#         y_pred = model(X_sample)
+#         print(f"{X_test_raw[i]} -> {y_pred[0].numpy()} (expected {y_test[i].numpy()})")
