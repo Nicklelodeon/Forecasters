@@ -16,7 +16,7 @@ for i in range(250):
 
 end_time = time.time()
 
-run = (end_time - start_time)/10
+run = (end_time - start_time)/250
 
 print("On average, Program Ran for:", run)
 
