@@ -125,7 +125,6 @@ class Demandable:
                     self.total_costs += ordered_amt * item.get_cost()
                 demandable.check_s(item, t)
 
-
     def produce_order(self, item, amt):
         """Determine amount to be ordered
 
@@ -142,7 +141,6 @@ class Demandable:
         self.inv_pos[item] -= amt_supplied
         return amt_supplied
 
-
     def add_upstream(self, demandable: "Demandable") -> None:
         """Adds a demandable into upstream
 
@@ -153,7 +151,6 @@ class Demandable:
         demandable.add_downstream(self)
         # Change later, perhaps random starting inventory ISSUE here
 
-        
     def add_downstream(self, demandable: "Demandable") -> None:
         """Adds a demandable into downstream, called after
         add_upstream function
@@ -185,7 +182,6 @@ class Demandable:
         """
         self.inv_map[item] = demandable
         
-    #Adds items downstream with random amount
     def add_item_downstream(self, item, amount=65):
         """Adds items to all the downstream
 
@@ -214,7 +210,6 @@ class Demandable:
             leaves += [self]
         return leaves
             
-
     def add_item(self, item: "Item", amt = 0):
         """Add item to demandable and its downstream, create inv level and inv pos
 
@@ -246,7 +241,6 @@ class Demandable:
             for item in self.inv_level:
                 self.inv_level[item] -= amt_backordered
             self.backorder -= amt_backordered
-
 
     def update_all_inventory(self, t):
         """Updates inv level for all upstream demandables
