@@ -230,6 +230,7 @@ class Demandable:
             curr_order = self.arrivals.get()
             time, item, amt = curr_order
             self.inv_level[item] += amt
+            self.inv_pos[item] += amt
             
         """ index = []
         for i in range(len(self.arrivals)):
