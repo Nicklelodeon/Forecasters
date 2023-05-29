@@ -69,6 +69,7 @@ class State:
             end_demandable.add_item_downstream(rand_item, amount)
         
         self.create_changeable_network()
+        self.root.set_optimal_selling_price(10)
         
 
     

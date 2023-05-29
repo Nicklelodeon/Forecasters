@@ -121,7 +121,7 @@ class Demandable:
                 if ordered_amt > 0:
                     lead_time = self.stochastic_lead_time.get_lead_time()
                     self.arrivals.append([t + lead_time, item, ordered_amt])
-                    self.ordering_costs[t] += ordered_amt * item.get_cost() 
+                    self.ordering_costs[t] += ordered_amt * item.get_cost()
                     self.total_costs += ordered_amt * item.get_cost()
                 demandable.check_s(item, t)
 
@@ -257,6 +257,17 @@ class Demandable:
         for demandable in self.upstream:
             demandable.update_all_inventory(t)
  
+    def find_optimal_cost(self):
+        curr_cost = 0
+        if self.upstream:
+            expected_holding_time = self.stochastic_lead_time.get_expected_value()
+            curr_cost += expected_holding_time * self.holding_cost
+            for item in self.inv_map:
+                curr_cost += item.get_cost()
+            for demandable in self.upstream:
+                curr_cost += demandable.find_optimal_cost()
+        return curr_cost
+
     def get_hc(self) -> int:
         """Returns holding cost for current demandable
 
