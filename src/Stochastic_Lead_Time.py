@@ -16,6 +16,10 @@ class Stochastic_Lead_Time:
     def get_lead_time(self):
         return self.function(1)[0]
     
+    def get_expected_value(self):
+        list = self.function(1000000)
+        return np.round(np.mean(list),2)
+    
     def visual(self):
         list = self.function(1000)
         plt.hist(list, bins = 50, density = True)
