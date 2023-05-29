@@ -40,7 +40,6 @@ class Demandable:
         self.total_costs = 0
 
 
-        adsssssssssssssssssssssssssssssssssdfgdsrgs
         
     def change_order_point(self, new_small_s, new_big_s):
         """Changes lower and upper bound s and S

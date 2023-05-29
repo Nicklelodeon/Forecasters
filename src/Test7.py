@@ -11,8 +11,8 @@ genstate.create_state([-1,0, 1, 1, 2, 2])
 
 start_time = time.time()
 
-for i in range(10):
-    print(-1 * genstate.GArun([79, 88, 51, 53, 41, 43]))
+for i in range(250):
+    -1 * genstate.GArun([79, 88, 51, 53, 41, 43])
 
 end_time = time.time()
 
