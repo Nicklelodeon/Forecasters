@@ -8,16 +8,26 @@ class Retailer(Demandable):
         self.amount_sold = []
         self.selling_price = selling_price
         self.amount_sold_total = 0
+        
+    def set_optimal_selling_price(self, multiplier):
+        """Sets optimal price * multipler
+
+        Args:
+            multiplier (float): multiplier
+        """
+        print("Optimal",self.find_optimal_cost())
+        self.selling_price = self.find_optimal_cost() * multiplier
 
     def reset(self, amount = 65):
-        self.inv_level  = dict.fromkeys(self.inv_level, amount)
+        """ self.inv_level  = dict.fromkeys(self.inv_level, amount)
         self.inv_pos = dict.fromkeys(self.inv_pos, amount)
         self.ordering_costs = []
         self.holding_costs = []
         self.backorder_costs = []
         self.backorder = 0
         self.costs = []
-        self.arrivals = queue.PriorityQueue()
+        self.arrivals = [] """
+        super().reset()
         self.amount_sold = []
         self.amount_sold_total = 0
 
