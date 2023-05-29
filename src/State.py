@@ -4,6 +4,8 @@ from DistributionCenter import DistributionCenter
 from Retailer import Retailer
 from Basic import Basic
 from GenerateDemandMonthly import GenerateDemandMonthly
+from Stochastic_Lead_Time import Stochastic_Lead_Time
+
 
 from Item import Item
 import numpy as np
@@ -52,8 +54,11 @@ class State:
             network_list.append(new_demandable)
         network_list = self.create_network(demandables, network_list)
         
+        stl = Stochastic_Lead_Time()
+        
         for i in range(len(network_list)):
             network_list[i] = network_list[i].define_demandable()
+            network_list[i].add_lead_time(stl)
         network_list = self.create_network(demandables, network_list)
 
         self.root = network_list[0]

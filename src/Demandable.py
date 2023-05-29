@@ -20,7 +20,7 @@ class Demandable:
 
         self.backorder = 0
         self.backorder_cost = backorder_cost
-        self.stochastic_lead_time = Stochastic_Lead_Time()
+        self.stochastic_lead_time = None
         #self.lead_time = 2
         self.costs = []
         self.arrivals = []
@@ -39,7 +39,13 @@ class Demandable:
         self.arrivals = []
         self.total_costs = 0
 
+    def add_lead_time(self, stl):
+        """Assign stochastic lead time
 
+        Args:
+            stl (Stochastic Lead Time): Samples lead time from distribution
+        """
+        self.stochastic_lead_time = stl
         
     def change_order_point(self, new_small_s, new_big_s):
         """Changes lower and upper bound s and S

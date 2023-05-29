@@ -19,7 +19,7 @@ end_time = time.time()
 run = (end_time - start_time)/250
 
 print("On average, Program Ran for:", run)
-
+#0.04909294605255127
 def f(X):
     return -1 * genstate.GArun(X)
 
