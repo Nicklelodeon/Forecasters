@@ -215,7 +215,7 @@ class Demandable:
         return leaves
             
 
-    def add_self(item: "Item", amt = 0):
+    def add_item(self, item: "Item", amt = 0):
         """Add item to demandable and its downstream, create inv level and inv pos
 
         Args:
