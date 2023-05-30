@@ -16,4 +16,3 @@ state.print_network()
 for i in range(6): ## Forcing backorder cost
     state.update_state(3000, i)
     print(state.print_state(i))
-    
