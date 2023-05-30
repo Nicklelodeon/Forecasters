@@ -4,16 +4,14 @@ import statsmodels.api as sm
 from MLGenerateData import MLGenerateData
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error as MSE
+from sklearn.metrics import mean_absolute_error as MAE
 
 
-data = MLGenerateData()
-data.create_data()
+data = pd.read_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
 
-largest = max(data.df['profit'])
-if abs(min(data.df['profit'])) > largest:
-    largest = abs(min(data.df['profit']))
-target = data.df['profit'] / largest
-predictors = data.df.drop(['profit'], axis=1)
+
+target = data['profit']
+predictors = data.drop(['profit'], axis=1)
 X_train, X_test, y_train, y_test = train_test_split(predictors, target, test_size=0.33, random_state=42)
 n_cols = predictors.shape[1]
 
@@ -38,4 +36,6 @@ X_test = sm.add_constant(X_test)
 preds = model.predict(X_test.astype(float))
 
 print(model.summary())
+print(MSE(y_test, preds))
+print(MAE(y_test, preds))
 
