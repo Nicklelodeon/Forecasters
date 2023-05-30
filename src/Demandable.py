@@ -1,6 +1,9 @@
 import numpy as np
 from Item import Item
 from Stochastic_Lead_Time import Stochastic_Lead_Time
+import matplotlib.pyplot as plt
+import pandas as pd 
+import seaborn as sns 
 
 np.random.seed(1234)
 
@@ -46,6 +49,7 @@ class Demandable:
             stl (Stochastic Lead Time): Samples lead time from distribution
         """
         self.stochastic_lead_time = stl
+
         
     def change_order_point(self, new_small_s, new_big_s):
         """Changes lower and upper bound s and S
@@ -256,6 +260,26 @@ class Demandable:
         self.update_inventory(t)
         for demandable in self.upstream:
             demandable.update_all_inventory(t)
+
+    def plot_cost(self):
+        df = pd.DataFrame(columns=["time", "cost", "type"])
+        for i, val in enumerate(self.holding_costs):
+            df.loc[len(df.index)] = [i, val, "holding cost"]
+        for i, val in enumerate(self.backorder_costs):
+            df.loc[len(df.index)] = [i, val, "backorder cost"]
+        for i, val in enumerate(self.ordering_costs):
+            df.loc[len(df.index)] = [i, val, "order cost"]
+        print(df)
+        fig, ax = plt.subplots(figsize=(11, 6))
+        sns.pointplot(data=df, x='time', y='cost', hue='type', ax=ax)
+        # label points on the plot
+        for x, y in zip(df['time'], df['cost']):
+            plt.text(x = x, y = y+10, s = "{:.0f}".format(y), color = "purple") 
+        # sns.relplot(kind='line', data=df, x='time', y='cost', hue='type')
+        plt.show()
+        for demandable in self.upstream:
+            demandable.plot_cost()
+        
  
     def find_optimal_cost(self):
         curr_cost = 0

@@ -25,3 +25,4 @@ for i in range(len(state.demand_list)):
 
 print(state.root.calculate_profit())
 print(state.rewards)
+print(state.root.plot_cost())
