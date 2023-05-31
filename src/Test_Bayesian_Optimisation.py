@@ -36,6 +36,8 @@ import random
 import numpy as np 
 from BayesianState import BayesianState
 from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C
+from sklearn.gaussian_process.kernels import Matern
+
  
 # objective function
 def objective(lst):
@@ -69,19 +71,26 @@ def surrogate(model, X):
  with catch_warnings():
  # ignore generated warnings
     simplefilter("ignore")
- return model.predict(X, return_std=True)
+ return model.predict(X.reshape(1, -1), return_std=True)
  
 # probability of improvement acquisition function
 def acquisition(X, Xsamples, model):
  # calculate the best surrogate score found so far
- yhat, _ = surrogate(model, X)
- best = max(yhat)
+    best = 0
+    for i in range(len(X)):
+        yhat, _ = surrogate(model, X[i])
+        best = max(yhat, best)
  # calculate mean and stdev via surrogate function
- mu, std = surrogate(model, Xsamples)
-#  mu = mu[:, 0]
- # calculate the probability of improvement
- probs = norm.cdf((mu - best) / (std+1E-9))
- return probs
+    best_mu = 0
+    best_std = 0
+    for i in range(len(Xsamples)):
+        mu, std = surrogate(model, Xsamples[i])
+        mu = max(mu, best_mu)
+        std = max(std, best_std)
+    #  mu = mu[:, 0]
+    # calculate the probability of improvement
+    probs = norm.cdf((best_mu - best) / (best_std+1E-9))
+    return probs
  
 # optimize the acquisition function
 def opt_acquisition(X, y, model):
@@ -103,16 +112,16 @@ def opt_acquisition(X, y, model):
     return Xsamples[ix]
  
 # # plot real observations vs surrogate function
-# def plot(X, y, model):
-#  # scatter plot of inputs and real objective function
-#  pyplot.scatter(X, y)
-#  # line plot of surrogate function across domain
-#  Xsamples = asarray(arange(0, 1, 0.001))
-#  Xsamples = Xsamples.reshape(len(Xsamples), 1)
-#  ysamples, _ = surrogate(model, Xsamples)
-#  pyplot.plot(Xsamples, ysamples)
-#  # show the plot
-#  pyplot.show()
+def plot(X, y, model):
+ # scatter plot of inputs and real objective function
+ pyplot.scatter(X, y)
+ # line plot of surrogate function across domain
+ Xsamples = asarray(arange(0, 1, 0.001))
+ Xsamples = Xsamples.reshape(len(Xsamples), 1)
+ ysamples, _ = surrogate(model, Xsamples)
+ pyplot.plot(Xsamples, ysamples)
+ # show the plot
+ pyplot.show()
  
 # sample the domain sparsely with noise
 X = []
@@ -128,12 +137,13 @@ y = asarray([objective(lst) for lst in X])
 # X = X.reshape(100, 72)
 y = y.reshape(-1, 1)
 # define the model
-model = GaussianProcessRegressor()
+kernel = Matern()
+model = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=10)
 # fit the model
 for i in range(len(y)):
     model.fit(X[i].reshape(1, -1), y[i])
 # plot before hand
-# plot(X, y, model)
+plot(X, y, model)
 # perform the optimization process
 for i in range(100):
  # select the next point to sample
@@ -141,6 +151,8 @@ for i in range(100):
  # sample the point
  actual = objective(x)
  # summarize the finding
+ print(x[0])
+
  est, _ = surrogate(model, x.reshape(1, -1))
  print('>x=%s, f()=%3f, actual=%.3f' % (str(x), est[0], actual))
  # add the data to the dataset
@@ -154,3 +166,11 @@ for i in range(100):
 # best result
 ix = argmax(y)
 print('Best Result: x=%s, y=%.3f' % (str(X[ix]), y[ix]))
+
+# Best Result: x=[25 48 33 30 40 33 49 37 44 41 30 32 60 63 65 63 63 87 69 78 88 61 71 74
+#  44 37 32 47 22 34 28 38 46 26 20 32 66 88 63 87 67 84 83 73 76 63 84 78
+#  23 41 45 44 35 44 28 29 42 26 21 23 83 77 73 79 79 80 80 73 79 74 78 62], y=16749.100
+
+# Best Result: x=[27 24 30 38 21 36 48 47 40 40 34 23 72 87 70 67 67 76 69 62 62 77 60 72
+#  44 41 37 29 48 46 44 31 25 47 45 23 76 67 64 68 88 84 84 64 73 81 68 64
+#  48 49 34 47 46 24 30 38 35 49 37 27 86 80 80 82 67 87 87 76 66 84 75 64], y=16550.953
