@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
 np.random.seed(1234)
 
 
@@ -21,6 +23,9 @@ class Stochastic_Lead_Time:
         return np.round(np.mean(list),2)
     
     def visual(self):
-        list = self.function(1000)
-        plt.hist(list, bins = 50, density = True)
+        lst = np.array(self.function(1000))
+        df = pd.DataFrame(lst, columns = ["values"])
+        df = df["values"].value_counts()/1000
+        new_df = pd.DataFrame(df)
+        sns.barplot(x=new_df.index, y=new_df["count"])
         plt.show()

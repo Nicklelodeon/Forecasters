@@ -17,7 +17,7 @@ state = State()
 state.create_state(demandable_state)
 state.show_network()
 state.set_demand_list(demand_list)
-""" for i in range(len(state.demand_list)):
+for i in range(len(state.demand_list)):
     print("-----------------------------")
     print("Demand " , state.demand_list[i])
     state.update_state(i)
@@ -25,4 +25,4 @@ state.set_demand_list(demand_list)
 
 print(state.root.calculate_profit())
 print(state.rewards)
-print(state.root.plot_cost()) """
+print(state.root.plot_cost())
