@@ -5,6 +5,12 @@ from Retailer import Retailer
 from Basic import Basic
 from GenerateDemandMonthly import GenerateDemandMonthly
 from Stochastic_Lead_Time import Stochastic_Lead_Time
+<<<<<<< HEAD
+=======
+import matplotlib.pyplot as plt
+import networkx as nx
+
+>>>>>>> refs/remotes/origin/main
 from Item import Item
 import numpy as np
 import random
@@ -15,6 +21,7 @@ import pandas as pd
 class State:
     def __init__(self):
         self.root = Basic(chr(65))
+        self.demandables = None
         self.changeable_network = []
         self.demand_list = None
         self.s_S_list = None
@@ -50,6 +57,7 @@ class State:
         Args:
             demandables (list<int>): list of integers
         """
+        self.demandables = demandables
         network_list = []
         for i in range(len(demandables)):   
             new_demandable = Basic(chr(i + 65))
@@ -73,8 +81,27 @@ class State:
         self.create_changeable_network()
         self.root.set_optimal_selling_price(10)
         
-
-    
+    def show_network(self):
+        adj_lst = []
+        demandables_list = ["A"]
+        for i in range(1, len(self.demandables)):
+            demandables_list.append(chr(i + 65))
+            head = self.demandables[i]
+            adj_lst.append((chr(head + 65), chr(i + 65)))
+        x_pos = [0] * len(self.demandables)
+        for i in range(1, len(self.demandables)):
+            head = self.demandables[i]
+            x_pos[i] = x_pos[head] + 1
+        depth_count = [0] * (max(x_pos) + 1)
+        for i in x_pos:
+            depth_count[i] += 1
+        lst = list(map(lambda x, y: [x, y], demandables_list, x_pos ))
+        print(lst)
+        #for i in range(len(self.demandables)):
+            
+        print(x_pos)
+        return adj_lst
+        
     def take_vector(self, array):
         """Assign the array to the s_S_list
 
