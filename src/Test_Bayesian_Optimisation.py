@@ -112,16 +112,16 @@ def opt_acquisition(X, y, model):
     return Xsamples[ix]
  
 # # plot real observations vs surrogate function
-def plot(X, y, model):
- # scatter plot of inputs and real objective function
- pyplot.scatter(X, y)
- # line plot of surrogate function across domain
- Xsamples = asarray(arange(0, 1, 0.001))
- Xsamples = Xsamples.reshape(len(Xsamples), 1)
- ysamples, _ = surrogate(model, Xsamples)
- pyplot.plot(Xsamples, ysamples)
- # show the plot
- pyplot.show()
+# def plot(X, y, model):
+#  # scatter plot of inputs and real objective function
+#  pyplot.scatter(X, y)
+#  # line plot of surrogate function across domain
+#  Xsamples = asarray(arange(0, 1, 0.001))
+#  Xsamples = Xsamples.reshape(len(Xsamples), 1)
+#  ysamples, _ = surrogate(model, Xsamples)
+#  pyplot.plot(Xsamples, ysamples)
+#  # show the plot
+#  pyplot.show()
  
 # sample the domain sparsely with noise
 X = []

@@ -20,6 +20,7 @@ class Demandable:
         self.ordering_costs = []
         self.holding_costs = []
         self.backorder_costs = []
+        self.inv_level_plot = []
 
         self.backorder = 0
         self.backorder_cost = backorder_cost
@@ -41,6 +42,7 @@ class Demandable:
         self.costs = []
         self.arrivals = []
         self.total_costs = 0
+        self.inv_level_plot = []
 
     def add_lead_time(self, stl):
         """Assign stochastic lead time
@@ -107,7 +109,7 @@ class Demandable:
         self.backorder += curr_backorder
         for item in self.inv_level:
             self.inv_level[item] -= min_item
-            self.inv_pos[item] -= min_item
+            self.inv_pos[item] -= num_get
         return min_item
 
     def check_s(self, item, t):
@@ -262,6 +264,8 @@ class Demandable:
             demandable.update_all_inventory(t)
 
     def plot_cost(self):
+        if not self.upstream:
+            return
         df = pd.DataFrame(columns=["time", "cost", "type"])
         for i, val in enumerate(self.holding_costs):
             df.loc[len(df.index)] = [i, val, "holding cost"]
@@ -269,16 +273,32 @@ class Demandable:
             df.loc[len(df.index)] = [i, val, "backorder cost"]
         for i, val in enumerate(self.ordering_costs):
             df.loc[len(df.index)] = [i, val, "order cost"]
-        print(df)
         fig, ax = plt.subplots(figsize=(11, 6))
         sns.pointplot(data=df, x='time', y='cost', hue='type', ax=ax)
         # label points on the plot
-        for x, y in zip(df['time'], df['cost']):
-            plt.text(x = x, y = y+10, s = "{:.0f}".format(y), color = "purple") 
-        # sns.relplot(kind='line', data=df, x='time', y='cost', hue='type')
+        # for x, y in zip(df['time'], df['cost']):
+        #     plt.text(x = x, y = y+10, s = "{:.0f}".format(y), color = "purple") 
+        # # sns.relplot(kind='line', data=df, x='time', y='cost', hue='type')
         plt.show()
         for demandable in self.upstream:
             demandable.plot_cost()
+
+    def plot_inv_level(self):
+        if not self.upstream:
+            return
+        df = pd.DataFrame(columns=["time", "level", "item"])
+        for i, dictionary in enumerate(self.inv_level_plot):
+            for key, value in dictionary.items():
+                df.loc[len(df.index)] = [i, value, key.get_name()[:9]]
+        fig, ax = plt.subplots(figsize=(11, 6))
+        ax = sns.pointplot(data=df, x='time', y='level', hue='item', ax=ax, alpha=0.1)
+        plt.setp(ax.collections, alpha=.3) #for the markers
+        plt.setp(ax.lines, alpha=.3)       #for the lines
+        plt.show()
+        for demandable in self.upstream:
+            demandable.plot_inv_level()
+
+
         
  
     def find_optimal_cost(self):
@@ -344,6 +364,7 @@ class Demandable:
         self.backorder_costs[t] += self.backorder * self.backorder_cost
         self.total_costs += self.backorder * self.backorder_cost
         self.costs[t] = self.holding_costs[t] + self.backorder_costs[t] + self.ordering_costs[t]
+        self.inv_level_plot.append(self.inv_level.copy())
         for demandable in self.upstream:
             demandable.update_all_cost(t)
 

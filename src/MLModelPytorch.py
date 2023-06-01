@@ -48,6 +48,7 @@ model = nn.Sequential(
 #     param.requires_grad = True
 # loss function and optimizer
 loss_fn = MeanAbsolutePercentageError()  # mean square error
+# loss_fn = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
  
 n_epochs = 2000   # number of epochs to run

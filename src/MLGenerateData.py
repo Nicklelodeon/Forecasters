@@ -13,6 +13,8 @@ class MLGenerateData:
         
         self.df = pd.DataFrame()
         self.demand_generator = GenerateDemandMonthly()
+        self.state = MLState()
+        self.state.create_state([-1 ,0, 1, 1, 2, 2])
 
     #convert to indiv col in df
     def logic_normal(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1, mean, std, runs):
@@ -20,17 +22,16 @@ class MLGenerateData:
         for x in range(runs):
             demand = self.demand_generator.simulate_normal(1, mean, std)
             amount = max(demand) * 1.5
-            state = MLState()
-            state.create_state([-1 ,0, 1, 1, 2, 2], amount)
-            state.change_demand(demand)
-            for i in range(len(state.demand_list)):
+            self.state.reset(amount)
+            self.state.change_demand(demand)
+            for i in range(len(self.state.demand_list)):
                 if (s_DC1[i] >= S_DC1[i] or s_DC2[i] >= S_DC2[i] or s_r1[i] >= S_r1[i]):
                     return None
-                state.changeable_network[0].change_order_point(round(s_r1[i]), round(S_r1[i]))
-                state.changeable_network[1].change_order_point(round(s_DC1[i]), round(S_DC1[i]))
-                state.changeable_network[2].change_order_point(round(s_DC2[i]), round(S_DC2[i]))
-                state.update_state(i)
-            total += state.total_sum()
+                self.state.changeable_network[0].change_order_point(round(s_r1[i]), round(S_r1[i]))
+                self.state.changeable_network[1].change_order_point(round(s_DC1[i]), round(S_DC1[i]))
+                self.state.changeable_network[2].change_order_point(round(s_DC2[i]), round(S_DC2[i]))
+                self.state.update_state(i)
+            total += self.state.total_sum()
         return [demand, [s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1], total/runs]
 
     def logic_poisson(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1, mean, runs):
@@ -38,17 +39,16 @@ class MLGenerateData:
         for x in range(runs):
             demand = self.demand_generator.simulate_poisson(1, mean)
             amount = max(demand) * 1.5
-            state = MLState()
-            state.create_state([-1 ,0, 1, 1, 2, 2], amount)
-            state.change_demand(demand)
-            for i in range(len(state.demand_list)):
+            self.state.reset(amount)
+            self.state.change_demand(demand)
+            for i in range(len(self.state.demand_list)):
                 if (s_DC1[i] >= S_DC1[i] or s_DC2[i] >= S_DC2[i] or s_r1[i] >= S_r1[i]):
                     return None
-                state.changeable_network[0].change_order_point(round(s_r1[i]), round(S_r1[i]))
-                state.changeable_network[1].change_order_point(round(s_DC1[i]), round(S_DC1[i]))
-                state.changeable_network[2].change_order_point(round(s_DC2[i]), round(S_DC2[i]))
-                state.update_state(i)
-            total += state.total_sum()
+                self.state.changeable_network[0].change_order_point(round(s_r1[i]), round(S_r1[i]))
+                self.state.changeable_network[1].change_order_point(round(s_DC1[i]), round(S_DC1[i]))
+                self.state.changeable_network[2].change_order_point(round(s_DC2[i]), round(S_DC2[i]))
+                self.state.update_state(i)
+            total += self.state.total_sum()
         return [demand, [s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1], total/runs]
 
     def update_df(self, df, data):
@@ -91,7 +91,7 @@ class MLGenerateData:
                 # if log1 is not None:
                 #     self.df = self.update_df(self.df, log1)
                 s = [round(x) for x in random.choices(range(round(np.quantile(demand, 0.1)), round(np.quantile(demand, 0.5))), k=12)]
-                S = [round(x) for x in random.choices(range(round(np.quantile(demand, 0.5)), round(np.quantile(demand, 0.9))), k=12)]
+                S = [round(x) for x in random.choices(range(round(np.max(demand) * 1.0), round(np.max(demand) * 2)), k=12)]
                 # print("s: " + str(s))
                 # print("S: " + str(S))
                 log2 = self.logic_normal(s, S, s, S, s, S, mean, std, 30)
@@ -102,4 +102,6 @@ class MLGenerateData:
                     self.df = self.update_df(self.df, log3)
 
 
-
+data = MLGenerateData()
+data.create_data()
+data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")

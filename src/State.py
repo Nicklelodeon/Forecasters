@@ -5,11 +5,12 @@ from Retailer import Retailer
 from Basic import Basic
 from GenerateDemandMonthly import GenerateDemandMonthly
 from Stochastic_Lead_Time import Stochastic_Lead_Time
-
-
 from Item import Item
 import numpy as np
 import random
+import seaborn as sns 
+import matplotlib.pyplot as plt
+import pandas as pd
 
 class State:
     def __init__(self):
@@ -18,6 +19,7 @@ class State:
         self.demand_list = None
         self.s_S_list = None
         self.rewards = 0
+        self.rewards_list = []
         
     def create_network(self, demandables, network):
         """Creates the network of demandables based on demandables list
@@ -132,11 +134,11 @@ class State:
             big_S = self.s_S_list[point + 1]
             demandable.change_order_point(small_s, big_S)
             
-    def reset(self):
+    def reset(self, amount=65):
         """Resets state
         """
         for demandable in self.changeable_network:
-            demandable.reset()
+            demandable.reset(amount)
         self.demand_list = None
         self.s_S_list = None
         self.rewards = 0
@@ -166,6 +168,7 @@ class State:
         self.root.update_all_demand(self.demand_list[t], t)
         self.root.update_all_cost(t)
         self.rewards += self.root.calculate_curr_profit(t)
+        self.rewards_list.append(self.root.calculate_curr_profit(t))
 
 
     def calculate_profits(self):
@@ -173,6 +176,18 @@ class State:
     
     def print_state(self, t):
         return "time " + str(t) +": \n" + self.root.print_upstream_state()
+    
+    def plot_rewards(self):
+        df = pd.DataFrame(columns=["time", "rewards"])
+        for i, val in enumerate(self.rewards_list):
+            df.loc[len(df.index)] = [i, val]
+        fig, ax = plt.subplots(figsize=(11, 6))
+        sns.pointplot(data=df, x='time', y='rewards', ax=ax)
+        # label points on the plot
+        # for x, y in zip(df['time'], df['cost']):
+        #     plt.text(x = x, y = y+10, s = "{:.0f}".format(y), color = "purple") 
+        # # sns.relplot(kind='line', data=df, x='time', y='cost', hue='type')
+        plt.show()
     
 
 

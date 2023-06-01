@@ -7,6 +7,7 @@ class Retailer(Demandable):
         self.amount_sold = []
         self.selling_price = selling_price
         self.amount_sold_total = 0
+        self.profits = []
         
     def set_optimal_selling_price(self, multiplier):
         """Sets optimal price * multipler
@@ -14,7 +15,6 @@ class Retailer(Demandable):
         Args:
             multiplier (float): multiplier
         """
-        print("Optimal",self.find_optimal_cost())
         self.selling_price = self.find_optimal_cost() * multiplier
 
     def reset(self, amount = 65):
