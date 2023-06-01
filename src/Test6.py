@@ -15,7 +15,7 @@ demandable_state = [-1,0, 1, 1, 2, 2]
 
 state = State()
 state.create_state(demandable_state)
-print(state.show_network())
+state.show_network()
 state.set_demand_list(demand_list)
 for i in range(len(state.demand_list)):
     print("-----------------------------")
