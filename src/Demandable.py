@@ -291,7 +291,7 @@ class Demandable:
             for key, value in dictionary.items():
                 df.loc[len(df.index)] = [i, value, key.get_name()[:9]]
         fig, ax = plt.subplots(figsize=(11, 6))
-        ax = sns.pointplot(data=df, x='time', y='level', hue='item', ax=ax, alpha=0.1)
+        ax = sns.pointplot(data=df, x='time', y='level', hue='item', ax=ax)
         plt.setp(ax.collections, alpha=.3) #for the markers
         plt.setp(ax.lines, alpha=.3)       #for the lines
         plt.show()
