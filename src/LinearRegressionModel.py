@@ -5,6 +5,8 @@ from MLGenerateData import MLGenerateData
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error as MSE
 from sklearn.metrics import mean_absolute_error as MAE
+from sklearn.metrics import mean_absolute_percentage_error as MAPE
+import numpy as np 
 
 
 data = pd.read_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
@@ -35,7 +37,12 @@ model = sm.OLS(y_train.astype(float), X_train.astype(float)).fit()
 X_test = sm.add_constant(X_test)
 preds = model.predict(X_test.astype(float))
 
+def smape(A, F):
+    return 100/len(A) * np.sum(2 * np.abs(F - A) / (np.abs(A) + np.abs(F)))
+
 print(model.summary())
-print(MSE(y_test, preds))
-print(MAE(y_test, preds))
+print("mse: " + str(MSE(y_test, preds)))
+print("mae: " + str(MAE(y_test, preds)))
+print("mape: " + str(MAPE(y_test, preds)))
+print("smape: " + str(smape(y_test, preds)))
 
