@@ -5,18 +5,13 @@ from Retailer import Retailer
 from Basic import Basic
 from GenerateDemandMonthly import GenerateDemandMonthly
 from Stochastic_Lead_Time import Stochastic_Lead_Time
-<<<<<<< HEAD
-=======
-import matplotlib.pyplot as plt
-import networkx as nx
-
->>>>>>> refs/remotes/origin/main
 from Item import Item
 import numpy as np
 import random
 import seaborn as sns 
 import matplotlib.pyplot as plt
 import pandas as pd
+import networkx as nx
 
 class State:
     def __init__(self):
@@ -82,6 +77,15 @@ class State:
         self.root.set_optimal_selling_price(10)
         
     def show_network(self):
+        def find_points(i):
+            lst = []
+            x = i - 1
+            interval = 2 * x
+            small_interval = interval/(i+1)
+            for i in range(1, i+1):
+                lst.append(x - (i * small_interval))
+            return lst
+                
         adj_lst = []
         demandables_list = ["A"]
         for i in range(1, len(self.demandables)):
@@ -96,11 +100,25 @@ class State:
         for i in x_pos:
             depth_count[i] += 1
         lst = list(map(lambda x, y: [x, y], demandables_list, x_pos ))
-        print(lst)
-        #for i in range(len(self.demandables)):
-            
-        print(x_pos)
-        return adj_lst
+        dic = {}
+        for i in range(len(depth_count)):
+            dic[i] = find_points(depth_count[i])
+        for i in range(len(lst)):
+            curr_list = lst[i]
+            curr_depth = curr_list[1]
+            get_y = dic[curr_depth].pop()
+            curr_list.append(get_y)
+        
+        G = nx.DiGraph()
+        for i in lst:
+            G.add_node(i[0], pos=(i[1], i[2]))
+        G.add_edges_from(adj_lst)
+        pos = nx.get_node_attributes(G, 'pos')
+        plt.figure(figsize=(6, 6))
+        nx.draw(G, pos, with_labels=True, node_size=750, node_color='lightblue', font_size=12, font_weight='bold', width=2,
+        arrowstyle='<-', arrowsize=15)
+        plt.axis('equal')
+        plt.show()
         
     def take_vector(self, array):
         """Assign the array to the s_S_list
