@@ -19,6 +19,7 @@
 
 
 # example of bayesian optimization for a 1d function from scratch
+import math
 from math import sin
 from math import pi
 from numpy import arange
@@ -138,13 +139,16 @@ y = asarray([objective(lst) for lst in X])
 y = y.reshape(-1, 1)
 # define the model
 kernel = Matern()
-model = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=10)
+model = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=10, normalize_y=True)
 # fit the model
 for i in range(len(y)):
     model.fit(X[i].reshape(1, -1), y[i])
 # plot before hand
-plot(X, y, model)
+# plot(X, y, model)
 # perform the optimization process
+mse = 0
+mae = 0
+mape = 0
 for i in range(100):
  # select the next point to sample
  x = opt_acquisition(X, y, model)
@@ -155,17 +159,29 @@ for i in range(100):
 
  est, _ = surrogate(model, x.reshape(1, -1))
  print('>x=%s, f()=%3f, actual=%.3f' % (str(x), est[0], actual))
+ mse += (actual - est) ** 2
+ mae += abs(actual - est)
+ mape += abs(actual - est) / actual
  # add the data to the dataset
  X = vstack((X, [x]))
  y = vstack((y, [actual]))
  # update the model
  model.fit(X, y)
+
+mse /= 100
+mae /= 100
+mape /= 100
  
+
 # plot all samples and the final surrogate function
 # plot(X, y, model)
 # best result
 ix = argmax(y)
 print('Best Result: x=%s, y=%.3f' % (str(X[ix]), y[ix]))
+print("mse: " + str(mse))
+print("mae: " + str(mae))
+print("mape: " + str(mape))
+
 
 # Best Result: x=[25 48 33 30 40 33 49 37 44 41 30 32 60 63 65 63 63 87 69 78 88 61 71 74
 #  44 37 32 47 22 34 28 38 46 26 20 32 66 88 63 87 67 84 83 73 76 63 84 78

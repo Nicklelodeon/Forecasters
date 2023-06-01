@@ -23,6 +23,8 @@ for i in range(len(state.demand_list)):
     state.update_state(i)
     print(state.print_state(i))
 
-print(state.root.calculate_profit())
-print(state.rewards)
-print(state.root.plot_cost())
+# print(state.root.calculate_profit())
+# print(state.rewards)
+# print(state.root.plot_cost())
+print(state.root.plot_inv_level())
+# print(state.plot_rewards())

@@ -5,6 +5,9 @@ from Retailer import Retailer
 from Basic import Basic
 from GenerateDemandMonthly import GenerateDemandMonthly
 from Stochastic_Lead_Time import Stochastic_Lead_Time
+import matplotlib.pyplot as plt
+import networkx as nx
+
 from Item import Item
 import numpy as np
 import random
