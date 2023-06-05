@@ -18,7 +18,8 @@ class MLGenerateData:
 
 
     def logic(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1, demand):
-        amount = max(demand) * 1.5
+        
+        amount = max(demand) * 5
         self.state.reset(amount)
         self.state.change_demand(demand)
         for i in range(len(self.state.demand_list)):
@@ -111,14 +112,16 @@ class MLGenerateData:
                 log1 = self.logic(s, S, s, S, s, S, demand)
                 if log1 is not None:
                     self.df = self.update_df(self.df, log1)
-                log2 = self.logic_normal(s, S, s, S, s, S, mean, std, 30)
-                if log2 is not None:
-                    self.df = self.update_df(self.df, log2)
-                log3 = self.logic_poisson(s, S, s, S, s, S, mean, 30)
-                if log3 is not None:
-                    self.df = self.update_df(self.df, log3)
+                # log2 = self.logic_normal(s, S, s, S, s, S, mean, std, 30)
+                # if log2 is not None:
+                #     self.df = self.update_df(self.df, log2)
+                # log3 = self.logic_poisson(s, S, s, S, s, S, mean, 30)
+                # if log3 is not None:
+                #     self.df = self.update_df(self.df, log3)
 
 
 data = MLGenerateData()
 data.create_data()
-data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
+# data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
+
+data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/othermldata.csv")
