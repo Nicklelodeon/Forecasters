@@ -5,19 +5,26 @@ from Retailer import Retailer
 from Basic import Basic
 from GenerateDemandMonthly import GenerateDemandMonthly
 from Stochastic_Lead_Time import Stochastic_Lead_Time
-
+import matplotlib.pyplot as plt
+import networkx as nx
 
 from Item import Item
 import numpy as np
 import random
+import seaborn as sns 
+import matplotlib.pyplot as plt
+import pandas as pd
+import networkx as nx
 
 class State:
     def __init__(self):
         self.root = Basic(chr(65))
+        self.demandables = None
         self.changeable_network = []
         self.demand_list = None
         self.s_S_list = None
         self.rewards = 0
+        self.rewards_list = []
         
     def create_network(self, demandables, network):
         """Creates the network of demandables based on demandables list
@@ -48,6 +55,7 @@ class State:
         Args:
             demandables (list<int>): list of integers
         """
+        self.demandables = demandables
         network_list = []
         for i in range(len(demandables)):   
             new_demandable = Basic(chr(i + 65))
@@ -71,8 +79,50 @@ class State:
         self.create_changeable_network()
         self.root.set_optimal_selling_price(10)
         
-
-    
+    def show_network(self):
+        def find_points(i):
+            lst = []
+            x = i - 1
+            interval = 2 * x
+            small_interval = interval/(i+1)
+            for i in range(1, i+1):
+                lst.append(x - (i * small_interval))
+            return lst
+                
+        adj_lst = []
+        demandables_list = ["A"]
+        for i in range(1, len(self.demandables)):
+            demandables_list.append(chr(i + 65))
+            head = self.demandables[i]
+            adj_lst.append((chr(head + 65), chr(i + 65)))
+        x_pos = [0] * len(self.demandables)
+        for i in range(1, len(self.demandables)):
+            head = self.demandables[i]
+            x_pos[i] = x_pos[head] + 1
+        depth_count = [0] * (max(x_pos) + 1)
+        for i in x_pos:
+            depth_count[i] += 1
+        lst = list(map(lambda x, y: [x, y], demandables_list, x_pos ))
+        dic = {}
+        for i in range(len(depth_count)):
+            dic[i] = find_points(depth_count[i])
+        for i in range(len(lst)):
+            curr_list = lst[i]
+            curr_depth = curr_list[1]
+            get_y = dic[curr_depth].pop()
+            curr_list.append(get_y)
+        
+        G = nx.DiGraph()
+        for i in lst:
+            G.add_node(i[0], pos=(i[1], i[2]))
+        G.add_edges_from(adj_lst)
+        pos = nx.get_node_attributes(G, 'pos')
+        plt.figure(figsize=(6, 6))
+        nx.draw(G, pos, with_labels=True, node_size=750, node_color='lightblue', font_size=12, font_weight='bold', width=2,
+        arrowstyle='<-', arrowsize=15)
+        plt.axis('equal')
+        plt.show()
+        
     def take_vector(self, array):
         """Assign the array to the s_S_list
 
@@ -132,11 +182,11 @@ class State:
             big_S = self.s_S_list[point + 1]
             demandable.change_order_point(small_s, big_S)
             
-    def reset(self):
+    def reset(self, amount=65):
         """Resets state
         """
         for demandable in self.changeable_network:
-            demandable.reset()
+            demandable.reset(amount)
         self.demand_list = None
         self.s_S_list = None
         self.rewards = 0
@@ -166,6 +216,7 @@ class State:
         self.root.update_all_demand(self.demand_list[t], t)
         self.root.update_all_cost(t)
         self.rewards += self.root.calculate_curr_profit(t)
+        self.rewards_list.append(self.root.calculate_curr_profit(t))
 
 
     def calculate_profits(self):
@@ -173,6 +224,18 @@ class State:
     
     def print_state(self, t):
         return "time " + str(t) +": \n" + self.root.print_upstream_state()
+    
+    def plot_rewards(self):
+        df = pd.DataFrame(columns=["time", "rewards"])
+        for i, val in enumerate(self.rewards_list):
+            df.loc[len(df.index)] = [i, val]
+        fig, ax = plt.subplots(figsize=(11, 6))
+        sns.pointplot(data=df, x='time', y='rewards', ax=ax)
+        # label points on the plot
+        # for x, y in zip(df['time'], df['cost']):
+        #     plt.text(x = x, y = y+10, s = "{:.0f}".format(y), color = "purple") 
+        # # sns.relplot(kind='line', data=df, x='time', y='cost', hue='type')
+        plt.show()
     
 
 

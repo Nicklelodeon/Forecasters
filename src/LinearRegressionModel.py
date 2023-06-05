@@ -4,16 +4,16 @@ import statsmodels.api as sm
 from MLGenerateData import MLGenerateData
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error as MSE
+from sklearn.metrics import mean_absolute_error as MAE
+from sklearn.metrics import mean_absolute_percentage_error as MAPE
+import numpy as np 
 
 
-data = MLGenerateData()
-data.create_data()
+data = pd.read_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/othermldata.csv")
 
-largest = max(data.df['profit'])
-if abs(min(data.df['profit'])) > largest:
-    largest = abs(min(data.df['profit']))
-target = data.df['profit'] / largest
-predictors = data.df.drop(['profit'], axis=1)
+
+target = data['profit']
+predictors = data.drop(['profit'], axis=1)
 X_train, X_test, y_train, y_test = train_test_split(predictors, target, test_size=0.33, random_state=42)
 n_cols = predictors.shape[1]
 
@@ -37,5 +37,12 @@ model = sm.OLS(y_train.astype(float), X_train.astype(float)).fit()
 X_test = sm.add_constant(X_test)
 preds = model.predict(X_test.astype(float))
 
+def smape(A, F):
+    return 100/len(A) * np.sum(2 * np.abs(F - A) / (np.abs(A) + np.abs(F)))
+
 print(model.summary())
+print("mse: " + str(MSE(y_test, preds)))
+print("mae: " + str(MAE(y_test, preds)))
+print("mape: " + str(MAPE(y_test, preds)))
+print("smape: " + str(smape(y_test, preds)))
 

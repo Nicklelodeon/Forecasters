@@ -11,12 +11,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from torchmetrics import MeanAbsolutePercentageError
  
-data = pd.read_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
+# data = pd.read_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
+data = pd.read_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/othermldata.csv")
 
-# largest = max(data.df['profit'])
-# if abs(min(data.df['profit'])) > largest:
-#     largest = abs(min(data.df['profit']))
-# target_df = data.df['profit'] / largest
+
+#code adapted from https://machinelearningmastery.com/building-a-regression-model-in-pytorch/
 target_df = data['profit']
 target = torch.tensor(target_df)
 predictors = torch.tensor(data.drop(['profit'], axis=1).to_numpy(dtype=np.float64))
@@ -47,7 +46,8 @@ model = nn.Sequential(
 # for param in model.parameters():
 #     param.requires_grad = True
 # loss function and optimizer
-loss_fn = MeanAbsolutePercentageError()  # mean square error
+# loss_fn = nn.L1Loss()  # mean square error
+loss_fn = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
  
 n_epochs = 2000   # number of epochs to run
