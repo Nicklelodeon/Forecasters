@@ -1,5 +1,4 @@
 from Demandable import Demandable
-import queue
 
 class Retailer(Demandable):
     def __init__(self, name, selling_price):

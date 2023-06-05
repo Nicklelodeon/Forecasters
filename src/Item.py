@@ -23,6 +23,3 @@ class Item:
 
     def __hash__(self):
         return hash(self.name)
-    
-    def __lt__(self, other):
-        return self.name < other.name

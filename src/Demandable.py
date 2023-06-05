@@ -1,13 +1,9 @@
 import numpy as np
 from Item import Item
 from Stochastic_Lead_Time import Stochastic_Lead_Time
-<<<<<<< HEAD
-import queue
-=======
 import matplotlib.pyplot as plt
 import pandas as pd 
 import seaborn as sns 
->>>>>>> refs/remotes/origin/main
 
 np.random.seed(1234)
 
@@ -20,7 +16,7 @@ class Demandable:
         self.inv_map = {} ## Has the inventory to Demandable
         self.upstream = []  ## Each upstream Demandables
         self.downstream = [] ## Each downstream Demandables
-        self.holding_cost = holding_cost 
+        self.holding_cost = holding_cost  ## Possibly change for each item. perhaps a multiplier
         self.ordering_costs = []
         self.holding_costs = []
         self.backorder_costs = []
@@ -31,7 +27,7 @@ class Demandable:
         self.stochastic_lead_time = None
         #self.lead_time = 2
         self.costs = []
-        self.arrivals = queue.PriorityQueue()
+        self.arrivals = []
         self.s = s
         self.S = S
         self.total_costs = 0
@@ -44,7 +40,7 @@ class Demandable:
         self.backorder_costs = []
         self.backorder = 0
         self.costs = []
-        self.arrivals = queue.PriorityQueue()
+        self.arrivals = []
         self.total_costs = 0
         self.inv_level_plot = []
 
@@ -199,6 +195,7 @@ class Demandable:
             item (Item): Item added
             amount (int): amount of item to be adde
         """
+        
         self.add_item(item, amount)
         if self.downstream: # Check if list empty
             downstream_demandable = self.downstream[0]
@@ -236,14 +233,7 @@ class Demandable:
             t (int): timestamp
         """
         self.inv_pos = self.inv_level.copy()
-        while (self.arrivals.qsize() != 0 and self.arrivals.queue[0][0] == t):
-            #print("LOOOP")
-            curr_order = self.arrivals.get()
-            time, item, amt = curr_order
-            self.inv_level[item] += amt
-            self.inv_pos[item] += amt
-            
-        """ index = []
+        index = []
         for i in range(len(self.arrivals)):
             arrival = self.arrivals[i]
             time, item, amt = arrival
@@ -251,8 +241,7 @@ class Demandable:
                 self.inv_level[item] += amt
                 index.append(i)
             self.inv_pos[item] += amt
-        self.arrivals = [arrival for i, arrival in enumerate(self.arrivals) if i not in index] """
-        
+        self.arrivals = [arrival for i, arrival in enumerate(self.arrivals) if i not in index]
         if self.backorder > 0:
             amt_backordered = min(self.backorder, min(list(self.inv_level.values())))
             for item in self.inv_level:
@@ -400,15 +389,7 @@ class Demandable:
         return "inv pos: " + str(self.inv_pos)
 
     def print_orders(self):
-        temp = []
-        while (self.arrivals.qsize() != 0):
-            curr = self.arrivals.get()
-            temp.append(curr)
-        s = ''.join([str(x) for x in temp])
-        for order in temp:
-            self.arrivals.put(order)
-        #s = ''.join([str(x) for x in self.arrivals])
-        #print("end")
+        s = ''.join([str(x) for x in self.arrivals])
         return "orders: " + s
     
     def print_total_cost(self):
