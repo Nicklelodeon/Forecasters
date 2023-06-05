@@ -22,6 +22,19 @@ class GenerateDemandMonthly:
         return_demand.extend(demand)
         return return_demand
         
+    def simulate_poisson_no_season(self, periods=24, mean=30):
+        """Creates random demand with no season
+
+        Args:
+            periods (int): number of periods
+            mean (int, optional): mean of normal. Defaults to 20.
+            std (int, optional): std of normal. Defaults to 2.
+        """
+        return_demand = []
+        demand = np.round(np.random.poisson(mean, periods))
+        self.demand.extend(demand)
+        return_demand.extend(demand)
+        return return_demand
 
     def simulate_normal(self, year, mean=20, std=2):
         """Creates random demand with a monthly demand with z amt of years

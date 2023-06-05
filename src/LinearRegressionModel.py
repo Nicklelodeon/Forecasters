@@ -9,7 +9,7 @@ from sklearn.metrics import mean_absolute_percentage_error as MAPE
 import numpy as np 
 
 
-data = pd.read_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
+data = pd.read_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/othermldata.csv")
 
 
 target = data['profit']
