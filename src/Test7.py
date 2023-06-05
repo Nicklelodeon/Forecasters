@@ -3,30 +3,19 @@ from geneticalgorithm import geneticalgorithm as ga
 from State import State
 from GenerateDemandMonthly import GenerateDemandMonthly
 from GeneticAlgoState import GeneticAlgoState
-import time
-
 
 genstate = GeneticAlgoState()
 genstate.create_state([-1,0, 1, 1, 2, 2])
 
-""" start_time = time.time()
+def g(X):
+    return -1 * genstate.GArun_no_season(X) #7 parameters
 
-for i in range(250):
-    -1 * genstate.GArun2([40,90]* 12 * 3)
+#print(genstate.GArun_no_season([120,60,60,60,180,180,180]))
 
-end_time = time.time()
-
-run = (end_time - start_time)/250 
-
-print("On average, Program Ran for:", run)"""
-#0.04909294605255127
-def f(X):
-    return -1 * genstate.GArun2(X)
-
-varbound=np.array([[40,90]]*72)
+varbound=np.array([[120, 180],[20,60], [20,60], [20,60], [120, 180], [120, 180], [120, 180]])
 
 algorithm_param = {'max_num_iteration': 100,\
-                   'population_size':500,\
+                   'population_size':50,\
                    'mutation_probability':0.1,\
                    'elit_ratio': 0.01,\
                    'crossover_probability': 0.5,\
@@ -34,6 +23,8 @@ algorithm_param = {'max_num_iteration': 100,\
                    'crossover_type':'uniform',\
                    'max_iteration_without_improv':None}
 
-model=ga(function=f,dimension=72,variable_type='int',variable_boundaries=varbound, algorithm_parameters=algorithm_param)
 
-model.run()
+model2=ga(function=g,dimension=7,variable_type='int',variable_boundaries=varbound, algorithm_parameters=algorithm_param)
+
+model2.run()
+
