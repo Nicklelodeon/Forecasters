@@ -7,6 +7,21 @@ class GenerateDemandMonthly:
     def __init__(self):
         self.demand = []
         self.quantiles = []
+        
+    def simulate_normal_no_season(self, periods=24, mean=30, std = 4):
+        """Creates random demand with no season
+
+        Args:
+            periods (int): number of periods
+            mean (int, optional): mean of normal. Defaults to 20.
+            std (int, optional): std of normal. Defaults to 2.
+        """
+        return_demand = []
+        demand = np.round(np.random.normal(mean, std, periods))
+        self.demand.extend(demand)
+        return_demand.extend(demand)
+        return return_demand
+        
 
     def simulate_normal(self, year, mean=20, std=2):
         """Creates random demand with a monthly demand with z amt of years
