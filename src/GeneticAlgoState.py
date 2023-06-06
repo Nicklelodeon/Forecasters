@@ -3,10 +3,10 @@ from State import State
 from GenerateDemandMonthly import GenerateDemandMonthly
 
 class GeneticAlgoState(State):
-    def __init__(self):
+    def __init__(self, iteration = 30):
         super().__init__()
         self.demand_class = GenerateDemandMonthly()
-        self.iteration = 30
+        self.iteration = 100
         #self.demand_class.simulate_normal(self.iteration)
         self.demand_temp = []#np.array(self.demand_class.get_demand())
         self.demand_matrix = []#np.reshape(self.demand_temp, (self.iteration, 12))
