@@ -9,14 +9,17 @@ optimizer = BayesianOptimization(
     random_state=0,
     allow_duplicate_points=True
 )
+
 optimizer.maximize(
     init_points = 100,
     n_iter=1000
 )
+
 print(optimizer.max)
 
 # {'target': 85380.59333239481, 'params': {'S_DC1': 140.84650302538822, 'S_DC2': 154.50005745106537, 'S_r1': 180.0, 's_DC1': 31.435088094844822, 's_DC2': 60.0, 's_r1': 60.0, 'start_inventory': 147.88383597910882}}
 
+# {'target': 92887.05363469524, 'params': {'S_DC1': 141.23894569104658, 'S_DC2': 138.93139864545046, 'S_r1': 193.88720399241168, 's_DC1': 60.0, 's_DC2': 53.915753883847124, 's_r1': 80.0, 'start_inventory': 167.75320393076507}}
 #code adapted from https://machinelearningmastery.com/what-is-bayesian-optimization/
 
 
