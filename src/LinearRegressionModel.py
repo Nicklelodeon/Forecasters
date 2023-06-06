@@ -8,9 +8,10 @@ from sklearn.metrics import mean_absolute_error as MAE
 from sklearn.metrics import mean_absolute_percentage_error as MAPE
 import numpy as np 
 
-
-data = pd.read_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/othermldata.csv")
-
+data = pd.read_csv("src/6_onlinemldata.csv")
+# data = pd.read_csv("src/6_24months_mldata.csv")
+# data = pd.read_csv("src/72_onlinemldata.csv")
+# data = pd.read_csv("src/144_mldata.csv.csv")
 
 target = data['profit']
 predictors = data.drop(['profit'], axis=1)

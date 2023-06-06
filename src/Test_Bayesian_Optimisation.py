@@ -2,7 +2,7 @@ from BayesianOptimisation import BayesianOptimisation
 from bayes_opt import BayesianOptimization
 import random
 
-pbounds = {'start_inventory': (120, 180), 's_DC1': (20, 60), 'S_DC1': (120, 180), 's_DC2': (20, 60), 'S_DC2': (120, 180), 's_r1':(20, 80), 'S_r1': (120, 200)}
+pbounds = {'start_inventory': (120, 200), 's_DC1': (20, 80), 'S_DC1': (120, 200), 's_DC2': (20, 80), 'S_DC2': (120, 200), 's_r1':(20, 80), 'S_r1': (120, 200)}
 optimizer = BayesianOptimization(
     f=BayesianOptimisation,
     pbounds=pbounds,
