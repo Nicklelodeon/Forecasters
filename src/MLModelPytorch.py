@@ -1,5 +1,4 @@
 import copy
-from MLGenerateData import MLGenerateData
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -11,8 +10,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from torchmetrics import MeanAbsolutePercentageError
  
-# data = pd.read_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
-data = pd.read_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/othermldata.csv")
+
+data = pd.read_csv("src/6_onlinemldata.csv")
+# data = pd.read_csv("src/6_24months_mldata.csv")
+# data = pd.read_csv("src/72_onlinemldata.csv")
+# data = pd.read_csv("src/144_mldata.csv.csv")
 
 
 #code adapted from https://machinelearningmastery.com/building-a-regression-model-in-pytorch/
@@ -35,7 +37,7 @@ y_test = torch.tensor(y_test, dtype=torch.float32).reshape(-1, 1)
  
 # Define the model
 model = nn.Sequential(
-    nn.Linear(85, 800),
+    nn.Linear(n_cols, 800),
     nn.ReLU(),
     nn.Linear(800, 400),
     nn.ReLU(),
