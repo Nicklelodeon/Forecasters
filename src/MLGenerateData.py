@@ -95,35 +95,45 @@ class MLGenerateData:
     
     def create_data(self):
         self.create_df_col_names()
-        data = pd.read_csv('./src/data.csv')
-        for i in data['Order_Demand']:
-            elements = re.findall(r'\d+', i)
-            demand = [int(x) for x in elements]
-            if (len(demand) == 12):
-                mean = np.mean(demand)
-                std = np.std(demand)
-                #print('demand: ' + str(demand))
-                # log1 = self.logic(random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), \
-                #     random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), demand)
-                # if log1 is not None:
-                #     self.df = self.update_df(self.df, log1)
+        data = pd.read_csv('src/cleaned_car_data.csv')
+        all_demand = []
+        count = 1
+        for i in data.columns[1:]:
+            demand = [x for x in data[i]]
+            all_demand.extend(demand)
+            mean = np.mean(demand)
+            std = np.std(demand)
+            if count % 2 == 0:
                 s = [round(x) for x in random.choices(range(round(np.mean(demand) * 2), round(np.mean(demand) * 4)), k=24)]
                 S = [round(x) for x in random.choices(range(round(np.mean(demand) * 5), round(np.mean(demand) * 9)), k=24)]
-                # print("s: " + str(s))
-                # print("S: " + str(S))
-                # log1 = self.logic(s, S, s, S, s, S, demand)
-                # if log1 is not None:
-                #     self.df = self.update_df(self.df, log1)
+                log1 = self.logic(s, S, s, S, s, S, all_demand)
+                if log1 is not None:
+                    self.df = self.update_df(self.df, log1)
+                all_demand = []
+            #print('demand: ' + str(demand))
+            # log1 = self.logic(random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), \
+            #     random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), demand)
+            # if log1 is not None:
+            #     self.df = self.update_df(self.df, log1)
+            # print("s: " + str(s))
+            # print("S: " + str(S))
+            # log1 = self.logic(s, S, s, S, s, S, demand)
+            # if log1 is not None:
+            #     self.df = self.update_df(self.df, log1)
+            for z in range(100):
+                s = [round(x) for x in random.choices(range(round(np.mean(demand) * 2), round(np.mean(demand) * 4)), k=24)]
+                S = [round(x) for x in random.choices(range(round(np.mean(demand) * 5), round(np.mean(demand) * 9)), k=24)]
                 log2 = self.logic_normal(s, S, s, S, s, S, mean, std, 100)
                 if log2 is not None:
                     self.df = self.update_df(self.df, log2)
                 log3 = self.logic_poisson(s, S, s, S, s, S, mean, 100)
                 if log3 is not None:
                     self.df = self.update_df(self.df, log3)
+            count += 1
 
 
 data = MLGenerateData()
 data.create_data()
-# data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
+data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/144_car_data.csv")
 
-data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/144_mldata.csv")
+# data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/144_mldata.csv")
