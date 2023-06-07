@@ -27,40 +27,46 @@ import datetime
 # plt.show()
 
 
-df = pd.read_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/norway_new_car_sales_by_month.csv")
-# df['bymonth'] = [datetime.datetime(x['Year'], x['Month'], 1) for y in range(len(df)) for x in df.iloc[y]]
-# df['bymonth'] = [print(x) for y in range(df.shape[0]) for x in df.iloc[y]]
-new_lst = []
-for i in range(df.shape[0]):
+df = pd.read_csv("./src/norway_new_car_sales_by_month.csv")
+
+store = {}
+
+for i in range(len(df) - 1):
     x = df.iloc[i]
-    new_lst.append(datetime.datetime(int(x['Year']), int(x['Month']), 1) )
+    if x['Year'] in store:
+        store[x['Year']].append(x['Quantity'])
+    else:
+        store[x['Year']] = [x['Quantity']]
 
-df['date'] = new_lst
-print(df)
+new_df = pd.DataFrame.from_dict(store)
+new_df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/cleaned_car_data.csv")
+
+
+
+## visualise data spread
+# new_lst = []
+# for i in range(df.shape[0]):
+#     x = df.iloc[i]
+#     new_lst.append(datetime.datetime(int(x['Year']), int(x['Month']), 1) )
+
+# df['date'] = new_lst
 # print(df)
-# sns.relplot(kind="line", x="date", y="Quantity", data=df)
-# plt.xticks([datetime.datetime(x, 1 , 1) for x in range(2007, 2017)])
-count1 = 1
-# new_df = df[df['Year'] == ]
-# ax1 = plt.subplot(2, 5, 1)
-# plt.plot('Mon')
-for i in range(2007, 2017):
-    plt.yticks([])
-    new_df = df[df['Year'] == i]
-    plt.subplot(2, 5, count1)
-    plt.plot('Month', 'Quantity', data=new_df)
-    count1 += 1
-    plt.xticks(range(1, 13, 2))
-plt.yticks([])
-plt.show()
+# count1 = 1
+# for i in range(2007, 2017):
+#     plt.yticks([])
+#     new_df = df[df['Year'] == i]
+#     plt.subplot(2, 5, count1)
+#     plt.plot('Month', 'Quantity', data=new_df)
+#     count1 += 1
+#     plt.xticks(range(1, 13, 2))
+# plt.yticks([])
+# plt.show()
 
 
 
-# sns.relplot(x="Month", y)
 
-# print(new_df[new_df['Product_Code'] == 'Product_0011'])
-# new_df = new_df.groupby(['Product_Code', 'Year'])['Order_Demand'].apply(list)
-# new_df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/data.csv")
+
+
 
 
 
