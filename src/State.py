@@ -21,6 +21,7 @@ class State:
         self.root = Basic(chr(65))
         self.demandables = None
         self.changeable_network = []
+        self.network_list = None
         self.demand_list = None
         self.s_S_list = None
         self.rewards = 0
@@ -76,9 +77,17 @@ class State:
             rand_item = Item(str(np.random.randint(1, 1000)), cost)
             end_demandable.add_item_downstream(rand_item, amount)
         
+        self.network_list = network_list
         self.create_changeable_network()
         self.root.set_optimal_selling_price(10)
         
+    def show_network2(self):
+        adj_list = []
+        demandable_to_string = {}
+        
+        for demandable in self.network_list:
+            print(type(demandable))
+    
     def show_network(self):
         def find_points(i):
             lst = []
@@ -104,8 +113,10 @@ class State:
             depth_count[i] += 1
         lst = list(map(lambda x, y: [x, y], demandables_list, x_pos ))
         dic = {}
+        
         for i in range(len(depth_count)):
             dic[i] = find_points(depth_count[i])
+            
         for i in range(len(lst)):
             curr_list = lst[i]
             curr_depth = curr_list[1]

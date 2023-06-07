@@ -6,7 +6,8 @@ from GenerateDemandMonthly import GenerateDemandMonthly
 
 np.random.seed(1234)
 
-def BayesianOptimisation(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+def BayesianOptimisation(arr):
+    start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1 = arr
     if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
         return -100000
     demand = GenerateDemandMonthly()
