@@ -15,7 +15,7 @@ class GeneticAlgoState(State):
         demand = self.demand_class.simulate_normal_no_season(periods = 24 * self.iteration)
         
         self.demand_temp = demand
-        self.demand_matrix = np.reshape(self.demand_temp, (24, self.iteration))
+        self.demand_matrix = np.reshape(self.demand_temp, (self.iteration, 24))
         
         for j in range(1,len(self.changeable_network)):
             small_s = X[j]
