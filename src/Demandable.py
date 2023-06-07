@@ -25,7 +25,8 @@ class Demandable:
         self.backorder = 0
         self.backorder_cost = backorder_cost
         self.stochastic_lead_time = None
-        #self.lead_time = 2
+        self.lead_time = [-1, 0] #Time and lead_time
+        
         self.costs = []
         self.arrivals = []
         self.s = s
@@ -111,6 +112,16 @@ class Demandable:
             self.inv_level[item] -= min_item
             self.inv_pos[item] -= num_get
         return min_item
+    
+    def get_lead_time(self, t):
+        curr_lead_time = self.lead_time
+        if t == self.lead_time[0]:
+            return self.lead_time[1]
+        else:
+            new_lead_time = self.stochastic_lead_time.get_lead_time()
+            self.lead_time = [t, new_lead_time]
+            return new_lead_time
+    
 
     def check_s(self, item, t):
         """recursively checks if inv pos < s for all upstream demandables. Adds order cost to total cost
@@ -125,7 +136,8 @@ class Demandable:
                 amt = self.S - self.inv_pos[item]
                 ordered_amt = demandable.produce_order(item, amt)
                 if ordered_amt > 0:
-                    lead_time = self.stochastic_lead_time.get_lead_time()
+                    lead_time = demandable.get_lead_time(t)
+                    #lead_time = self.stochastic_lead_time.get_lead_time() #removed to get constant lead time for each dc at each t
                     self.arrivals.append([t + lead_time, item, ordered_amt])
                     self.ordering_costs[t] += ordered_amt * item.get_cost()
                     self.total_costs += ordered_amt * item.get_cost()
