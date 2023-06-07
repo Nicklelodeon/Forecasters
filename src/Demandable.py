@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import pandas as pd 
 import seaborn as sns 
 
-np.random.seed(1234)
 
 
 class Demandable:

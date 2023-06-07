@@ -3,13 +3,11 @@ from Item import Item
 from BayesianState import BayesianState
 import numpy as np
 from GenerateDemandMonthly import GenerateDemandMonthly 
+from State import State
 
-
-def BayesianOptimisation(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
-    if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
-        return -100000
+def validate(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
     demand = GenerateDemandMonthly()
-    state = BayesianState()
+    state = State()
     state.create_state([-1 ,0, 1, 1, 2, 2], amount=start_inventory)
     state.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
     state.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
@@ -29,4 +27,8 @@ def BayesianOptimisation(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1
         state.reset(start_inventory)
     return total_sum / 100
 
+# x = validate(158, 71, 182, 67, 179, 80, 134)
+x = validate(122, 78, 185, 57, 152, 78, 182)
+print(x)
 
+# [31.0, 34.0, 32.0, 32.0, 32.0, 27.0, 27.0, 21.0, 30.0, 36.0, 27.0, 35.0, 29.0, 34.0, 36.0, 28.0, 22.0, 28.0, 35.0, 25.0, 30.0, 29.0, 31.0, 25.0]
