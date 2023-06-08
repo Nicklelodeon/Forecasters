@@ -79,7 +79,7 @@ class State:
         
         self.network_list = network_list
         self.create_changeable_network()
-        self.root.set_optimal_selling_price(2)
+        self.root.set_optimal_selling_price(1.5)
         
     def show_network2(self):
         adj_list = []
