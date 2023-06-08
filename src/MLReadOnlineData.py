@@ -29,27 +29,30 @@ import datetime
 
 df = pd.read_csv("./src/norway_new_car_sales_by_month.csv")
 
-store = {}
+# store = {}
 
-for i in range(len(df) - 1):
-    x = df.iloc[i]
-    if x['Year'] in store:
-        store[x['Year']].append(x['Quantity'])
-    else:
-        store[x['Year']] = [x['Quantity']]
-
-new_df = pd.DataFrame.from_dict(store)
-new_df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/cleaned_car_data.csv")
-
-
-
-## visualise data spread
-# new_lst = []
-# for i in range(df.shape[0]):
+# for i in range(len(df) - 1):
 #     x = df.iloc[i]
-#     new_lst.append(datetime.datetime(int(x['Year']), int(x['Month']), 1) )
+#     if x['Year'] in store:
+#         store[x['Year']].append(x['Quantity'])
+#     else:
+#         store[x['Year']] = [x['Quantity']]
 
-# df['date'] = new_lst
+# new_df = pd.DataFrame.from_dict(store)
+# new_df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/cleaned_car_data.csv")
+
+
+
+# visualise data spread
+new_lst = []
+for i in range(df.shape[0]):
+    x = df.iloc[i]
+    new_lst.append(datetime.datetime(int(x['Year']), int(x['Month']), 1) )
+
+df['date'] = new_lst
+
+plt.plot('date', 'Quantity', data=df)
+plt.show()
 # print(df)
 # count1 = 1
 # for i in range(2007, 2017):
