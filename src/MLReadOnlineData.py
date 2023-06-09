@@ -27,7 +27,52 @@ import datetime
 # plt.show()
 
 
-df = pd.read_csv("./src/norway_new_car_sales_by_month.csv")
+df = pd.read_csv("./src/TOTALSA.csv")
+
+# store = {}
+# for i in range(len(df)):
+#     x = df.iloc[i]
+#     date = x['DATE'][:4]
+#     if date == '2023':
+#         continue
+#     if date not in store:
+#         store[date] = [x['TOTALSA']]
+#     else:
+#         new_lst = store[date]
+#         new_lst.append(x['TOTALSA'])
+#         store[date] = new_lst
+
+# new_df = pd.DataFrame.from_dict(store)
+# new_df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/US_cleaned_car_data.csv")
+
+
+
+# plt.plot('DATE', 'TOTALSA', data=df)
+# plt.show()
+
+print(df['TOTALSA'].mean())
+print(df['TOTALSA'].std())
+
+years = [int(x[:4]) for x in df['DATE']]
+months = [int(x[5:7]) for x in df['DATE']]
+df['Year'] = years
+df['Month'] = months
+
+# count1 = 1
+# for i in range(1976, 2024):
+#     if i == 1976:
+#         plt.title('Distribution of monthly demand over 48 years')
+#     plt.yticks([])
+#     new_df = df[df['Year'] == i]
+#     # print(df['Year'] == i)
+#     # print(df[df['Year'] == i])
+#     plt.subplot(10, 5, count1)
+#     plt.plot('Month', 'TOTALSA', data=new_df)
+#     count1 += 1
+#     plt.xticks(range(1, 13, 2))
+# plt.yticks([])
+
+# plt.show()
 
 # store = {}
 
@@ -43,16 +88,16 @@ df = pd.read_csv("./src/norway_new_car_sales_by_month.csv")
 
 
 
-# visualise data spread
-new_lst = []
-for i in range(df.shape[0]):
-    x = df.iloc[i]
-    new_lst.append(datetime.datetime(int(x['Year']), int(x['Month']), 1) )
+# # visualise data spread
+# new_lst = []
+# for i in range(df.shape[0]):
+#     x = df.iloc[i]
+#     new_lst.append(datetime.datetime(int(x['Year']), int(x['Month']), 1) )
 
-df['date'] = new_lst
+# df['date'] = new_lst
 
-plt.plot('date', 'Quantity', data=df)
-plt.show()
+# plt.plot('date', 'Quantity', data=df)
+# plt.show()
 # print(df)
 # count1 = 1
 # for i in range(2007, 2017):
