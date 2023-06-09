@@ -80,23 +80,7 @@ class State:
         self.network_list = network_list
         self.create_changeable_network()
         self.root.set_optimal_selling_price(1.5)
-        
-    """ def show_network2(self):
-        def find_points(i):
-            lst = []
-            x = i - 1
-            interval = 2 * x
-            small_interval = interval/(i+1)
-            for i in range(1, i+1):
-                lst.append(x - (i * small_interval))
-            return lst
-        
-        adj_list = []
-        demandable_to_string = {}
-        
-        for demandable in self.network_list:
-            print(type(demandable)) """
-    
+            
     def show_network(self):
         """Creates a tree graph of the supply chain system
         """

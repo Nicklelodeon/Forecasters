@@ -8,7 +8,7 @@ from sklearn.metrics import mean_absolute_error as MAE
 from sklearn.metrics import mean_absolute_percentage_error as MAPE
 import numpy as np 
 
-data = pd.read_csv("src/6_onlinemldata.csv")
+data = pd.read_csv("src/6_24months_car_data.csv")
 # data = pd.read_csv("src/6_24months_mldata.csv")
 # data = pd.read_csv("src/72_onlinemldata.csv")
 # data = pd.read_csv("src/144_mldata.csv.csv")
