@@ -79,16 +79,27 @@ class State:
         
         self.network_list = network_list
         self.create_changeable_network()
-        self.root.set_optimal_selling_price(2)
+        self.root.set_optimal_selling_price(1.5)
         
-    def show_network2(self):
+    """ def show_network2(self):
+        def find_points(i):
+            lst = []
+            x = i - 1
+            interval = 2 * x
+            small_interval = interval/(i+1)
+            for i in range(1, i+1):
+                lst.append(x - (i * small_interval))
+            return lst
+        
         adj_list = []
         demandable_to_string = {}
         
         for demandable in self.network_list:
-            print(type(demandable))
+            print(type(demandable)) """
     
     def show_network(self):
+        """Creates a tree graph of the supply chain system
+        """
         def find_points(i):
             lst = []
             x = i - 1
@@ -105,10 +116,12 @@ class State:
             head = self.demandables[i]
             adj_lst.append((chr(head + 65), chr(i + 65)))
         x_pos = [0] * len(self.demandables)
+        
         for i in range(1, len(self.demandables)):
             head = self.demandables[i]
             x_pos[i] = x_pos[head] + 1
         depth_count = [0] * (max(x_pos) + 1)
+        
         for i in x_pos:
             depth_count[i] += 1
         lst = list(map(lambda x, y: [x, y], demandables_list, x_pos ))
@@ -123,9 +136,24 @@ class State:
             get_y = dic[curr_depth].pop()
             curr_list.append(get_y)
         
+        dic2 = {}
+        for demandable in self.network_list:
+            name = demandable.name
+            if isinstance(demandable, Retailer):
+                dic2[name] = "Retailer: \n" + name
+            elif isinstance(demandable, DistributionCenter):
+                dic2[name] = "DC: \n" + name
+            else:
+                dic2[name] = "Supplier: \n" + name
+        
+        for i in range(len(adj_lst)):
+            pos1 = adj_lst[i][0]
+            pos2 = adj_lst[i][1]
+            adj_lst[i] = (dic2[pos1], dic2[pos2])
+            
         G = nx.DiGraph()
         for i in lst:
-            G.add_node(i[0], pos=(i[1], i[2]))
+            G.add_node(dic2[i[0]], pos=(i[1], i[2]))
         G.add_edges_from(adj_lst)
         pos = nx.get_node_attributes(G, 'pos')
         plt.figure(figsize=(6, 6))

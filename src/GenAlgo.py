@@ -15,13 +15,13 @@ def Genetic_Algo_No_Season(array):
     state.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
     state.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
     total_sum = 0
-    for z in range(100):
+    for z in range(35):
         state.set_demand_list(demand.simulate_normal_no_season())
         for i in range(len(state.demand_list)):
             state.update_state(i)
         total_sum += state.rewards
         state.reset(start_inventory)
-    return total_sum / 100
+    return total_sum / 35
 
 def Genetic_Algo_Seasonal(array): #72 
     demand = GenerateDemandMonthly()
