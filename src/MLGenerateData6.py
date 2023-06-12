@@ -88,10 +88,9 @@ class MLGenerateData6:
     
     def create_data(self):
         self.create_df_col_names()
-        data = pd.read_csv('src/cleaned_car_data.csv')
+        data = pd.read_csv('src/US_cleaned_car_data.csv')
         all_demand = []
         count = 1
-        print(data.columns[1:])
         for i in data.columns[1:]:
             demand = [x for x in data[i]]
             all_demand.extend(demand)
@@ -113,7 +112,7 @@ class MLGenerateData6:
             # log1 = self.logic(random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), demand)
             # if log1 is not None:
             #     self.df = self.update_df(self.df, log1)
-            for x in range(100):
+            for x in range(50):
                 log2 = self.logic_normal(random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), mean, std, 100)
                 if log2 is not None:
                     self.df = self.update_df(self.df, log2)
@@ -123,8 +122,8 @@ class MLGenerateData6:
             count += 1
 
 
-data = MLGenerateData6()
-data.create_data()
-# data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
+# data = MLGenerateData6()
+# data.create_data()
+# # data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
 
-data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/6_24months_car_data.csv")
+# data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/6_24months_US_car_data.csv")
