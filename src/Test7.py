@@ -7,7 +7,7 @@ from GenAlgo import Genetic_Algo_No_Season
 from GenAlgo import Genetic_Algo_Seasonal
 
 
-algorithm_param = {'max_num_iteration': 100,\
+""" algorithm_param = {'max_num_iteration': 100,\
                    'population_size':50,\
                    'mutation_probability':0.1,\
                    'elit_ratio': 0.01,\
@@ -17,7 +17,7 @@ algorithm_param = {'max_num_iteration': 100,\
                    'max_iteration_without_improv':None}
 
 def objective(X):
-    return -1 * Genetic_Algo_No_Season(X) #7 parameters
+    return -1 * Genetic_Algo_No_Season(X) #7 parameters """
 """ def g(X):
     return -1 * genstate.GArun_no_season(X) #7 parameters """
 
