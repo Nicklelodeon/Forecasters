@@ -68,6 +68,7 @@ class MLGenerateData:
         return [demand, [s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1], total/runs]
 
     def update_df(self, df, data):
+        print('i')
         new_lst = []
         new_lst.extend(data[0])
         new_lst.extend([x for sub_list in data[1] for x in sub_list])
@@ -95,11 +96,13 @@ class MLGenerateData:
     
     def create_data(self):
         self.create_df_col_names()
-        data = pd.read_csv('src/cleaned_car_data.csv')
+        # data = pd.read_csv('src/cleaned_car_data.csv')
+        data = pd.read_csv('src/US_cleaned_car_data.csv')
+
         all_demand = []
         count = 1
         for i in data.columns[1:]:
-            demand = [x for x in data[i]]
+            demand = [round(x) for x in data[i]]
             all_demand.extend(demand)
             mean = np.mean(demand)
             std = np.std(demand)
@@ -120,7 +123,7 @@ class MLGenerateData:
             # log1 = self.logic(s, S, s, S, s, S, demand)
             # if log1 is not None:
             #     self.df = self.update_df(self.df, log1)
-            for z in range(100):
+            for z in range(50):
                 s = [round(x) for x in random.choices(range(round(np.mean(demand) * 2), round(np.mean(demand) * 4)), k=24)]
                 S = [round(x) for x in random.choices(range(round(np.mean(demand) * 5), round(np.mean(demand) * 9)), k=24)]
                 log2 = self.logic_normal(s, S, s, S, s, S, mean, std, 100)
@@ -132,8 +135,8 @@ class MLGenerateData:
             count += 1
 
 
-data = MLGenerateData()
-data.create_data()
-data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/144_car_data.csv")
+# data = MLGenerateData()
+# data.create_data()
+# data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/144_US_car_data.csv")
 
 # data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/144_mldata.csv")
