@@ -5,8 +5,6 @@ import matplotlib.pyplot as plt
 import pandas as pd 
 import seaborn as sns 
 
-
-
 class Demandable:
     def __init__(self, name, holding_cost, backorder_cost, s, S):
         self.name = name
@@ -131,6 +129,8 @@ class Demandable:
             self.arrivals.append([t + lead_time, item, ordered_amt])
             self.ordering_costs[t] += ordered_amt * item.get_cost()
             self.total_costs += ordered_amt * item.get_cost()
+            
+            self.inv_pos[item] += ordered_amt
 
     def produce_order(self, item, amt):
         """Determine amount to be ordered
@@ -397,11 +397,11 @@ class Demandable:
     def print_holding_cost(self):
         return "holding cost: " + str(self.holding_costs[max(0, len(self.holding_costs) - 1)])
     
-    def print_ordering_cost(self):
-        return "ordering cost: " + str(self.ordering_costs[max(0, len(self.ordering_costs) - 1)])
+    """ def print_ordering_cost(self):
+        return "ordering cost: " + str(self.ordering_costs[max(0, len(self.ordering_costs) - 1)]) """
     
     def print_backorder_cost(self):
-        return "backorder cost: " + str(self.backorder_costs[max(0, len(self.backorder_costs) - 1)])
+        return "backorder unit: " + str(self.backorder) + " backorder cost: " + str(self.backorder_costs[max(0, len(self.backorder_costs) - 1)])
 
     def print_inv_map(self):
         return "inv map: " + str(self.inv_map)
@@ -412,13 +412,10 @@ class Demandable:
             string += "\n" + demandable.print_upstream_state()
         return string
 
-    def print_s(self):
-        return "s: " + str(self.s) + "\n" + "S: " + str(self.S)
-    
+
     def __str__(self):
         return self.name + "\n" + self.print_inv_level() + "\n" + self.print_inv_pos() + "\n" + self.print_orders() + "\n" + self.print_total_cost() \
-        + "\n" + self.print_holding_cost() + "\n" + self.print_ordering_cost() + "\n" + self.print_backorder_cost() + "\n" + self.print_inv_map() \
-        + "\n" + self.print_s()
+        + "\n" + self.print_holding_cost() + "\n" + self.print_backorder_cost() + "\n" + self.print_inv_map() 
     
     def __repr__(self):
         return "Demandable({})".format(self.name)

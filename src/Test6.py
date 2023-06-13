@@ -13,9 +13,9 @@ state = State()
 state.create_state(demandable_state)
 
 state.set_demand_list(demand.simulate_normal_no_season())
-state.show_network()
+#state.show_network()
 print(state.demand_list)
-""" for i in range(len(state.demand_list)):
+for i in range(len(state.demand_list)):
     print("-----------------------------")
     print("Demand " , state.demand_list[i])
     state.update_state(i)
@@ -26,4 +26,3 @@ print(state.demand_list)
 # print(state.root.plot_cost())
 print(state.root.plot_inv_level())
 # print(state.plot_rewards())
- """
