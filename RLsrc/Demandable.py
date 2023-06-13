@@ -12,10 +12,11 @@ class Demandable:
         self.name = name
         self.inv_level = {}  ## Each item has multiple inv level
         self.inv_pos = {}
+        self.int_map_to_inv = []
         self.inv_map = {} ## Has the inventory to Demandable
         self.upstream = []  ## Each upstream Demandables
         self.downstream = [] ## Each downstream Demandables
-        self.holding_cost = holding_cost  ## Possibly change for each item. perhaps a multiplier
+        self.holding_cost = holding_cost 
         self.ordering_costs = []
         self.holding_costs = []
         self.backorder_costs = []
@@ -28,8 +29,6 @@ class Demandable:
         
         self.costs = []
         self.arrivals = []
-        self.s = s
-        self.S = S
         self.total_costs = 0
 
     def reset(self, amount=65):
@@ -43,6 +42,18 @@ class Demandable:
         self.arrivals = []
         self.total_costs = 0
         self.inv_level_plot = []
+    
+    def get_state(self):
+        lst = np.zeros(2 * len(self.int_map_to_inv))
+        
+        for i in range(len(self.int_map_to_inv)):
+            item = self.int_map_to_inv[i]
+            item_pos = self.inv_pos[item]
+            item_level = self.inv_level[item]
+            lst[i*2] = item_pos
+            lst[i*2+1] = item_level
+            
+        return lst
 
     def add_lead_time(self, stl):
         """Assign stochastic lead time
@@ -51,44 +62,6 @@ class Demandable:
             stl (Stochastic Lead Time): Samples lead time from distribution
         """
         self.stochastic_lead_time = stl
-
-        
-    def change_order_point(self, new_small_s, new_big_s):
-        """Changes lower and upper bound s and S
-
-        Args:
-            new_small_s (int): new small s
-            new_big_s (int): new big S
-        """
-        self.change_s(new_small_s)
-        self.change_S(new_big_s)
-
-    def change_s(self, new_s):
-        """Changes lower bound s
-
-        Args:
-            new_s (int): new s 
-        """
-        self.s = new_s
-
-    def change_S(self, new_S):
-        """Changes upper bound s
-
-        Args:
-            new_S (int): new S
-        """
-        self.S = new_S
-
-    def update_all_demand(self, num_demands: int, t) -> None:
-        """Updates inv level and pos for all items for curr and upstream
-
-        Args:
-            num_demands (int): amount requested
-            t (int): time stamp
-        """
-        self.update_demand(num_demands)
-        for item in self.inv_level:
-            self.check_s(item, t)
 
     def update_demand(self, num_get: int):
         """Update inv level and inv pos and cost
@@ -113,22 +86,28 @@ class Demandable:
         return min_item
     
     def get_lead_time(self, t):
-        curr_lead_time = self.lead_time
+        """Gets lead time for time t
+
+        Args:
+            t (int): time stamp
+
+        Returns:
+            int: lead time
+        """
         if t == self.lead_time[0]:
             return self.lead_time[1]
         else:
             new_lead_time = self.stochastic_lead_time.get_lead_time()
             self.lead_time = [t, new_lead_time]
             return new_lead_time
-    
 
-    def check_s(self, item, t):
-        """recursively checks if inv pos < s for all upstream demandables. Adds order cost to total cost
+    """ def check_s(self, item, t):
+        recursively checks if inv pos < s for all upstream demandables. Adds order cost to total cost
 
         Args:
             item (Item): item to be ordered
             t (int): time stamp
-        """
+        
         if self.inv_pos[item] < self.s:
             if item in self.inv_map:
                 demandable = self.inv_map[item]
@@ -140,7 +119,18 @@ class Demandable:
                     self.arrivals.append([t + lead_time, item, ordered_amt])
                     self.ordering_costs[t] += ordered_amt * item.get_cost()
                     self.total_costs += ordered_amt * item.get_cost()
-                demandable.check_s(item, t)
+                demandable.check_s(item, t) """
+    
+    def order_item(self, integer, amt, t):
+        item = self.int_map_to_inv[integer]
+        demandable = self.inv_map[item]
+        ordered_amt = demandable.produce_order(item, amt)
+        
+        if ordered_amt > 0:
+            lead_time = demandable.get_lead_time(t)
+            self.arrivals.append([t + lead_time, item, ordered_amt])
+            self.ordering_costs[t] += ordered_amt * item.get_cost()
+            self.total_costs += ordered_amt * item.get_cost()
 
     def produce_order(self, item, amt):
         """Determine amount to be ordered
@@ -197,6 +187,7 @@ class Demandable:
             item (Item): An Item
             Demandable (Demandable): Direct upstream Demandable
         """
+        self.int_map_to_inv.append(item)
         self.inv_map[item] = demandable
         
     def add_item_downstream(self, item, amount=65):
@@ -206,13 +197,22 @@ class Demandable:
             item (Item): Item added
             amount (int): amount of item to be adde
         """
-        
         self.add_item(item, amount)
         if self.downstream: # Check if list empty
             downstream_demandable = self.downstream[0]
             downstream_demandable.add_item_map(item, self)
             downstream_demandable.add_item_downstream(item, amount)    
-    
+
+    def add_item(self, item: "Item", amt = 0):
+        """Add item to demandable and its downstream, create inv level and inv pos
+
+        Args:
+            item (Item): Item added
+            amt (int): Amount of item to be added
+        """
+        self.inv_level[item] = amt
+        self.inv_pos[item] = amt
+
     def find_end_upstream(self) -> list:
         """Finds the topmost upstream demandable
 
@@ -227,16 +227,6 @@ class Demandable:
             leaves += [self]
         return leaves
             
-    def add_item(self, item: "Item", amt = 0):
-        """Add item to demandable and its downstream, create inv level and inv pos
-
-        Args:
-            item (Item): Item added
-            amt (int): Amount of item to be added
-        """
-        self.inv_level[item] = amt
-        self.inv_pos[item] = amt
-
     def update_inventory(self, t):
         """Updates inv level and inv pos
 
@@ -310,8 +300,6 @@ class Demandable:
             demandable.plot_inv_level()
 
 
-        
- 
     def find_optimal_cost(self):
         curr_cost = 0
         if self.upstream:
