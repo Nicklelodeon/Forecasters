@@ -233,7 +233,7 @@ class Demandable:
         Args:
             t (int): timestamp
         """
-        self.inv_pos = self.inv_level.copy()
+        # self.inv_pos = self.inv_level.copy()
         index = []
         for i in range(len(self.arrivals)):
             arrival = self.arrivals[i]
@@ -241,7 +241,7 @@ class Demandable:
             if t == time:
                 self.inv_level[item] += amt
                 index.append(i)
-            self.inv_pos[item] += amt
+            # self.inv_pos[item] += amt
         self.arrivals = [arrival for i, arrival in enumerate(self.arrivals) if i not in index]
         if self.backorder > 0:
             amt_backordered = min(self.backorder, min(list(self.inv_level.values())))

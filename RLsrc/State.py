@@ -32,8 +32,11 @@ class State(Env):
         
         ### RL attributes ###
         ### To be edited ###
-        self.action_space = MultiDiscrete([200,200])
+        self.action_space = MultiDiscrete([150,150])
+        
+        ##[Inventory pos 1, Inventory lev 1, Inventory pos 2, Inventory lev 2]
         self.observation_space = MultiDiscrete([200,200,200,200])
+        
         self.state = None #network.getcurrstate
         self.curr_time = 0
     
@@ -81,14 +84,18 @@ class State(Env):
         
         # Calculate reward vary this before step and after step
         reward = self.root.calculate_curr_profit(self.curr_time)
-        print("#################### REWARD: ", reward)
+        # print("#################### REWARD: ", reward)
         
         for i in range(len(action)):
             self.root.order_item(i, action[i], self.curr_time)
+
+        # Get the current state from root
+        self.state = self.root.get_state()
         
         # Prints state
         print(self.print_state(self.curr_time))
-
+        print(self.state)
+        
         # Update time
         self.curr_time += 1
         
@@ -100,8 +107,7 @@ class State(Env):
             done = False
             self.update_state(self.curr_time)
 
-        # Get the current state from root
-        self.state = self.root.get_state()
+
        
         # Calculate reward
         # reward = self.root.calculate_profit(self.curr_time)
