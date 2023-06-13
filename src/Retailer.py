@@ -2,7 +2,7 @@ from Demandable import Demandable
 
 class Retailer(Demandable):
     def __init__(self, name, selling_price):
-        super().__init__(name, 2, 6, 40, 90)
+        super().__init__(name, 2, 10, 40, 90)
         #super().__init__(name, 1, 2, 3, 40, 90)
         self.amount_sold = []
         self.selling_price = selling_price
