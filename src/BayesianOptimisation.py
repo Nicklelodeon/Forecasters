@@ -20,6 +20,7 @@ def BayesianOptimisation(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1
     df = pd.read_csv("./TOTALSA.csv")
     mean = df['TOTALSA'].mean()
     std = df['TOTALSA'].std()
+    np.random.seed(1234)
     for z in range(100):
         state.set_demand_list(demand.simulate_normal_no_season(mean = mean, std = std))
         for i in range(24):
