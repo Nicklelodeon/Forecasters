@@ -24,6 +24,7 @@ for i in range(10):
     print("Demand " , state.demand_list[i])
     state.update_state(i)
     print(state.print_state(i))
+    
 
 # print(state.root.calculate_profit())
 # print(state.rewards)

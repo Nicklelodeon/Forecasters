@@ -32,8 +32,11 @@ class State(Env):
         
         ### RL attributes ###
         ### To be edited ###
-        self.action_space = MultiDiscrete([200,200])
+        self.action_space = MultiDiscrete([150,150])
+        
+        ##[Inventory pos 1, Inventory lev 1, Inventory pos 2, Inventory lev 2]
         self.observation_space = MultiDiscrete([200,200,200,200])
+        
         self.state = None #network.getcurrstate
         self.curr_time = 0
     
@@ -79,26 +82,41 @@ class State(Env):
         ##### self.root.order_item(1, 20)
         ##### self.root.oder_item(2, 30)
         
+        # Calculate reward vary this before step and after step
+        reward = self.root.calculate_curr_profit(self.curr_time)
+        # print("#################### REWARD: ", reward)
+        
         for i in range(len(action)):
             self.root.order_item(i, action[i], self.curr_time)
 
+        # Get the current state from root
+        self.state = self.root.get_state()
+        
+        # Prints state
+        print(self.print_state(self.curr_time))
+        print(self.state)
+        
         # Update time
         self.curr_time += 1
         
         # Updates state at t+1, after action is taken
-        self.update_state(self.curr_time)
-
-        # Get the current state from root
-        self.state = self.root.get_state()
-       
-        # Calculate reward
-        reward = self.root.calculate_profit(self.curr_time)
-        
-        # Check if time exceeds the demand list
+        # Checks if time exceeds the demand list
         if self.curr_time >= len(self.demand_list):
             done = True
         else:
             done = False
+            self.update_state(self.curr_time)
+
+
+       
+        # Calculate reward
+        # reward = self.root.calculate_profit(self.curr_time)
+        
+        # Check if time exceeds the demand list
+        """ if self.curr_time >= len(self.demand_list):
+            done = True
+        else:
+            done = False """
         
         # Set placeholder for info
         info = {}
@@ -133,7 +151,7 @@ class State(Env):
         """
         #self.update_order_point(t)
         self.root.update_all_inventory(t)
-        self.root.update_demand(self.demand_list[t], t)
+        self.root.update_demand(self.demand_list[t])
         self.root.update_all_cost(t)
         self.rewards += self.root.calculate_curr_profit(t)
         self.rewards_list.append(self.root.calculate_curr_profit(t))
