@@ -53,7 +53,7 @@ std = df['TOTALSA'].std()
  
 # objective function
 def objective(lst):
-    s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1, start_inventory = lst
+    start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1 = lst
     # n = len(lst) // 6
     # s_DC1 = lst[:n]
     # S_DC1 = lst[n:2*n]
@@ -116,8 +116,8 @@ def opt_acquisition(X, y, model):
  # random search, generate random samples
     Xsamples = []
 
-    for x in range(100):
-        Xsamples.append([random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 8))])
+    for x in range(1000):
+        Xsamples.append([random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10))])
     Xsamples = asarray(Xsamples)
     #  Xsamples = Xsamples.reshape(1200, 6)
     # calculate the acquisition function for each sample
@@ -140,8 +140,8 @@ def opt_acquisition(X, y, model):
  
 # sample the domain sparsely with noise
 X = []
-for x in range(100):
-    X.append([random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 8))])
+for x in range(1000):
+    X.append([random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10))])
 X = asarray(X)
 y = asarray([objective(lst) for lst in X])
 # reshape into rows and cols
@@ -159,7 +159,7 @@ for i in range(len(y)):
 mse = 0
 mae = 0
 mape = 0
-for i in range(100):
+for i in range(1000):
  # select the next point to sample
  x = opt_acquisition(X, y, model)
  # sample the point
