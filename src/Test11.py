@@ -1,7 +1,19 @@
 import numpy as np
 
+np.random.seed(321)
+for i in range(3):
+    print(np.random.randint(1,5))
+for i in range(3):
+    print(np.random.randint(5,20))
+print("-----------------------------")
+np.random.seed(321)
+for i in range(4):
+    print(np.random.randint(1,5))
+for i in range(3):
+    print(np.random.randint(5,20))
+print("----------------------")
+np.random.seed(321)
+for i in range(4):
+    print(np.random.randint(1,5))
 for i in range(5):
-    np.random.seed(1234)
-    print("---------InnerLoop-------------")
-    for j in range(10):
-        print(np.random.randint(1, 100))
+    print(np.random.randint(5,20))
