@@ -51,6 +51,8 @@ df = pd.read_csv("./src/TOTALSA.csv")
 mean = df['TOTALSA'].mean()
 std = df['TOTALSA'].std()
  
+iterations = 1000
+
 # objective function
 def objective(lst):
     start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1 = lst
@@ -71,8 +73,9 @@ def objective(lst):
     state.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
     total_sum = 0
     np.random.seed(1234)
+    lst = np.reshape(demand.simulate_normal_no_season(periods = 24 * 100, mean=mean, std=std), (100, 24))
     for z in range(100):
-        state.set_demand_list(demand.simulate_normal_no_season(mean = mean, std = std))
+        state.set_demand_list(lst[z])
         for i in range(24):
             # if (s_DC1[i] >= S_DC1[i] or s_DC2[i] >= S_DC2[i] or s_r1[i] >= S_r1[i]):
             #         return -100000
@@ -116,7 +119,7 @@ def opt_acquisition(X, y, model):
  # random search, generate random samples
     Xsamples = []
 
-    for x in range(1000):
+    for x in range(iterations):
         Xsamples.append([random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10))])
     Xsamples = asarray(Xsamples)
     #  Xsamples = Xsamples.reshape(1200, 6)
@@ -140,7 +143,7 @@ def opt_acquisition(X, y, model):
  
 # sample the domain sparsely with noise
 X = []
-for x in range(1000):
+for x in range(iterations):
     X.append([random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10))])
 X = asarray(X)
 y = asarray([objective(lst) for lst in X])
@@ -159,7 +162,7 @@ for i in range(len(y)):
 mse = 0
 mae = 0
 mape = 0
-for i in range(1000):
+for i in range(iterations):
  # select the next point to sample
  x = opt_acquisition(X, y, model)
  # sample the point

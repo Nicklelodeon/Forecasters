@@ -21,8 +21,9 @@ def BayesianOptimisation(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1
     mean = df['TOTALSA'].mean()
     std = df['TOTALSA'].std()
     np.random.seed(1234)
+    lst = np.reshape(demand.simulate_normal_no_season(periods = 24 * 100, mean=mean, std=std), (100, 24))
     for z in range(100):
-        state.set_demand_list(demand.simulate_normal_no_season(mean = mean, std = std))
+        state.set_demand_list(lst[z])
         for i in range(24):
             # if (s_DC1[i] >= S_DC1[i] or s_DC2[i] >= S_DC2[i] or s_r1[i] >= S_r1[i]):
             #         return -100000
