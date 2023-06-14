@@ -21,8 +21,9 @@ def Genetic_Algo_No_Season(array):
     state.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
     total_sum = 0
     np.random.seed(1234)
-    for z in range(iterations):
-        state.set_demand_list(demand.simulate_normal_no_season(mean = mean, std = std))
+    lst = np.reshape(demand.simulate_normal_no_season(periods = 24 * 100, mean=mean, std=std), (100, 24))
+    for z in range(100):
+        state.set_demand_list(lst[z])
         for i in range(len(state.demand_list)):
             state.update_state(i)
         total_sum += state.rewards

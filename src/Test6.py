@@ -6,7 +6,7 @@ from SyntheticDemand import GenerateDemand
 from GenerateDemandMonthly import GenerateDemandMonthly
 
 np.random.seed(1234)
-demandable_state = [-1,0, 0]
+demandable_state = [-1,0, 0, 1, 1]
 demand = GenerateDemandMonthly()
 
 state = State()
@@ -15,7 +15,7 @@ state.create_state(demandable_state)
 state.set_demand_list(demand.simulate_normal_no_season())
 state.root.change_s(2)
 print(state.root.s)
-# state.show_network()
+state.show_network()
 print(state.demand_list)
 
 
