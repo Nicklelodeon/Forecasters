@@ -28,6 +28,7 @@ class Demandable:
         self.costs = []
         self.arrivals = []
         self.total_costs = 0
+        self.orders = {}
 
     def reset(self, amount=65):
         self.inv_level  = dict.fromkeys(self.inv_level, amount)
