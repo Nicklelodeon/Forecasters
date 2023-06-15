@@ -135,8 +135,8 @@ class MLGenerateData:
             count += 1
 
 
-data = MLGenerateData()
-data.create_data()
-data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/144_US_car_data.csv")
+# data = MLGenerateData()
+# data.create_data()
+# data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/144_US_car_data.csv")
 
 # data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/144_mldata.csv")

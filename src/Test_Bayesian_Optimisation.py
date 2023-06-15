@@ -51,7 +51,7 @@ df = pd.read_csv("./src/TOTALSA.csv")
 mean = df['TOTALSA'].mean()
 std = df['TOTALSA'].std()
  
-iterations = 1000
+iterations = 600
 
 # objective function
 def objective(lst):
