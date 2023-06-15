@@ -12,9 +12,7 @@ from Item import Item
 import numpy as np
 import random
 import seaborn as sns 
-import matplotlib.pyplot as plt
 import pandas as pd
-import networkx as nx
 
 from gym import Env
 from gym.spaces import MultiDiscrete, Discrete
@@ -32,7 +30,7 @@ class State(Env):
         
         ### RL attributes ###
         ### To be edited ###
-        self.action_space = Discrete(100)
+        self.action_space = Discrete(50)
         
         ##[Inventory pos 1, Inventory lev 1, Inventory pos 2, Inventory lev 2]
         self.observation_space = MultiDiscrete([1000, 1000, 1000, 1000])
