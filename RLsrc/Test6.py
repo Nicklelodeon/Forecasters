@@ -18,14 +18,14 @@ print(state.demand_list)
 
 done = False
 while not done:
-    print("-----------------------------")
-    print("Demand " , state.demand_list[state.curr_time])
-    RLstate, reward, done, info = state.step([30,20])
-    print("Reward:", reward)
+    """ print("-----------------------------")
+    print("Demand " , state.demand_list[state.curr_time]) """
+    RLstate, reward, done, info = state.step(20)
+    """ print("Reward:", reward)
     print("done:", done)
     print("info:", info)
     print("RLSTATE:", RLstate)
-    print("-----------------------------")
+    print("-----------------------------") """
     
 
 # print(state.root.calculate_profit())
