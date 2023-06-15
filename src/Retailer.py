@@ -42,8 +42,10 @@ class Retailer(Demandable):
         self.amount_sold_total += amount_sold
         for item in self.inv_level:
             self.check_s(item, t)
+        self.fufill_orders(t, num_demands)
     
     def calculate_profit(self):
+        print(super().get_total_cost())
         return self.amount_sold_total * self.selling_price - super().get_total_cost()
 
     def calculate_curr_profit(self, t):

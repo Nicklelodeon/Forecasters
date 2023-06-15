@@ -240,6 +240,7 @@ class State:
         self.root.update_all_cost(t)
         self.rewards += self.root.calculate_curr_profit(t)
         self.rewards_list.append(self.root.calculate_curr_profit(t))
+        
 
 
     def calculate_profits(self):

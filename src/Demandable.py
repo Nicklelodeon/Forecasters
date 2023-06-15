@@ -31,6 +31,7 @@ class Demandable:
         self.s = s
         self.S = S
         self.total_costs = 0
+        self.orders = {}
 
     def reset(self, amount=65):
         self.inv_level  = dict.fromkeys(self.inv_level, amount)
@@ -43,6 +44,7 @@ class Demandable:
         self.arrivals = []
         self.total_costs = 0
         self.inv_level_plot = []
+        self.orders = {}
 
     def add_lead_time(self, stl):
         """Assign stochastic lead time
@@ -79,6 +81,9 @@ class Demandable:
         """
         self.S = new_S
 
+    def reset_orders(self):
+        self.orders = {}
+
     def update_all_demand(self, num_demands: int, t) -> None:
         """Updates inv level and pos for all items for curr and upstream
 
@@ -89,6 +94,34 @@ class Demandable:
         self.update_demand(num_demands)
         for item in self.inv_level:
             self.check_s(item, t)
+        self.fufill_orders(t, num_demands)
+
+
+    def fufill_orders(self, t, num_demands):
+        backorders = {}
+        for item in self.orders:
+            demandable = self.inv_map[item]
+            amt_ordered = self.orders[item]
+            if amt_ordered > 0:
+                backorder = demandable.produce_order(item, amt_ordered)
+                if demandable not in backorders:
+                    backorders[demandable] = backorder
+                self.order_items(item, t, amt_ordered)
+                demandable.check_s(item, t)
+        for demandable in backorders:
+            demandable.backorder += backorders[demandable]
+        for demandable in self.upstream:
+            demandable.fufill_orders(t, num_demands)
+
+
+    def order_items(self, item, t, ordered_amt):
+        demandable = self.inv_map[item]
+        lead_time = demandable.get_lead_time(t)
+        self.inv_pos[item] += ordered_amt
+        #lead_time = self.stochastic_lead_time.get_lead_time() #removed to get constant lead time for each dc at each t
+        self.arrivals.append([t + lead_time, item, ordered_amt])
+        self.ordering_costs[t] += ordered_amt * item.get_cost()
+        self.total_costs += ordered_amt * item.get_cost()
 
     def update_demand(self, num_get: int):
         """Update inv level and inv pos and cost
@@ -109,7 +142,7 @@ class Demandable:
         self.backorder += curr_backorder
         for item in self.inv_level:
             self.inv_level[item] -= min_item
-            self.inv_pos[item] -= num_get
+            self.inv_pos[item] -= min_item
         return min_item
     
     def get_lead_time(self, t):
@@ -129,21 +162,21 @@ class Demandable:
             item (Item): item to be ordered
             t (int): time stamp
         """
-        if self.inv_pos[item] < self.s:
-            if item in self.inv_map:
-                demandable = self.inv_map[item]
-                amt = self.S - self.inv_pos[item]
-                ordered_amt = demandable.produce_order(item, amt)
-                if ordered_amt > 0:
-                    lead_time = demandable.get_lead_time(t)
-                    self.inv_pos[item] += ordered_amt
-                    #lead_time = self.stochastic_lead_time.get_lead_time() #removed to get constant lead time for each dc at each t
-                    self.arrivals.append([t + lead_time, item, ordered_amt])
-                    self.ordering_costs[t] += ordered_amt * item.get_cost()
-                    self.total_costs += ordered_amt * item.get_cost()
-                demandable.check_s(item, t)
+        if self.inv_pos[item] < self.s and item in self.inv_map:
+            demandable = self.inv_map[item]
+            amt = self.S - self.inv_pos[item]
+            ordered_amt = min(min(list(demandable.inv_level.values())), amt)
+            self.orders[item] = ordered_amt
+                # if ordered_amt > 0:
+                #     lead_time = demandable.get_lead_time(t)
+                #     self.inv_pos[item] += ordered_amt
+                #     #lead_time = self.stochastic_lead_time.get_lead_time() #removed to get constant lead time for each dc at each t
+                #     self.arrivals.append([t + lead_time, item, ordered_amt])
+                #     self.ordering_costs[t] += ordered_amt * item.get_cost()
+                #     self.total_costs += ordered_amt * item.get_cost()
+                # demandable.check_s(item, t)
 
-    def produce_order(self, item, amt):
+    def produce_order(self, item, amt_ordered):
         """Determine amount to be ordered
 
         Args:
@@ -153,11 +186,12 @@ class Demandable:
         Returns:
             int: amount available to be ordered
         """
-        amt_avail = self.inv_level[item]
-        amt_supplied = min(amt_avail, amt)
-        self.inv_level[item] -= amt_supplied
-        self.inv_pos[item] -= amt_supplied
-        return amt_supplied
+        backorder = 0
+        if amt_ordered > min(list(self.inv_level.values())):
+            backorder +=  amt_ordered - min(list(self.inv_level.values()))
+        self.inv_level[item] -= amt_ordered
+        self.inv_pos[item] -= amt_ordered
+        return backorder
 
     def add_upstream(self, demandable: "Demandable") -> None:
         """Adds a demandable into upstream
@@ -254,11 +288,12 @@ class Demandable:
                 index.append(i)
             # self.inv_pos[item] += amt
         self.arrivals = [arrival for i, arrival in enumerate(self.arrivals) if i not in index]
-        if self.backorder > 0:
-            amt_backordered = min(self.backorder, min(list(self.inv_level.values())))
-            for item in self.inv_level:
-                self.inv_level[item] -= amt_backordered
-            self.backorder -= amt_backordered
+
+        # if self.backorder > 0:
+        #     amt_backordered = min(self.backorder, min(list(self.inv_level.values())))
+        #     for item in self.inv_level:
+        #         self.inv_level[item] -= amt_backordered
+        #     self.backorder -= amt_backordered
 
     def update_all_inventory(self, t):
         """Updates inv level for all upstream demandables
@@ -377,6 +412,8 @@ class Demandable:
         self.total_costs += self.backorder * self.backorder_cost
         self.costs[t] = self.holding_costs[t] + self.backorder_costs[t] + self.ordering_costs[t]
         self.inv_level_plot.append(self.inv_level.copy())
+        self.reset_orders()
+        self.backorder = 0
         for demandable in self.upstream:
             demandable.update_all_cost(t)
 
@@ -428,10 +465,13 @@ class Demandable:
     def print_s(self):
         return "s: " + str(self.s) + "\n" + "S: " + str(self.S)
     
+    def print_total_costs(self):
+        return "all accumulated costs: " + str(self.get_total_cost())
+    
     def __str__(self):
         return self.name + "\n" + self.print_inv_level() + "\n" + self.print_inv_pos() + "\n" + self.print_orders() + "\n" + self.print_total_cost() \
         + "\n" + self.print_holding_cost() + "\n" + self.print_ordering_cost() + "\n" + self.print_backorder_cost() + "\n" + self.print_inv_map() \
-        + "\n" + self.print_s()
+        + "\n" + self.print_s() + "\n" + self.print_total_costs()
     
     def __repr__(self):
         return "Demandable({})".format(self.name)
