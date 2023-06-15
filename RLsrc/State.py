@@ -17,7 +17,7 @@ import pandas as pd
 import networkx as nx
 
 from gym import Env
-from gym.spaces import MultiDiscrete
+from gym.spaces import MultiDiscrete, Discrete
 
 class State(Env):
     def __init__(self):
@@ -32,10 +32,10 @@ class State(Env):
         
         ### RL attributes ###
         ### To be edited ###
-        self.action_space = MultiDiscrete([150,150])
+        self.action_space = Discrete(100)
         
         ##[Inventory pos 1, Inventory lev 1, Inventory pos 2, Inventory lev 2]
-        self.observation_space = MultiDiscrete([200,200,200,200])
+        self.observation_space = MultiDiscrete([1000, 1000, 1000, 1000])
         
         self.state = None #network.getcurrstate
         self.curr_time = 0
@@ -78,7 +78,7 @@ class State(Env):
         self.demand_list = demand_list
         
     def step(self, action):
-        # Action eg [20, 10]
+        # Action eg [20]
         ##### self.root.order_item(1, 20)
         ##### self.root.oder_item(2, 30)
         
@@ -86,15 +86,14 @@ class State(Env):
         reward = self.root.calculate_curr_profit(self.curr_time)
         # print("#################### REWARD: ", reward)
         
-        for i in range(len(action)):
-            self.root.order_item(i, action[i], self.curr_time)
+        self.root.order_item(action, self.curr_time)
 
         # Get the current state from root
         self.state = self.root.get_state()
         
         # Prints state
-        print(self.print_state(self.curr_time))
-        print(self.state)
+        """ print(self.print_state(self.curr_time))
+        print(self.state) """
         
         # Update time
         self.curr_time += 1

@@ -119,7 +119,27 @@ class Demandable:
                     self.total_costs += ordered_amt * item.get_cost()
                 demandable.check_s(item, t) """
     
-    def order_item(self, integer, amt, t):
+    def order_item(self, amt, t):
+        #pos: [Item(1): 20, Item(2): 15], amt = 20 -> [Item(1): 40, Item(2): 40]
+        max_position = max(self.inv_pos.values())
+        top_up_to = max_position + amt 
+        
+        for item in self.int_map_to_inv:
+            demandable = self.inv_map[item]
+            curr_item_level = self.inv_pos[item]
+            attempt_to_order = top_up_to - curr_item_level
+            ordered_amt = demandable.produce_order(item, attempt_to_order)
+            
+            if ordered_amt > 0:
+                lead_time = demandable.get_lead_time(t)
+                self.arrivals.append([t + lead_time, item, ordered_amt])
+                self.ordering_costs[t] += ordered_amt * item.get_cost()
+                self.total_costs += ordered_amt * item.get_cost()
+            
+                self.inv_pos[item] += ordered_amt
+            
+    
+    """ def order_item(self, integer, amt, t):
         item = self.int_map_to_inv[integer]
         demandable = self.inv_map[item]
         ordered_amt = demandable.produce_order(item, amt)
@@ -130,7 +150,7 @@ class Demandable:
             self.ordering_costs[t] += ordered_amt * item.get_cost()
             self.total_costs += ordered_amt * item.get_cost()
             
-            self.inv_pos[item] += ordered_amt
+            self.inv_pos[item] += ordered_amt """
 
     def produce_order(self, item, amt):
         """Determine amount to be ordered
