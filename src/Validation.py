@@ -21,8 +21,13 @@ def validate(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
     state.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
     lst = np.zeros(iterations)
     np.random.seed(1234)
+<<<<<<< HEAD:src/Test10.py
+    # lst = np.reshape(demand.simulate_normal_no_season(periods = 24 * 100, mean=mean, std=std), (100, 24))
+    for z in range(100):
+=======
     lst = np.reshape(demand.simulate_normal_no_season(periods = periods * iterations, mean=mean, std=std), (iterations, periods))
     for z in range(iterations):
+>>>>>>> refs/remotes/origin/main:src/Validation.py
         state.set_demand_list(lst[z])
         #print(state.demand_list)
         for i in range(periods):
