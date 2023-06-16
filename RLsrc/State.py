@@ -30,7 +30,7 @@ class State(Env):
         
         ### RL attributes ###
         ### To be edited ###
-        self.action_space = Discrete(50)
+        self.action_space = Discrete(75)
         
         ##[Inventory pos 1, Inventory lev 1, Inventory pos 2, Inventory lev 2]
         self.observation_space = MultiDiscrete([1000, 1000, 1000, 1000])

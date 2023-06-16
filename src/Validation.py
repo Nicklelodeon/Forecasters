@@ -11,31 +11,40 @@ mean = df['TOTALSA'].mean()
 std = df['TOTALSA'].std()
 
 def validate(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+    iterations = 1000
+    periods = 24
     demand = GenerateDemandMonthly()
     state = State()
     state.create_state([-1 ,0, 1, 1, 2, 2], amount=start_inventory)
     state.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
     state.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
     state.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
-    total_sum = 0
+    lst = np.zeros(iterations)
     np.random.seed(1234)
+<<<<<<< HEAD:src/Test10.py
     # lst = np.reshape(demand.simulate_normal_no_season(periods = 24 * 100, mean=mean, std=std), (100, 24))
     for z in range(100):
+=======
+    lst = np.reshape(demand.simulate_normal_no_season(periods = periods * iterations, mean=mean, std=std), (iterations, periods))
+    for z in range(iterations):
+>>>>>>> refs/remotes/origin/main:src/Validation.py
         state.set_demand_list(lst[z])
-        print(state.demand_list)
-        for i in range(24):
+        #print(state.demand_list)
+        for i in range(periods):
             # if (s_DC1[i] >= S_DC1[i] or s_DC2[i] >= S_DC2[i] or s_r1[i] >= S_r1[i]):
             #         return -100000
             # state.changeable_network[0].change_order_point(round(s_r1[i]), round(S_r1[i]))
             # state.changeable_network[1].change_order_point(round(s_DC1[i]), round(S_DC1[i]))
             # state.changeable_network[2].change_order_point(round(s_DC2[i]), round(S_DC2[i]))
             state.update_state(i)
-        total_sum += state.rewards
+        lst[z] = state.rewards
+        #total_sum += state.rewards
         state.reset(start_inventory)
-    return total_sum / 100
+    return ("Mean result: {} \n Std result: {}".format(np.mean(lst), np.std(lst)))
+    #return total_sum / 100
 
 #x = validate(158, 71, 182, 67, 179, 80, 134)
-x = validate(38, 30, 33, 30, 134, 58, 642)
+x = validate(40, 41, 43, 96, 113, 45, 49)
 print(x)
 
 # [31.0, 34.0, 32.0, 32.0, 32.0, 27.0, 27.0, 21.0, 30.0, 36.0, 27.0, 35.0, 29.0, 34.0, 36.0, 28.0, 22.0, 28.0, 35.0, 25.0, 30.0, 29.0, 31.0, 25.0]
