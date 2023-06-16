@@ -42,8 +42,33 @@ class Retailer(Demandable):
         self.amount_sold_total += amount_sold
         for item in self.inv_level:
             self.check_s(item, t)
-        self.fufill_orders(t, num_demands)
+        self.fufill_orders(t)
     
+    def update_inventory(self, t):
+        """Updates inv level and inv pos
+
+        Args:
+            t (int): timestamp
+        """
+        # self.inv_pos = self.inv_level.copy()
+        index = []
+        for i in range(len(self.arrivals)):
+            arrival = self.arrivals[i]
+            time, item, amt = arrival
+            if t == time:
+                self.inv_level[item] += amt
+                index.append(i)
+            # self.inv_pos[item] += amt
+        self.arrivals = [arrival for i, arrival in enumerate(self.arrivals) if i not in index]
+
+        if self.backorder > 0:
+            amt_backordered = min(self.backorder, min(list(self.inv_level.values())))
+            for item in self.inv_level:
+                self.inv_level[item] -= amt_backordered
+            self.backorder -= amt_backordered
+            self.amount_sold_total += amt_backordered
+        print("amount sold: " + str(self.amount_sold_total))
+
     def calculate_profit(self):
         print(super().get_total_cost())
         return self.amount_sold_total * self.selling_price - super().get_total_cost()
