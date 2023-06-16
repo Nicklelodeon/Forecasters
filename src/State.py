@@ -27,6 +27,14 @@ class State:
         self.rewards = 0
         self.rewards_list = []
         
+        ### User input
+        self.periods = 24
+        self.iterations = 100
+        self.demand_generator = GenerateDemandMonthly()
+        self.demand_matrix = None
+        self.mean = None
+        self.std = None
+        
     def create_network(self, demandables, network):
         """Creates the network of demandables based on demandables list
 
@@ -50,12 +58,21 @@ class State:
     def set_demand_list(self, demand_list):
         self.demand_list = demand_list
         
-    def create_state(self, demandables, amount=65, cost=1):
+    def create_state(self, demandables, amount=65, cost=1, period=24, iterations=100, mean=5, std=2):
         """create state
 
         Args:
             demandables (list<int>): list of integers
         """
+        self.periods = 24
+        self.iterations = 100
+        self.mean = mean
+        self.std = std
+        np.random.seed(1234) # set same demand matrix
+        self.demand_matrix = np.reshape(self.demand_generator.simulate_normal_no_season(\
+            periods = self.periods * self.iterations, mean=self.mean, std=self.std),\
+                (self.iterations, self.periods))
+        
         self.demandables = demandables
         network_list = []
         for i in range(len(demandables)):   
@@ -80,6 +97,24 @@ class State:
         self.network_list = network_list
         self.create_changeable_network()
         self.root.set_optimal_selling_price(1.5)
+        
+    def run(self, start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1): #7 params
+        if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
+            return -100000
+        self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
+        self.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
+        self.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
+        total_sum = 0
+        np.random.seed(5678)
+        for z in range(self.iterations):
+            self.reset(start_inventory)
+            self.set_demand_list(self.demand_matrix[z])
+            for i in range(self.periods):
+                self.update_state(i)
+            total_sum += self.rewards
+            print(self.rewards)
+        return total_sum / self.iterations
+    
             
     def show_network(self):
         """Creates a tree graph of the supply chain system
@@ -214,7 +249,7 @@ class State:
         self.s_S_list = None
         self.rewards = 0
     
-    def run(self, X):
+    """ def run(self, X):
         for j in range(len(self.changeable_network)):
             small_s = X[2 * j]
             big_S = X[2 * j + 1]
@@ -225,7 +260,7 @@ class State:
         for i in range(len(self.demand_list)):
             self.update_state(i)
             
-        return self.total_sum()
+        return self.total_sum() """
     
     def update_state(self, t):
         """Discrete update state
