@@ -4,9 +4,7 @@ from BayesianState import BayesianState
 import numpy as np
 from GenerateDemandMonthly import GenerateDemandMonthly 
 from State import State
-import pandas as pd
-
-import time
+import pandas as pd 
 
 df = pd.read_csv("./src/TOTALSA.csv")
 mean = df['TOTALSA'].mean()
@@ -17,7 +15,7 @@ def validate(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
     periods = 24
     demand = GenerateDemandMonthly()
     state = State()
-    state.create_state([-1 ,0, 1, 1, 2, 2], amount=start_inventory,)
+    state.create_state([-1 ,0, 1, 1, 2, 2], amount=start_inventory)
     state.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
     state.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
     state.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
@@ -42,25 +40,4 @@ def validate(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
 
 #x = validate(158, 71, 182, 67, 179, 80, 134)
 x = validate(40, 41, 43, 96, 113, 45, 49)
-<<<<<<< HEAD
 print(x)
-=======
-print(x)
-start1 = time.time()
-for i in range(500):
-    validate(40, 41, 43, 96, 113, 45, 49)
-end1 = time.time()
-
-start2 = time.time()
-
-
-
-state2 = State()
-state2.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
-for j in range(500):
-    state2.run(40, 41, 43, 96, 113, 45, 49)
-end2 = time.time()
-
-print("time1", end1 - start1)
-print("time2", end2 - start2)
->>>>>>> refs/remotes/origin/main

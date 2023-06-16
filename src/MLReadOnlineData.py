@@ -47,16 +47,16 @@ df = pd.read_csv("./src/TOTALSA.csv")
 
 
 
-# plt.plot('DATE', 'TOTALSA', data=df)
-# plt.show()
+plt.plot('DATE', 'TOTALSA', data=df)
+plt.show()
 
-print(df['TOTALSA'].mean())
-print(df['TOTALSA'].std())
+# print(df['TOTALSA'].mean())
+# print(df['TOTALSA'].std())
 
-years = [int(x[:4]) for x in df['DATE']]
-months = [int(x[5:7]) for x in df['DATE']]
-df['Year'] = years
-df['Month'] = months
+# years = [int(x[:4]) for x in df['DATE']]
+# months = [int(x[5:7]) for x in df['DATE']]
+# df['Year'] = years
+# df['Month'] = months
 
 # count1 = 1
 # for i in range(1976, 2024):
