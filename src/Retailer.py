@@ -67,10 +67,8 @@ class Retailer(Demandable):
                 self.inv_level[item] -= amt_backordered
             self.backorder -= amt_backordered
             self.amount_sold_total += amt_backordered
-        print("amount sold: " + str(self.amount_sold_total))
 
     def calculate_profit(self):
-        print(super().get_total_cost())
         return self.amount_sold_total * self.selling_price - super().get_total_cost()
 
     def calculate_curr_profit(self, t):

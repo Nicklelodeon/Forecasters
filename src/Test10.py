@@ -43,8 +43,20 @@ def validate(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
 #x = validate(158, 71, 182, 67, 179, 80, 134)
 x = validate(40, 41, 43, 96, 113, 45, 49)
 print(x)
+start1 = time.time()
+for i in range(500):
+    validate(40, 41, 43, 96, 113, 45, 49)
+end1 = time.time()
+
+start2 = time.time()
+
+
 
 state2 = State()
 state2.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
+for j in range(500):
+    state2.run(40, 41, 43, 96, 113, 45, 49)
+end2 = time.time()
 
-print(state2.run(40, 41, 43, 96, 113, 45, 49))
+print("time1", end1 - start1)
+print("time2", end2 - start2)
