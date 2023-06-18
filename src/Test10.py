@@ -42,9 +42,6 @@ def validate(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
 
 #x = validate(158, 71, 182, 67, 179, 80, 134)
 x = validate(40, 41, 43, 96, 113, 45, 49)
-<<<<<<< HEAD
-print(x)
-=======
 print(x)
 start1 = time.time()
 for i in range(500):
@@ -63,4 +60,3 @@ end2 = time.time()
 
 print("time1", end1 - start1)
 print("time2", end2 - start2)
->>>>>>> refs/remotes/origin/main
