@@ -68,7 +68,7 @@ class State(Env):
         self.network_list = network_list
         self.create_changeable_network()
         self.root.set_optimal_selling_price(1.5)
-        self.set_demand_list(self.demand.simulate_normal_no_season())
+        self.set_demand_list(self.demand.simulate_normal_no_season(mean=15.136056239015815, std=2.259090732346191))
         self.update_state(self.curr_time)
         self.state = self.root.get_state()
     

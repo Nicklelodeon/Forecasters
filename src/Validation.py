@@ -6,11 +6,10 @@ from GenerateDemandMonthly import GenerateDemandMonthly
 from State import State
 import pandas as pd 
 
-df = pd.read_csv("./src/TOTALSA.csv")
-mean = df['TOTALSA'].mean()
-std = df['TOTALSA'].std()
+
 
 def validate(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+<<<<<<< HEAD
     iterations = 1000
     periods = 24
     demand = GenerateDemandMonthly()
@@ -37,11 +36,16 @@ def validate(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
         state.reset(start_inventory)
     return ("Mean result: {} \n Std result: {}".format(np.mean(lst), np.std(lst)))
     #return total_sum / 100
+=======
+    df = pd.read_csv("./src/TOTALSA.csv")
+    mean = df['TOTALSA'].mean()
+    std = df['TOTALSA'].std()
+    state = State()
+    state.create_state([-1 ,0, 1, 1, 2, 2], amount=start_inventory, mean=mean, std=std, cost=4)
+    return (state.run(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1))
+    
+>>>>>>> refs/remotes/origin/main
 
 #x = validate(158, 71, 182, 67, 179, 80, 134)
-x = validate(40, 41, 43, 96, 113, 45, 49)
+x = validate(86, 55, 64, 86, 126, 53, 58)
 print(x)
-
-# [31.0, 34.0, 32.0, 32.0, 32.0, 27.0, 27.0, 21.0, 30.0, 36.0, 27.0, 35.0, 29.0, 34.0, 36.0, 28.0, 22.0, 28.0, 35.0, 25.0, 30.0, 29.0, 31.0, 25.0]
-# [16.0, 15.0, 16.0, 10.0, 16.0, 14.0, 16.0, 12.0, 12.0, 14.0, 16.0, 20.0, 13.0, 17.0, 11.0, 18.0, 15.0, 14.0, 17.0, 16.0, 16.0, 15.0, 15.0, 20.0]
-# [16.0, 12.0, 18.0, 14.0, 14.0, 17.0, 17.0, 14.0, 15.0, 10.0, 18.0, 17.0, 17.0, 11.0, 14.0, 15.0, 16.0, 16.0, 18.0, 12.0, 15.0, 14.0, 16.0, 16.0]

@@ -58,7 +58,7 @@ class State:
     def set_demand_list(self, demand_list):
         self.demand_list = demand_list
         
-    def create_state(self, demandables, amount=65, cost=1, period=24, iterations=100, mean=5, std=2):
+    def create_state(self, demandables, amount=65, cost=1.5, period=108, iterations=100, mean=5, std=2):
         """create state
 
         Args:
@@ -96,7 +96,7 @@ class State:
         
         self.network_list = network_list
         self.create_changeable_network()
-        self.root.set_optimal_selling_price(4)
+        self.root.set_optimal_selling_price(cost)
         
     def run(self, start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1): #7 params
         if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
