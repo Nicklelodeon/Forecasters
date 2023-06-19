@@ -28,8 +28,8 @@ class State:
         self.rewards_list = []
         
         ### User input
-        self.periods = 24
-        self.iterations = 100
+        self.periods = None
+        self.iterations = None
         self.demand_generator = GenerateDemandMonthly()
         self.demand_matrix = None
         self.mean = None
@@ -64,8 +64,8 @@ class State:
         Args:
             demandables (list<int>): list of integers
         """
-        self.periods = 24
-        self.iterations = 100
+        self.periods = period
+        self.iterations = iterations
         self.mean = mean
         self.std = std
         np.random.seed(1234) # set same demand matrix
