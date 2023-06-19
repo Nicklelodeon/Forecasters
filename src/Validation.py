@@ -11,23 +11,18 @@ mean = df['TOTALSA'].mean()
 std = df['TOTALSA'].std()
 
 def validate(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
-    iterations = 100
+    iterations = 1000
     periods = 24
     demand = GenerateDemandMonthly()
     state = State()
-    state.create_state([-1 ,0, 1, 1, 2, 2], amount=start_inventory,)
+    state.create_state([-1 ,0, 1, 1, 2, 2], amount=start_inventory)
     state.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
     state.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
     state.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
     lst = np.zeros(iterations)
     np.random.seed(1234)
-<<<<<<< HEAD:src/Test10.py
-    # lst = np.reshape(demand.simulate_normal_no_season(periods = 24 * 100, mean=mean, std=std), (100, 24))
-    for z in range(100):
-=======
     lst = np.reshape(demand.simulate_normal_no_season(periods = periods * iterations, mean=mean, std=std), (iterations, periods))
     for z in range(iterations):
->>>>>>> refs/remotes/origin/main:src/Validation.py
         state.set_demand_list(lst[z])
         #print(state.demand_list)
         for i in range(periods):

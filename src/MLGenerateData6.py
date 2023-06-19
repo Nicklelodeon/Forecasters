@@ -13,7 +13,7 @@ class MLGenerateData6:
         
         self.df = pd.DataFrame()
         self.demand_generator = GenerateDemandMonthly()
-        self.state = MLState()
+        self.state = State()
         self.state.create_state([-1 ,0, 1, 1, 2, 2])
 
 

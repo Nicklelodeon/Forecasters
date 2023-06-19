@@ -96,7 +96,7 @@ class State:
         
         self.network_list = network_list
         self.create_changeable_network()
-        self.root.set_optimal_selling_price(1.5)
+        self.root.set_optimal_selling_price(4)
         
     def run(self, start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1): #7 params
         if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
@@ -112,7 +112,6 @@ class State:
             for i in range(self.periods):
                 self.update_state(i)
             total_sum += self.rewards
-            print(self.rewards)
         return total_sum / self.iterations
     
             
