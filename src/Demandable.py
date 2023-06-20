@@ -113,7 +113,8 @@ class Demandable:
                     backorders[demandable] = amt_ordered - amount_given
                     orders[demandable] = amount_given
                     demandable.produce_order(item, amount_given)
-                demandable.check_s(item, t)
+                    self.order_items(item, t, orders[demandable])
+            demandable.check_s(item, t)
         for demandable in backorders:
             demandable.backorder += backorders[demandable]
         for demandable in self.upstream:
@@ -299,9 +300,10 @@ class Demandable:
             lead_time = self.get_lead_time(t)
             demandable = self.downstream[0]
             for item in self.inv_level:
-                demandable.arrivals.append([t + lead_time, item, amt_backordered])
-                demandable.ordering_costs[t] += amt_backordered * item.get_cost()
-                demandable.total_costs += amt_backordered * item.get_cost()
+                if amt_backordered > 0:
+                    demandable.arrivals.append([t + lead_time, item, amt_backordered])
+                    demandable.ordering_costs[t] += amt_backordered * item.get_cost()
+                    demandable.total_costs += amt_backordered * item.get_cost()
 
     def update_all_inventory(self, t):
         """Updates inv level for all upstream demandables

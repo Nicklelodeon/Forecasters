@@ -46,8 +46,16 @@ df = pd.read_csv("./src/TOTALSA.csv")
 # new_df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/US_cleaned_car_data.csv")
 
 
+new_lst = []
+for x in df['DATE']:
+    i, j, k = x.split('-')
+    new_lst.append(datetime.datetime(int(i), int(j), int(k)))
 
-plt.plot('DATE', 'TOTALSA', data=df)
+df['new_date'] = new_lst
+plt.plot('new_date', 'TOTALSA', data=df)
+plt.xlabel('Year')
+plt.ylabel('Number of cars sold (millions)')
+plt.title('Number of cars sold against time')
 plt.show()
 
 # print(df['TOTALSA'].mean())
