@@ -6,7 +6,7 @@ from SyntheticDemand import GenerateDemand
 from GenerateDemandMonthly import GenerateDemandMonthly
 
 np.random.seed(1234)
-demandable_state = [-1,0, 0, 1, 1]
+demandable_state = [-1,0, 1, 1, 2, 2]
 demand = GenerateDemandMonthly()
 
 state = State()
