@@ -16,8 +16,8 @@ class Supplier(Demandable):
     def update_demand(self, num_get: int):
         return num_get
 
-    def __str__(self):
-        return self.name + "\n" + self.print_inv_level() + "\n" + self.print_inv_pos()
+    def update_all_cost(self, t):
+        return 
     
     def __repr__(self):
         return "Supplier({})".format(self.name)
