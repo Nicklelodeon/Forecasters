@@ -28,8 +28,8 @@ class State:
         self.rewards_list = []
         
         ### User input
-        self.periods = 24
-        self.iterations = 100
+        self.periods = None
+        self.iterations = None
         self.demand_generator = GenerateDemandMonthly()
         self.demand_matrix = None
         self.mean = None
@@ -57,6 +57,9 @@ class State:
         
     def set_demand_list(self, demand_list):
         self.demand_list = demand_list
+    
+    def set_demand_matrix(self, demand_matrix):
+        self.demand_matrix = demand_matrix
         
     def create_state(self, demandables, amount=65, cost=1.5, period=108, iterations=100, mean=5, std=2):
         """create state
@@ -64,14 +67,13 @@ class State:
         Args:
             demandables (list<int>): list of integers
         """
-        self.periods = 24
-        self.iterations = 100
+        self.periods = period
+        self.iterations = iterations
         self.mean = mean
         self.std = std
         np.random.seed(1234) # set same demand matrix
-        self.demand_matrix = np.reshape(self.demand_generator.simulate_normal_no_season(\
-            periods = self.periods * self.iterations, mean=self.mean, std=self.std),\
-                (self.iterations, self.periods))
+        self.demand_matrix = self.create_normal_demand()
+        
         
         self.demandables = demandables
         network_list = []
@@ -96,7 +98,17 @@ class State:
         
         self.network_list = network_list
         self.create_changeable_network()
-        self.root.set_optimal_selling_price(cost)
+        self.root.set_optimal_selling_price(4)
+
+    def create_normal_demand(self, period = 108, iterations = 100, mean = 5, std = 2): 
+        return np.reshape(self.demand_generator.simulate_normal_no_season(\
+            periods = period * iterations, mean=mean, std=std),\
+                (iterations, period))
+    
+    def create_poisson_demand(self, period = 108, iterations = 100, mean = 5): 
+        return np.reshape(self.demand_generator.simulate_poisson_no_season(\
+            periods = period * iterations, mean=mean),\
+                (iterations, period))
         
     def run(self, start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1): #7 params
         if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):

@@ -1,6 +1,6 @@
 from Demandable import Demandable
 from Item import Item
-from MLState import MLState
+from State import State
 import numpy as np
 import pandas as pd
 import re
@@ -21,7 +21,7 @@ class MLGenerateData:
         
         amount = max(demand) * 3
         self.state.reset(amount)
-        self.state.change_demand(demand)
+        self.state.set_demand_list(demand)
         for i in range(len(self.state.demand_list)):
             if (s_DC1[i] >= S_DC1[i] or s_DC2[i] >= S_DC2[i] or s_r1[i] >= S_r1[i]):
                 return None
@@ -39,7 +39,7 @@ class MLGenerateData:
             demand = self.demand_generator.simulate_normal_no_season(mean = mean, std = std)
             amount = max(demand) * 1.5
             self.state.reset(amount)
-            self.state.change_demand(demand)
+            self.state.set_demand_list(demand)
             for i in range(len(self.state.demand_list)):
                 if (s_DC1[i] >= S_DC1[i] or s_DC2[i] >= S_DC2[i] or s_r1[i] >= S_r1[i]):
                     return None
@@ -56,7 +56,8 @@ class MLGenerateData:
             demand = self.demand_generator.simulate_poisson_no_season(mean = mean)
             amount = max(demand) * 1.5
             self.state.reset(amount)
-            self.state.change_demand(demand)
+            self.state.set_demand_list(demand)
+
             for i in range(len(self.state.demand_list)):
                 if (s_DC1[i] >= S_DC1[i] or s_DC2[i] >= S_DC2[i] or s_r1[i] >= S_r1[i]):
                     return None
@@ -106,13 +107,13 @@ class MLGenerateData:
             all_demand.extend(demand)
             mean = np.mean(demand)
             std = np.std(demand)
-            if count % 2 == 0:
-                s = [round(x) for x in random.choices(range(round(np.mean(demand) * 2), round(np.mean(demand) * 4)), k=24)]
-                S = [round(x) for x in random.choices(range(round(np.mean(demand) * 5), round(np.mean(demand) * 9)), k=24)]
-                log1 = self.logic(s, S, s, S, s, S, all_demand)
-                if log1 is not None:
-                    self.df = self.update_df(self.df, log1)
-                all_demand = []
+            # if count % 2 == 0:
+            #     s = [round(x) for x in random.choices(range(round(np.mean(demand) * 2), round(np.mean(demand) * 4)), k=24)]
+            #     S = [round(x) for x in random.choices(range(round(np.mean(demand) * 5), round(np.mean(demand) * 9)), k=24)]
+            #     log1 = self.logic(s, S, s, S, s, S, all_demand)
+            #     if log1 is not None:
+            #         self.df = self.update_df(self.df, log1)
+            #     all_demand = []
             #print('demand: ' + str(demand))
             # log1 = self.logic(random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), \
             #     random.randint(demand[9], demand[11]), random.randint(demand[1], demand[3]), random.randint(demand[9], demand[11]), demand)

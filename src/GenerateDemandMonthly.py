@@ -8,7 +8,7 @@ class GenerateDemandMonthly:
         self.demand = []
         self.quantiles = []
         
-    def simulate_normal_no_season(self, periods=24, mean=30, std = 4):
+    def simulate_normal_no_season(self, periods=108, mean=30, std = 4):
         """Creates random demand with no season
 
         Args:
@@ -22,7 +22,7 @@ class GenerateDemandMonthly:
         return_demand.extend(demand)
         return return_demand
         
-    def simulate_poisson_no_season(self, periods=24, mean=30):
+    def simulate_poisson_no_season(self, periods=108, mean=30):
         """Creates random demand with no season
 
         Args:
