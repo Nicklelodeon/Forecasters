@@ -113,6 +113,7 @@ class Demandable:
                     backorders[demandable] = amt_ordered - amount_given
                     orders[demandable] = amount_given
                     demandable.produce_order(item, amount_given)
+                    self.order_items(item, t, orders[demandable])
                 demandable.check_s(item, t)
         for demandable in backorders:
             demandable.backorder += backorders[demandable]
