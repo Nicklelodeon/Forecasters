@@ -104,14 +104,15 @@ class Demandable:
             demandable = self.inv_map[item]
             amt_ordered = self.orders[item]
             amount_given = min(min(list(demandable.inv_level.values())), amt_ordered)
-            if amount_given > 0:
-                if demandable in orders:
-                    demandable.produce_order(item, orders[demandable])
-                else:
+            
+            if demandable in orders:
+                demandable.produce_order(item, orders[demandable])
+                self.order_items(item, t, orders[demandable])
+            else:
+                if amount_given > 0:
                     backorders[demandable] = amt_ordered - amount_given
                     orders[demandable] = amount_given
                     demandable.produce_order(item, amount_given)
-                self.order_items(item, t, orders[demandable])
                 demandable.check_s(item, t)
         for demandable in backorders:
             demandable.backorder += backorders[demandable]
