@@ -17,15 +17,20 @@ state.create_state(demandable_state)
 print(state.demand_list)
 
 done = False
+counter = 0
 while not done:
     """ print("-----------------------------")
     print("Demand " , state.demand_list[state.curr_time]) """
     intrand = np.random.randint(0, 8*8*8)
     RLstate, reward, done = state.step(intrand)
+    print("Counter:", counter)
     print("Reward:", reward)
     print("done:", done)
     print("RLSTATE:", RLstate)
     print("-----------------------------")
+    if counter > 0:
+        print(state.print_state(counter))
+    counter += 1
     
 
 # print(state.root.calculate_profit())
