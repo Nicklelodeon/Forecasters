@@ -6,7 +6,7 @@ from SyntheticDemand import GenerateDemand
 from GenerateDemandMonthly import GenerateDemandMonthly
 
 np.random.seed(1234)
-demandable_state = [-1,0, 0]
+demandable_state = [-1,0, 1, 1, 2, 2]
 demand = GenerateDemandMonthly()
 
 state = State()
@@ -17,15 +17,20 @@ state.create_state(demandable_state)
 print(state.demand_list)
 
 done = False
+counter = 0
 while not done:
     """ print("-----------------------------")
     print("Demand " , state.demand_list[state.curr_time]) """
-    RLstate, reward, done, info = state.step(20)
-    """ print("Reward:", reward)
+    intrand = np.random.randint(0, 8*8*8)
+    RLstate, reward, done = state.step(intrand)
+    print("Counter:", counter)
+    print("Reward:", reward)
     print("done:", done)
-    print("info:", info)
     print("RLSTATE:", RLstate)
-    print("-----------------------------") """
+    print("-----------------------------")
+    if counter > 0:
+        print(state.print_state(counter))
+    counter += 1
     
 
 # print(state.root.calculate_profit())

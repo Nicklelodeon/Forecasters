@@ -27,4 +27,7 @@ class Stochastic_Lead_Time:
         df = df["values"].value_counts()/1000
         new_df = pd.DataFrame(df)
         sns.barplot(x=new_df.index, y=new_df["count"])
+        plt.title("Probability mass function")
+        plt.xlabel("Lead time")
+        plt.ylabel("Probability")
         plt.show()

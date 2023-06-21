@@ -14,10 +14,9 @@ import random
 import seaborn as sns 
 import pandas as pd
 
-from gym import Env
-from gym.spaces import MultiDiscrete, Discrete
+import itertools
 
-class State(Env):
+class State():
     def __init__(self):
         self.root = Basic(chr(65))
         self.demandables = None
@@ -28,15 +27,8 @@ class State(Env):
         self.rewards_list = []
         self.demand = GenerateDemandMonthly()
         
-        ### RL attributes ###
-        ### To be edited ###
-        self.action_space = Discrete(75)
-        
-        ##[Inventory pos 1, Inventory lev 1, Inventory pos 2, Inventory lev 2]
-        self.observation_space = MultiDiscrete([1000, 1000, 1000, 1000])
-        
         self.state = None #network.getcurrstate
-        self.curr_time = 0
+        self.curr_time = -1
     
     def create_state(self, demandables, amount=65, cost=1):
         """create state
@@ -63,81 +55,108 @@ class State(Env):
 
         for end_demandable in list_end_upstream:
             rand_item = Item(str(np.random.randint(1, 1000)), cost)
-            end_demandable.add_item_downstream(rand_item, amount)
+            end_demandable.add_item_downstream(rand_item, 0)
         
         self.network_list = network_list
         self.create_changeable_network()
-        self.root.set_optimal_selling_price(1.5)
+        self.root.set_optimal_selling_price(1.5)        
+        
+        for demandable in self.changeable_network:
+            demandable.change_s(-100)
+            
+        action_lists = [[40, 50, 60, 70, 80, 90, 100, 110] for x in range(len(self.changeable_network))]
+        self.action_map = [x for x in itertools.product(*action_lists)]
+
         self.set_demand_list(self.demand.simulate_normal_no_season(mean=15.136056239015815, std=2.259090732346191))
-        self.update_state(self.curr_time)
-        self.state = self.root.get_state()
+        self.state = self.get_state()
+        print("Demand List:", self.demand_list)
     
     def set_demand_list(self, demand_list):
         self.demand_list = demand_list
         
     def step(self, action):
-        # Action eg [20]
-        ##### self.root.order_item(1, 20)
-        ##### self.root.oder_item(2, 30)
-        
-        # Calculate reward vary this before step and after step
-        reward = self.root.calculate_curr_profit(self.curr_time)
-        # print("#################### REWARD: ", reward)
-        
-        self.root.order_item(action, self.curr_time)
 
-        # Get the current state from root
-        self.state = self.root.get_state()
+        if self.curr_time == -1:
+            self.state = self.reset(action)
+            reward = 0
+            self.curr_time += 1
+            self.root.update_all_demand(self.demand_list[self.curr_time], self.curr_time)
+            self.state = self.get_state()
+            done = False
+            return self.state, reward, done
         
-        # Prints state
-        """ print(self.print_state(self.curr_time))
-        print(self.state) """
+        # Action eg 20 --> (50, 70, 70)
+        action_map = self.action_map[action]
+        print(action_map)      
         
+        ### update inventory ###
+        self.root.update_all_inventory(self.curr_time)
+
+        ### changes S level
+        for i in range(len(self.changeable_network)):
+            demandable = self.changeable_network[i]
+            current_action = action_map[i]
+            demandable.change_S(current_action)
+
+        self.root.update_all_cost(self.curr_time)
+        self.rewards += self.root.calculate_curr_profit(self.curr_time)
+        self.rewards_list.append(self.root.calculate_curr_profit(self.curr_time))
+        reward = self.root.calculate_curr_profit(self.curr_time)
+                
         # Update time
         self.curr_time += 1
         
-        # Updates state at t+1, after action is taken
-        # Checks if time exceeds the demand list
         if self.curr_time >= len(self.demand_list):
             done = True
         else:
             done = False
-            self.update_state(self.curr_time)
+            ### update demand
+            self.root.update_all_demand(self.demand_list[self.curr_time], self.curr_time)
 
+        
+        self.state = self.get_state()
+        
+        # Prints state
+        """ print(self.print_state(self.curr_time)
+        print(self.state) """
 
-       
-        # Calculate reward
-        # reward = self.root.calculate_profit(self.curr_time)
-        
-        # Check if time exceeds the demand list
-        """ if self.curr_time >= len(self.demand_list):
-            done = True
-        else:
-            done = False """
-        
-        # Set placeholder for info
-        info = {}
-        
         # Return step information
-        return self.state, reward, done, info
+        return self.state, reward, done
+    
+    def get_state(self):
+        lst = []
+        for demandable in self.changeable_network:
+            lst.append(demandable.get_state())
+        return lst
 
     def render(self):
         # Implement viz
         pass
     
-    def reset(self):
-        """RL function reset
+    def reset(self, amount=0):
+        """Resets state
         """
+        for demandable in self.changeable_network:
+            demandable.reset(amount)
+        self.rewards = 0
+        self.rewards_list = []
+        self.curr_time = -1
+        self.set_demand_list(self.demand.simulate_normal_no_season(mean=15.136056239015815, std=2.259090732346191))        
+        self.state = self.get_state()
+        return self.state        
+        
+    """ def reset(self):
         amount = 65
         for demandable in self.changeable_network:
             demandable.reset(amount)
         self.rewards = 0
         self.rewards_list = []
         self.curr_time = 0
-        self.set_demand_list(self.demand.simulate_normal_no_season())
+        self.set_demand_list(self.demand.simulate_normal_no_season(mean=15.136056239015815, std=2.259090732346191))
         self.update_state(self.curr_time)
-        self.state = self.root.get_state()
-        return self.state
+        self.curr_time += 1
+        self.state = self.get_state()
+        return self.state """
 
     def update_state(self, t):
         """Discrete update state
@@ -148,7 +167,7 @@ class State(Env):
         """
         #self.update_order_point(t)
         self.root.update_all_inventory(t)
-        self.root.update_demand(self.demand_list[t])
+        self.root.update_all_demand(self.demand_list[t], t)
         self.root.update_all_cost(t)
         self.rewards += self.root.calculate_curr_profit(t)
         self.rewards_list.append(self.root.calculate_curr_profit(t))
