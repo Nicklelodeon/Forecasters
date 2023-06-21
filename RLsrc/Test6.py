@@ -13,11 +13,12 @@ state = State()
 state.create_state(demandable_state)
 
 #state.show_network()
-
+print("length of demand list:", len(state.demand_list))
 print(state.demand_list)
 
 done = False
 counter = 0
+print(state.state)
 while not done:
     """ print("-----------------------------")
     print("Demand " , state.demand_list[state.curr_time]) """
@@ -28,9 +29,11 @@ while not done:
     print("done:", done)
     print("RLSTATE:", RLstate)
     print("-----------------------------")
-    if counter > 0:
-        print(state.print_state(counter))
-    counter += 1
+    if counter == 30:
+        break
+    """ if counter > 0:
+        print(state.print_state(counter))"""
+    counter += 1 
     
 
 # print(state.root.calculate_profit())

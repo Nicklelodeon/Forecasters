@@ -19,17 +19,12 @@ class Retailer(Demandable):
         
 
     def reset(self, amount = 65):
-        """ self.inv_level  = dict.fromkeys(self.inv_level, amount)
-        self.inv_pos = dict.fromkeys(self.inv_pos, amount)
-        self.ordering_costs = []
-        self.holding_costs = []
-        self.backorder_costs = []
-        self.backorder = 0
-        self.costs = []
-        self.arrivals = [] """
         super().reset()
         self.amount_sold = []
         self.amount_sold_total = 0
+        
+    def fast_reset(self, amount=65):
+        self.reset(amount)
 
     def update_all_inventory(self, t):
         """Updates inv level for all upstream demandables
