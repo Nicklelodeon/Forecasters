@@ -390,13 +390,13 @@ class Demandable:
         """
         total = self.total_costs
         for demandable in self.upstream:
-            total += demandable.total_costs
+            total += demandable.get_total_cost()
         return total
 
     def get_curr_total_costs(self, t):
         total = self.get_curr_cost(t)
         for demandable in self.upstream:
-            total += demandable.get_curr_cost(t)
+            total += demandable.get_curr_total_costs(t)
         return total
 
     def get_curr_cost(self, t):

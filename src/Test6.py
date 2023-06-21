@@ -22,11 +22,18 @@ for i in range(12):
     print("-----------------------------")
     print("Demand " , state.demand_list[i])
     state.update_state(i)
+    # print(state.rewards)
+    # print(state.rewards_list)
+
     print(state.print_state(i))
 
     
-
+# print("sell : " + str(state.root.selling_price))
+# print("cost", np.sum(state.root.costs))
+# print(np.sum(state.root.amount_sold))
 print(state.root.calculate_profit())
-# print(state.rewards)
-# print(state.root.plot_cost())
+# print("rewards: ", np.sum(state.rewards_list))
+print(state.rewards)
+# print(state.root.amount_sold)
+
 # print(state.plot_rewards())
