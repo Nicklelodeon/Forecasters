@@ -54,12 +54,12 @@ class State():
         list_end_upstream = self.root.find_end_upstream()
 
         for end_demandable in list_end_upstream:
-            rand_item = Item(str(np.random.randint(1, 1000)), cost)
+            rand_item = Item(str(np.random.randint(1, 1000)), 1)
             end_demandable.add_item_downstream(rand_item, 0)
         
         self.network_list = network_list
         self.create_changeable_network()
-        self.root.set_optimal_selling_price(1.5)        
+        self.root.set_optimal_selling_price(5)        
         
         for demandable in self.changeable_network:
             demandable.change_s(1000)
@@ -311,6 +311,5 @@ class State():
         sns.pointplot(data=df, x='time', y='rewards', ax=ax)
         plt.show()
     
-
 
 
