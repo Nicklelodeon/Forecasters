@@ -93,12 +93,12 @@ class State:
         list_end_upstream = self.root.find_end_upstream()
 
         for end_demandable in list_end_upstream:
-            rand_item = Item(str(np.random.randint(1, 1000)), cost)
+            rand_item = Item(str(np.random.randint(1, 1000)), 1)
             end_demandable.add_item_downstream(rand_item, amount)
         
         self.network_list = network_list
         self.create_changeable_network()
-        self.root.set_optimal_selling_price(4)
+        self.root.set_optimal_selling_price(5)
 
     def create_normal_demand(self, period = 108, iterations = 100, mean = 5, std = 2): 
         return np.reshape(self.demand_generator.simulate_normal_no_season(\
