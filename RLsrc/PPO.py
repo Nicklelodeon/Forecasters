@@ -259,7 +259,7 @@ def train():
     has_continuous_action_space = False # continuous action space; else discrete
 
     max_ep_len = 109                   # max timesteps in one episode
-    max_training_timesteps = int(109*15000)   # break training loop if timeteps > max_training_timesteps
+    max_training_timesteps = int(109*150)   # break training loop if timeteps > max_training_timesteps
 
     print_freq = max_ep_len * 10        # print avg reward in the interval (in num timesteps)
 
@@ -310,59 +310,58 @@ def train():
     i_episode = 0
     
     # training loop
-    for i in range(2):
-        env = State()
-        env.create_state([-1, 0, 1, 1, 2, 2])
-        #env = MultiEchelonInvOptEnv(demand_hist_list[i*2:i*2+2])
-        while time_step <= max_training_timesteps:
+    env = State()
+    env.create_state([-1, 0, 1, 1, 2, 2])
+    #env = MultiEchelonInvOptEnv(demand_hist_list[i*2:i*2+2])
+    while time_step <= max_training_timesteps:
 
-            state = env.reset()
-            current_ep_reward = 0
+        state = env.reset()
+        current_ep_reward = 0
 
-            for t in range(1, max_ep_len+1):
+        for t in range(1, max_ep_len+1):
 
-                # select action with policy
+            # select action with policy
 
-                action = ppo_agent.select_action(state)
-                state, reward, done = env.step(action)
+            action = ppo_agent.select_action(state)
+            state, reward, done = env.step(action)
 
-                # saving reward and is_terminals
-                ppo_agent.buffer.rewards.append(reward)
-                ppo_agent.buffer.is_terminals.append(done)
+            # saving reward and is_terminals
+            ppo_agent.buffer.rewards.append(reward)
+            ppo_agent.buffer.is_terminals.append(done)
 
-                time_step +=1
-                current_ep_reward += reward
+            time_step +=1
+            current_ep_reward += reward
 
-                # update PPO agent
-                if time_step % update_timestep == 0:
-                    ppo_agent.update()
+            # update PPO agent
+            if time_step % update_timestep == 0:
+                ppo_agent.update()
 
-                # if continuous action space; then decay action std of ouput action distribution
-                if has_continuous_action_space and time_step % action_std_decay_freq == 0:
-                    ppo_agent.decay_action_std(action_std_decay_rate, min_action_std)
+            # if continuous action space; then decay action std of ouput action distribution
+            if has_continuous_action_space and time_step % action_std_decay_freq == 0:
+                ppo_agent.decay_action_std(action_std_decay_rate, min_action_std)
 
 
-                # printing average reward
-                if time_step % print_freq == 0:
+            # printing average reward
+            if time_step % print_freq == 0:
 
-                    # print average reward till last episode
-                    print_avg_reward = print_running_reward / print_running_episodes
-                    print_avg_reward = round(print_avg_reward, 2)
+                # print average reward till last episode
+                print_avg_reward = print_running_reward / print_running_episodes
+                print_avg_reward = round(print_avg_reward, 2)
 
-                    print("Episode : {} \t\t Timestep : {} \t\t Average Reward : {}".format(i_episode, time_step, print_avg_reward))
+                print("Episode : {} \t\t Timestep : {} \t\t Average Reward : {}".format(i_episode, time_step, print_avg_reward))
 
-                    print_running_reward = 0
-                    print_running_episodes = 0
+                print_running_reward = 0
+                print_running_episodes = 0
 
-                # break; if the episode is over
-                if done:
-                    break
+            # break; if the episode is over
+            if done:
+                break
 
-            print_running_reward += current_ep_reward
-            print_running_episodes += 1
+        print_running_reward += current_ep_reward
+        print_running_episodes += 1
 
-            i_episode += 1
-    torch.save(ppo_agent.policy.state_dict(), "C:/Users/darry/OneDrive/Desktop/NUS/Astar/Forecasters/RLsrc")
+        i_episode += 1
+    torch.save(ppo_agent.policy.state_dict(), "C:/Users/darry/OneDrive/Desktop/NUS/Astar/Forecasters/RLsrc/rlmodel.pt")
 
 if __name__ == '__main__':
 

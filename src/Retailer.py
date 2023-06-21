@@ -21,6 +21,9 @@ class Retailer(Demandable):
         super().reset()
         self.amount_sold = []
         self.amount_sold_total = 0
+        
+    def fast_reset(self, amount=65):
+        self.reset(amount)
 
     def update_all_demand(self, num_demands: int, t) -> None:
         """Updates inv level and pos for all items for curr and upstream
