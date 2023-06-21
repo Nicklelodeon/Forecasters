@@ -108,7 +108,8 @@ class Demandable:
             demandable.fufill_orders(t)
             
     def get_state(self):
-        return min(list(self.inv_pos.values()))
+        
+        return [min(list(self.inv_pos.values())), min(list(self.inv_level.values()))]
 
     def order_items(self, item, t, ordered_amt):
         demandable = self.inv_map[item]

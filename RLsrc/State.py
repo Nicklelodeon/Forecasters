@@ -62,19 +62,46 @@ class State():
         self.root.set_optimal_selling_price(1.5)        
         
         for demandable in self.changeable_network:
-            demandable.change_s(-100)
+            demandable.change_s(1000)
             
         action_lists = [[40, 50, 60, 70, 80, 90, 100, 110] for x in range(len(self.changeable_network))]
         self.action_map = [x for x in itertools.product(*action_lists)]
 
         self.set_demand_list(self.demand.simulate_normal_no_season(mean=15.136056239015815, std=2.259090732346191))
         self.state = self.get_state()
-        print("Demand List:", self.demand_list)
+        """ print("Demand List:", self.demand_list) """
     
     def set_demand_list(self, demand_list):
         self.demand_list = demand_list
         
     def step(self, action):
+        if self.curr_time == -1:
+            self.state = self.reset(action)
+            reward = 0
+            self.curr_time += 1
+            done = False
+            return self.state, reward, done
+        action_map = self.action_map[action]
+        #print("action map:", action_map)
+        for i in range(len(self.changeable_network)):
+            demandable = self.changeable_network[i]
+            current_action = action_map[i]
+            demandable.change_S(current_action)
+        
+        self.update_state(self.curr_time)
+        self.state = self.get_state()
+        reward = self.root.calculate_curr_profit(self.curr_time)
+        self.curr_time += 1
+        if self.curr_time >= len(self.demand_list):
+            done = True
+        else:
+            done = False
+        
+        return self.state, reward, done
+    
+
+        
+    """ def step(self, action):
 
         if self.curr_time == -1:
             self.state = self.reset(action)
@@ -117,16 +144,16 @@ class State():
         self.state = self.get_state()
         
         # Prints state
-        """ print(self.print_state(self.curr_time)
-        print(self.state) """
+        print(self.print_state(self.curr_time)
+        print(self.state) 
 
         # Return step information
-        return self.state, reward, done
+        return self.state, reward, done """
     
     def get_state(self):
         lst = []
         for demandable in self.changeable_network:
-            lst.append(demandable.get_state())
+            lst.extend(demandable.get_state())
         return lst
 
     def render(self):

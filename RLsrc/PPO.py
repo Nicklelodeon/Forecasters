@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch.distributions import MultivariateNormal
 from torch.distributions import Categorical
+from State import State
 
 ################################## set device ##################################
 print("============================================================================================")
@@ -257,8 +258,8 @@ def train():
 
     has_continuous_action_space = False # continuous action space; else discrete
 
-    max_ep_len = 364                   # max timesteps in one episode
-    max_training_timesteps = int(364*15000)   # break training loop if timeteps > max_training_timesteps
+    max_ep_len = 109                   # max timesteps in one episode
+    max_training_timesteps = int(109*15000)   # break training loop if timeteps > max_training_timesteps
 
     print_freq = max_ep_len * 10        # print avg reward in the interval (in num timesteps)
 
@@ -280,11 +281,11 @@ def train():
     lr_actor = 0.00005       # learning rate for actor network
     lr_critic = 0.0001       # learning rate for critic network
 
-    random_seed = 0         # set random seed if required (0 = no random seed)
+    random_seed = 1234         # set random seed if required (0 = no random seed)
     #####################################################
 
-    state_dim = 9
-    action_dim = 275
+    state_dim = 6
+    action_dim = 512
 
     torch.manual_seed(random_seed)
     np.random.seed(random_seed)
@@ -310,7 +311,9 @@ def train():
     
     # training loop
     for i in range(2):
-        env = MultiEchelonInvOptEnv(demand_hist_list[i*2:i*2+2])
+        env = State()
+        env.create_state([-1, 0, 1, 1, 2, 2])
+        #env = MultiEchelonInvOptEnv(demand_hist_list[i*2:i*2+2])
         while time_step <= max_training_timesteps:
 
             state = env.reset()
@@ -359,7 +362,7 @@ def train():
             print_running_episodes += 1
 
             i_episode += 1
-    torch.save(ppo_agent.policy.state_dict(), desired_path)
+    torch.save(ppo_agent.policy.state_dict(), "C:/Users/darry/OneDrive/Desktop/NUS/Astar/Forecasters/RLsrc")
 
 if __name__ == '__main__':
 
