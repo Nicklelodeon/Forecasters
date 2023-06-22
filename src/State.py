@@ -58,6 +58,11 @@ class State:
     def set_demand_list(self, demand_list):
         self.demand_list = demand_list
     
+    
+    def set_demand_matrix(self, demand_matrix):
+        self.demand_matrix = demand_matrix
+        
+        
     def set_demand_matrix(self, demand_matrix):
         self.demand_matrix = demand_matrix
         
@@ -72,8 +77,9 @@ class State:
         self.mean = mean
         self.std = std
         np.random.seed(1234) # set same demand matrix
-        self.demand_matrix = self.create_normal_demand()
-        
+        self.demand_matrix = np.reshape(self.demand_generator.simulate_normal_no_season(\
+            periods = self.periods * self.iterations, mean=self.mean, std=self.std),\
+                (self.iterations, self.periods))
         
         self.demandables = demandables
         network_list = []

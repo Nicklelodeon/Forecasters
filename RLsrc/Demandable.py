@@ -84,6 +84,21 @@ class Demandable:
     def reset_orders(self):
         self.orders = {}
 
+    def update_all_demand(self, num_demands: int, t) -> None:
+        """Updates inv level and pos for all items for curr and upstream
+
+        Args:
+            num_demands (int): amount requested
+            t (int): time stamp
+        """
+        self.update_demand(num_demands)
+        for item in self.inv_level:
+            self.check_s(item, t)
+        self.fufill_orders(t)
+
+    def get_state(self):
+        return [min(list(self.inv_pos.values())), min(list(self.inv_level.values()))]
+
     def fufill_orders(self, t):
         backorders = {}
         orders = {}
@@ -106,10 +121,7 @@ class Demandable:
             demandable.backorder += backorders[demandable]
         for demandable in self.upstream:
             demandable.fufill_orders(t)
-            
-    def get_state(self):
-        
-        return [min(list(self.inv_pos.values())), min(list(self.inv_level.values()))]
+
 
     def order_items(self, item, t, ordered_amt):
         demandable = self.inv_map[item]
@@ -118,18 +130,6 @@ class Demandable:
         self.arrivals.append([t + lead_time, item, ordered_amt])
         self.ordering_costs[t] += ordered_amt * item.get_cost()
         self.total_costs += ordered_amt * item.get_cost()
-
-    def update_all_demand(self, num_demands: int, t) -> None:
-        """Updates inv level and pos for all items for curr and upstream
-
-        Args:
-            num_demands (int): amount requested
-            t (int): time stamp
-        """
-        self.update_demand(num_demands)
-        for item in self.inv_level:
-            self.check_s(item, t)
-        self.fufill_orders(t)
 
     def update_demand(self, num_get: int):
         """Update inv level and inv pos and cost
@@ -392,13 +392,13 @@ class Demandable:
         """
         total = self.total_costs
         for demandable in self.upstream:
-            total += demandable.total_costs
+            total += demandable.get_total_cost()
         return total
 
     def get_curr_total_costs(self, t):
         total = self.get_curr_cost(t)
         for demandable in self.upstream:
-            total += demandable.get_curr_cost(t)
+            total += demandable.get_curr_total_costs(t)
         return total
 
     def get_curr_cost(self, t):
