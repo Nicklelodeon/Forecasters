@@ -257,7 +257,14 @@ class State:
             big_S = self.s_S_list[point + 1]
             demandable.change_order_point(small_s, big_S)
             
-
+    def reset(self, amount=65):
+        """Resets state
+        """
+        for demandable in self.changeable_network:
+            demandable.reset(amount)
+        self.demand_list = None
+        self.s_S_list = None
+        self.rewards = 0
     
     """ def run(self, X):
         for j in range(len(self.changeable_network)):
@@ -306,6 +313,5 @@ class State:
         # # sns.relplot(kind='line', data=df, x='time', y='cost', hue='type')
         plt.show()
     
-
 
 

@@ -97,7 +97,7 @@ class Demandable:
         self.fufill_orders(t)
 
     def get_state(self):
-        return [min(list(self.inv_pos.values())), min(list(self.inv_level.values()))]
+        return [min(list(self.inv_pos.values())), min(list(self.inv_level.values())), len(self.arrivals)]
 
     def fufill_orders(self, t):
         backorders = {}

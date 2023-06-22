@@ -26,9 +26,10 @@ class State():
         self.rewards = 0
         self.rewards_list = []
         self.demand = GenerateDemandMonthly()
+        self.start_time = -1
         
         self.state = None #network.getcurrstate
-        self.curr_time = -1
+        self.curr_time = self.start_time
     
     def create_state(self, demandables, amount=65, cost=1):
         """create state
@@ -68,7 +69,9 @@ class State():
         self.action_map = [x for x in itertools.product(*action_lists)]
 
         self.set_demand_list(self.demand.simulate_normal_no_season(mean=15.136056239015815, std=2.259090732346191))
+        self.reset()
         self.state = self.get_state()
+        
         """ print("Demand List:", self.demand_list) """
     
     def set_demand_list(self, demand_list):
@@ -81,6 +84,7 @@ class State():
             self.curr_time += 1
             done = False
             return self.state, reward, done
+        
         action_map = self.action_map[action]
         #print("action map:", action_map)
         for i in range(len(self.changeable_network)):
@@ -116,10 +120,12 @@ class State():
             demandable.reset(amount)
         self.rewards = 0
         self.rewards_list = []
-        self.curr_time = -1
+        self.curr_time = self.start_time
         self.set_demand_list(self.demand.simulate_normal_no_season(mean=15.136056239015815, std=2.259090732346191))        
         self.state = self.get_state()
-        return self.state        
+        """ print("reset amt:", amount)
+        print("state after reset:", self.state) """
+        return self.state 
 
     def update_state(self, t):
         """Discrete update state
