@@ -19,15 +19,7 @@ class Retailer(Demandable):
         
 
     def reset(self, amount = 65):
-        """ self.inv_level  = dict.fromkeys(self.inv_level, amount)
-        self.inv_pos = dict.fromkeys(self.inv_pos, amount)
-        self.ordering_costs = []
-        self.holding_costs = []
-        self.backorder_costs = []
-        self.backorder = 0
-        self.costs = []
-        self.arrivals = [] """
-        super().reset()
+        super().reset(amount)
         self.amount_sold = []
         self.amount_sold_total = 0
 
@@ -90,8 +82,9 @@ class Retailer(Demandable):
         return self.amount_sold_total * self.selling_price - super().get_total_cost()
 
     def calculate_curr_profit(self, t):
-        print('curr cost', super().get_curr_total_costs(t))
+        #print('curr cost', super().get_curr_total_costs(t))
         return self.amount_sold[t] * self.selling_price - super().get_curr_total_costs(t)
+       
     
     def __repr__(self):
         return "Retailer({})".format(self.name)

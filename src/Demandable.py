@@ -31,6 +31,7 @@ class Demandable:
         self.s = s
         self.S = S
         self.total_costs = 0
+        self.current_costs = 0
         self.orders = {}
 
     def reset(self, amount=65):
@@ -43,9 +44,10 @@ class Demandable:
         self.costs = []
         self.arrivals = []
         self.total_costs = 0
+        self.current_costs = 0
         self.inv_level_plot = []
         self.orders = {}
-
+        
     def add_lead_time(self, stl):
         """Assign stochastic lead time
 
@@ -409,6 +411,18 @@ class Demandable:
             int: cost at specified time stamp
         """
         return self.costs[t]
+    
+    def get_curr_cost_no_time(self):
+        total = self.current_costs
+        for demandable in self.upstream:
+            total += demandable.get_curr_cost_no_time()
+        return total
+    
+    def reset_all_current_cost(self):
+        self.current_costs = 0
+        for demandable in self.upstream:
+            demandable.reset_all_current_cost()
+        
 
     def update_all_cost(self, t):
         """Add hc into total cost
