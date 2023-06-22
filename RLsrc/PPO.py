@@ -6,8 +6,7 @@ from State import State
 
 ################################## set device ##################################
 print("============================================================================================")
-# set device to cpu or cuda
-device = torch.device('cuda')
+device = torch.device('cpu')
 if(torch.cuda.is_available()): 
     device = torch.device('cuda:0') 
     torch.cuda.empty_cache()
