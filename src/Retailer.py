@@ -19,6 +19,14 @@ class Retailer(Demandable):
         
 
     def reset(self, amount = 65):
+        """ self.inv_level  = dict.fromkeys(self.inv_level, amount)
+        self.inv_pos = dict.fromkeys(self.inv_pos, amount)
+        self.ordering_costs = []
+        self.holding_costs = []
+        self.backorder_costs = []
+        self.backorder = 0
+        self.costs = []
+        self.arrivals = [] """
         super().reset(amount)
         self.amount_sold = []
         self.amount_sold_total = 0
@@ -30,11 +38,11 @@ class Retailer(Demandable):
             t (int): timestamp
         """
         #initialise cost to 0 at curr t
-        self.amount_sold.append(0) 
-        self.costs.append(0)
-        self.backorder_costs.append(0)
-        self.ordering_costs.append(0)
-        self.holding_costs.append(0)
+        # self.amount_sold.append(0) 
+        # self.costs.append(0)
+        # self.backorder_costs.append(0)
+        # self.ordering_costs.append(0)
+        # self.holding_costs.append(0)
         self.update_inventory(t)
         for demandable in self.upstream:
             demandable.update_all_inventory(t)
@@ -47,7 +55,7 @@ class Retailer(Demandable):
             t (int): time stamp
         """
         amount_sold = self.update_demand(num_demands)
-        self.amount_sold[t] += amount_sold
+        # self.amount_sold[t] += amount_sold
         self.amount_sold_total += amount_sold
         for item in self.inv_level:
             self.check_s(item, t)
@@ -76,15 +84,14 @@ class Retailer(Demandable):
                 self.inv_level[item] -= amt_backordered
             self.backorder -= amt_backordered
             self.amount_sold_total += amt_backordered
-            self.amount_sold[t] += amt_backordered
+            # self.amount_sold[t] += amt_backordered
 
     def calculate_profit(self):
         return self.amount_sold_total * self.selling_price - super().get_total_cost()
 
-    def calculate_curr_profit(self, t):
-        #print('curr cost', super().get_curr_total_costs(t))
-        return self.amount_sold[t] * self.selling_price - super().get_curr_total_costs(t)
-       
+    # def calculate_curr_profit(self, t):
+    #     print('curr cost', super().get_curr_total_costs(t))
+    #     return self.amount_sold[t] * self.selling_price - super().get_curr_total_costs(t)
     
     def __repr__(self):
         return "Retailer({})".format(self.name)

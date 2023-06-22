@@ -34,7 +34,7 @@ for i in range(12):
 # print(np.sum(state.root.amount_sold))
 print(state.root.calculate_profit())
 # print("rewards: ", np.sum(state.rewards_list))
-print(state.rewards)
+# print(state.rewards)
 # print(state.root.amount_sold)
 
 # print(state.plot_rewards())

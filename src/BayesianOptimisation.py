@@ -31,7 +31,7 @@ def BayesianOptimisation(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1
             # state.changeable_network[1].change_order_point(round(s_DC1[i]), round(S_DC1[i]))
             # state.changeable_network[2].change_order_point(round(s_DC2[i]), round(S_DC2[i]))
             state.update_state(i)
-        total_sum += state.rewards
+        total_sum += state.root.calculate_profit()
         state.reset(start_inventory)
     return total_sum / 100
 
