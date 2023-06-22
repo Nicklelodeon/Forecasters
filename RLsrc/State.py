@@ -99,57 +99,6 @@ class State():
         
         return self.state, reward, done
     
-
-        
-    """ def step(self, action):
-
-        if self.curr_time == -1:
-            self.state = self.reset(action)
-            reward = 0
-            self.curr_time += 1
-            self.root.update_all_demand(self.demand_list[self.curr_time], self.curr_time)
-            self.state = self.get_state()
-            done = False
-            return self.state, reward, done
-        
-        # Action eg 20 --> (50, 70, 70)
-        action_map = self.action_map[action]
-        print(action_map)      
-        
-        ### update inventory ###
-        self.root.update_all_inventory(self.curr_time)
-
-        ### changes S level
-        for i in range(len(self.changeable_network)):
-            demandable = self.changeable_network[i]
-            current_action = action_map[i]
-            demandable.change_S(current_action)
-
-        self.root.update_all_cost(self.curr_time)
-        self.rewards += self.root.calculate_curr_profit(self.curr_time)
-        self.rewards_list.append(self.root.calculate_curr_profit(self.curr_time))
-        reward = self.root.calculate_curr_profit(self.curr_time)
-                
-        # Update time
-        self.curr_time += 1
-        
-        if self.curr_time >= len(self.demand_list):
-            done = True
-        else:
-            done = False
-            ### update demand
-            self.root.update_all_demand(self.demand_list[self.curr_time], self.curr_time)
-
-        
-        self.state = self.get_state()
-        
-        # Prints state
-        print(self.print_state(self.curr_time)
-        print(self.state) 
-
-        # Return step information
-        return self.state, reward, done """
-    
     def get_state(self):
         lst = []
         for demandable in self.changeable_network:
@@ -171,19 +120,6 @@ class State():
         self.set_demand_list(self.demand.simulate_normal_no_season(mean=15.136056239015815, std=2.259090732346191))        
         self.state = self.get_state()
         return self.state        
-        
-    """ def reset(self):
-        amount = 65
-        for demandable in self.changeable_network:
-            demandable.reset(amount)
-        self.rewards = 0
-        self.rewards_list = []
-        self.curr_time = 0
-        self.set_demand_list(self.demand.simulate_normal_no_season(mean=15.136056239015815, std=2.259090732346191))
-        self.update_state(self.curr_time)
-        self.curr_time += 1
-        self.state = self.get_state()
-        return self.state """
 
     def update_state(self, t):
         """Discrete update state

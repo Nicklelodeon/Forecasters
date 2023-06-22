@@ -129,7 +129,7 @@ class State:
             self.set_demand_list(self.demand_matrix[z])
             for i in range(self.periods):
                 self.update_state(i)
-            total_sum += self.rewards
+            total_sum += self.calculate_profits()
         return total_sum / self.iterations
     
             
@@ -283,8 +283,8 @@ class State:
         self.root.update_all_inventory(t)
         self.root.update_all_demand(self.demand_list[t], t)
         self.root.update_all_cost(t)
-        self.rewards += self.root.calculate_curr_profit(t)
-        self.rewards_list.append(self.root.calculate_curr_profit(t))
+        # self.rewards += self.root.calculate_curr_profit(t)
+        # self.rewards_list.append(self.root.calculate_curr_profit(t))
         
 
 

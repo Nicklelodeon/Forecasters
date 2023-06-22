@@ -54,7 +54,7 @@ class MLGenerateData6:
             self.state.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
             for i in range(len(self.state.demand_list)):
                 self.state.update_state(i)
-            total += self.state.total_sum()
+            total += self.state.calculate_profits()
         self.df = self.update_df(self.df, [[mean, std, 0], [start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1], total/100])
         
 
@@ -77,7 +77,7 @@ class MLGenerateData6:
             self.state.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
             for i in range(len(self.state.demand_list)):
                 self.state.update_state(i)
-            total += self.state.total_sum()
+            total += self.state.calculate_profits()
         self.df = self.update_df(self.df, [[mean, 0, 1], [start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1], total/100])
 
     def update_df(self, df, data):
