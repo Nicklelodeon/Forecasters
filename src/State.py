@@ -26,6 +26,7 @@ class State:
         self.s_S_list = None
         self.rewards = 0
         self.rewards_list = []
+        self.start_inventory = 65
         
         ### User input
         self.periods = None
@@ -97,10 +98,11 @@ class State:
 
         self.root = network_list[0]
         list_end_upstream = self.root.find_end_upstream()
-
-        for end_demandable in list_end_upstream:
-            rand_item = Item(str(np.random.randint(1, 1000)), 1)
-            end_demandable.add_item_downstream(rand_item, amount)
+        
+        for i in range(len(list_end_upstream)):
+            end_demandable = list_end_upstream[i]
+            item = Item(str(i+1), 1)
+            end_demandable.add_item_downstream(item, self.start_inventory)
         
         self.network_list = network_list
         self.create_changeable_network()
@@ -116,7 +118,7 @@ class State:
             periods = period * iterations, mean=mean),\
                 (iterations, period))
         
-    def run(self, start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1): #7 params
+    def run(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1): #6 params
         if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
             return -100000
         self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
@@ -125,13 +127,32 @@ class State:
         total_sum = 0
         np.random.seed(5678)
         for z in range(self.iterations):
-            self.reset(start_inventory)
+            self.reset(self.start_inventory)
             self.set_demand_list(self.demand_matrix[z])
             for i in range(self.periods):
                 self.update_state(i)
             total_sum += self.calculate_profits()
         return total_sum / self.iterations
     
+    def test_no_season(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+        self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
+        self.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
+        self.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
+        np.random.seed(7890) # set same demand matrix
+        self.demand_matrix = np.reshape(self.demand_generator.simulate_normal_no_season(\
+            periods = self.periods * self.iterations, mean=self.mean, std=self.std),\
+                (self.iterations, self.periods))
+        lst = []
+        np.random.seed(2340)
+        for z in range(self.iterations):
+            self.reset(self.start_inventory)
+            self.set_demand_list(self.demand_matrix[z])
+            for i in range(self.periods):
+                self.update_state(i)
+            lst.append(self.calculate_profits())
+        print("mean:", np.mean(lst))
+        print("std:", np.std(lst))
+        #return total_sum / self.iterations
             
     def show_network(self):
         """Creates a tree graph of the supply chain system
