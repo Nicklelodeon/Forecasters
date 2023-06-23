@@ -23,6 +23,7 @@ while not done:
     """ print("-----------------------------")
     print("Demand " , state.demand_list[state.curr_time]) """
     intrand = np.random.randint(0, 8*8*8)
+    print("random int:", intrand)
     RLstate, reward, done = state.step(intrand)
     print("Counter:", counter)
     print("Reward:", reward)

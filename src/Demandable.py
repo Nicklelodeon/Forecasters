@@ -31,6 +31,7 @@ class Demandable:
         self.s = s
         self.S = S
         self.total_costs = 0
+        self.current_costs = 0
         self.orders = {}
 
     def reset(self, amount=65):
@@ -43,9 +44,10 @@ class Demandable:
         self.costs = []
         self.arrivals = []
         self.total_costs = 0
+        self.current_costs = 0
         self.inv_level_plot = []
         self.orders = {}
-
+        
     def add_lead_time(self, stl):
         """Assign stochastic lead time
 

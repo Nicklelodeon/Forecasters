@@ -26,6 +26,7 @@ for i in range(12):
     # print(state.rewards_list)
 
     print(state.print_state(i))
+    #print(state.print_state(i))
 
     
 # print("sell : " + str(state.root.selling_price))
