@@ -18,5 +18,5 @@ def validate(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
     
 
 #x = validate(158, 71, 182, 67, 179, 80, 134)
-x = validate(94, 51, 52, 44, 58, 45, 47)
+x = validate(109.4, 59.58, 109, 49.24, 60.65, 43.36, 86.42)
 print(x)

@@ -133,8 +133,8 @@ class MLGenerateData6:
                 
 
 
-data = MLGenerateData6()
-data.create_data()
-# data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
+# data = MLGenerateData6()
+# data.create_data()
+# # data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/mldata.csv")
 
-data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/6_24months_US_car_data_try_50.csv")
+# data.df.to_csv("/Users/nicholas/Documents/Misc/internship A*STAR/Work/6_24months_US_car_data_try_50.csv")
