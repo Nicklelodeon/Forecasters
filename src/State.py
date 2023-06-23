@@ -164,6 +164,7 @@ class State:
         self.concurrent_function(*args)
 
     def concurrent_function(self, iterations):
+        new_state = State()
         for z in range(iterations):
             self.reset(self.start_inventory)
             self.set_demand_list(self.demand_matrix[z])

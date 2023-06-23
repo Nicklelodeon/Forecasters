@@ -11,8 +11,8 @@ class Stochastic_Lead_Time:
         self.low = 1
         self.high = 5
         self.mode = 2.5
-        self.function = lambda x: np.floor(
-            np.random.triangular(self.low, self.mode, self.high, x))
+        """ self.function = lambda x: np.floor(
+            np.random.triangular(self.low, self.mode, self.high, x)) """
         
     def get_lead_time(self):
         return np.floor(np.random.triangular(self.low, self.mode, self.high, 1)[0])
