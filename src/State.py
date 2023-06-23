@@ -138,46 +138,46 @@ class State:
             total_sum += self.calculate_profits()
         return total_sum / self.iterations
 
-    def run_concurrent(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1): #6 params
-        if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
-            return -100000
-        self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
-        self.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
-        self.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
-        total_sum = 0
+    # def run_concurrent(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1): #6 params
+    #     if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
+    #         return -100000
+    #     self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
+    #     self.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
+    #     self.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
+    #     total_sum = 0
           
-        all_args = [zip(s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1) for i in range(100)]
-        pool = Pool(cpu_count()) 
+    #     all_args = [(s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1) for i in range(100)]
+    #     pool = Pool(cpu_count()) 
     
-        results = pool.map(wrapped_some_function_call, all_args)
-        total_error = sum(results)
-        # with futures.ProcessPoolExecutor() as pool:
-        #     for error in pool.map(self.concurrent_function(), [self.iterations for i in range(100)] ):
-        #         total_sum += error
-        return total_error
+    #     results = pool.map(self.wrapped_some_function_call, all_args)
+    #     total_error = sum(results)
+    #     # with futures.ProcessPoolExecutor() as pool:
+    #     #     for error in pool.map(self.concurrent_function(), [self.iterations for i in range(100)] ):
+    #     #         total_sum += error
+    #     return total_error
         
-    def wrapped_some_function_call(self, args): 
-        """
-        we need to wrap the call to unpack the parameters 
-        we build before as a tuple for being able to use pool.map
-        """ 
-        self.concurrent_function(*args)
+    # def wrapped_some_function_call(self, args): 
+    #     """
+    #     we need to wrap the call to unpack the parameters 
+    #     we build before as a tuple for being able to use pool.map
+    #     """ 
+    #     self.concurrent_function(*args)
 
-    def concurrent_function(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
-        state = State()
-        state.create_state([-1,0,1,1,2,2])
-        if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
-            return -100000
-        state.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
-        state.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
-        state.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
-        np.random.seed(5678)  
-        for z in range(state.iterations):
-            state.reset(state.start_inventory)
-            state.set_demand_list(state.demand_matrix[z])
-            for i in range(state.periods):
-                state.update_state(i)
-        return state.calculate_profits()
+    # def concurrent_function(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+    #     state = State()
+    #     state.create_state([-1,0,1,1,2,2])
+    #     if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
+    #         return -100000
+    #     state.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
+    #     state.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
+    #     state.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
+    #     np.random.seed(5678)  
+    #     for z in range(state.iterations):
+    #         state.reset(state.start_inventory)
+    #         state.set_demand_list(state.demand_matrix[z])
+    #         for i in range(state.periods):
+    #             state.update_state(i)
+    #     return state.calculate_profits()
 
     def test_no_season(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
         self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
@@ -196,9 +196,8 @@ class State:
                 self.update_state(i)
             lst.append(self.calculate_profits())
         print("mean:", np.mean(lst))
-        print("std:", np.std(lst))
-        #return total_sum / self.iterations
-            
+        print("std:", np.std(lst, ddof=1)/(self.iterations)**0.5)
+                    
     def show_network(self):
         """Creates a tree graph of the supply chain system
         """
