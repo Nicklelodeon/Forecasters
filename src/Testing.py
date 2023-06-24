@@ -18,4 +18,4 @@ state = State()
 state.create_state([-1,0,1,1,2,2])
 
 # state.test_no_season(51, 52, 44, 58, 45, 47)
-state.run_concurrent(51, 52, 44, 58, 45, 47)
+state.test_no_season(54,  63, 42, 47, 42, 49)
