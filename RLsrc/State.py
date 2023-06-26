@@ -26,7 +26,7 @@ class State():
         self.rewards = 0
         self.rewards_list = []
         self.demand = GenerateDemandMonthly()
-        self.start_time = -1
+        self.start_time = 0
         
         self.state = None #network.getcurrstate
         self.curr_time = self.start_time
@@ -54,9 +54,10 @@ class State():
         self.root = network_list[0]
         list_end_upstream = self.root.find_end_upstream()
 
-        for end_demandable in list_end_upstream:
-            rand_item = Item(str(np.random.randint(1, 1000)), 1)
-            end_demandable.add_item_downstream(rand_item, 0)
+        for i in range(len(list_end_upstream)):
+            end_demandable = list_end_upstream[i]
+            item = Item(str(i+1), 1)
+            end_demandable.add_item_downstream(item, amount)
         
         self.network_list = network_list
         self.create_changeable_network()
@@ -78,12 +79,12 @@ class State():
         self.demand_list = demand_list
         
     def step(self, action):
-        if self.curr_time == -1:
+        """ if self.curr_time == -1:
             self.state = self.reset(action)
             reward = 0
             self.curr_time += 1
             done = False
-            return self.state, reward, done
+            return self.state, reward, done """
         
         action_map = self.action_map[action]
         #print("action map:", action_map)
@@ -113,7 +114,7 @@ class State():
         # Implement viz
         pass
     
-    def reset(self, amount=0):
+    def reset(self, amount=65):
         """Resets state
         """
         for demandable in self.changeable_network:

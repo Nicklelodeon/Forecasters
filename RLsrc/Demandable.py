@@ -170,20 +170,13 @@ class Demandable:
             item (Item): item to be ordered
             t (int): time stamp
         """
-        if self.inv_pos[item] < self.s and item in self.inv_map:
+        if self.inv_pos[item] < self.S and item in self.inv_map:
             demandable = self.inv_map[item]
             amt = self.S - self.inv_pos[item]
             self.inv_pos[item] += amt
             demandable.inv_pos[item] -= amt
             self.orders[item] = amt
-                # if ordered_amt > 0:
-                #     lead_time = demandable.get_lead_time(t)
-                #     self.inv_pos[item] += ordered_amt
-                #     #lead_time = self.stochastic_lead_time.get_lead_time() #removed to get constant lead time for each dc at each t
-                #     self.arrivals.append([t + lead_time, item, ordered_amt])
-                #     self.ordering_costs[t] += ordered_amt * item.get_cost()
-                #     self.total_costs += ordered_amt * item.get_cost()
-                # demandable.check_s(item, t)
+
 
     def produce_order(self, item, amt_ordered):
         """Determine amount to be ordered
