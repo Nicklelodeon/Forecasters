@@ -129,6 +129,8 @@ class State:
         self.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
         self.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
         total_sum = 0
+        print(self.demand_matrix)
+        lst = []
         np.random.seed(5678)
         for z in range(self.iterations):
             self.reset(self.start_inventory)
@@ -136,6 +138,9 @@ class State:
             for i in range(self.periods):
                 self.update_state(i)
             total_sum += self.calculate_profits()
+            lst.append(self.calculate_profits())
+        print("mean:", np.mean(lst))
+        print("std:", np.std(lst, ddof=1)/(self.iterations)**0.5)
         return total_sum / self.iterations
 
     # def run_concurrent(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1): #6 params
@@ -187,7 +192,9 @@ class State:
         self.demand_matrix = np.reshape(self.demand_generator.simulate_normal_no_season(\
             periods = self.periods * self.iterations, mean=self.mean, std=self.std),\
                 (self.iterations, self.periods))
+        print(self.demand_matrix)
         lst = []
+        total_sum = 0
         np.random.seed(2340)
         for z in range(self.iterations):
             self.reset(self.start_inventory)
@@ -195,8 +202,11 @@ class State:
             for i in range(self.periods):
                 self.update_state(i)
             lst.append(self.calculate_profits())
+            total_sum += self.calculate_profits()
+        
         print("mean:", np.mean(lst))
         print("std:", np.std(lst, ddof=1)/(self.iterations)**0.5)
+        return total_sum / self.iterations
                     
     def show_network(self):
         """Creates a tree graph of the supply chain system
