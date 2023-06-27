@@ -22,3 +22,7 @@ state.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
 # GA
 # print('r1', state.run(54, 63, 42, 47, 42, 49))
 # print('r2', state.test_no_season(54, 63, 42, 47, 42, 49 ))
+
+# OLS
+print('r1', state.run(35, 42, 36, 42, 30, 31))
+print('r2', state.test_no_season(35, 42, 36, 42, 30, 31))

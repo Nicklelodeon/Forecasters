@@ -14,7 +14,10 @@ class MLGenerateData6:
         self.df = pd.DataFrame()
         self.demand_generator = GenerateDemandMonthly()
         self.state = State()
-        self.state.create_state([-1 ,0, 1, 1, 2, 2])
+        df = pd.read_csv("./src/TOTALSA.csv")
+        mean = df['TOTALSA'].mean()
+        std = df['TOTALSA'].std()
+        self.state.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
 
 
     def logic(self, start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1, demand):
@@ -84,6 +87,7 @@ class MLGenerateData6:
         count = 1
         for i in data.columns[1:]:
             demand = [x for x in data[i]]
+            print(demand)
             all_demand.extend(demand)
             mean = np.mean(all_demand)
             std = np.std(all_demand)

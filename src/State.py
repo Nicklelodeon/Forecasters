@@ -144,6 +144,7 @@ class State:
             periods = self.periods * self.iterations, mean=self.mean, std=self.std),\
                 (self.iterations, self.periods))
         lst = []
+        total_sum = 0
         np.random.seed(2340)
         for z in range(self.iterations):
             self.reset(self.start_inventory)
