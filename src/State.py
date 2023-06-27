@@ -106,6 +106,10 @@ class State:
         self.network_list = network_list
         self.create_changeable_network()
         self.root.set_optimal_selling_price(5)
+        print([x for x in self.demand_generator.simulate_normal_no_season(\
+            periods = self.periods * self.iterations, mean=self.mean, std=self.std) if x < 0])
+        print("mean:", mean, "std:", std)
+        self.demand_generator.visualize()
 
 
     def create_normal_demand(self, period = 108, iterations = 500, mean = 5, std = 2): 
