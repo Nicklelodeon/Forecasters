@@ -66,7 +66,7 @@ class State():
         for demandable in self.changeable_network:
             demandable.change_s(1000)
             
-        action_lists = [[40, 50, 60, 70, 80, 90, 100, 110] for x in range(len(self.changeable_network))]
+        action_lists = [[40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120] for x in range(len(self.changeable_network))]
         self.action_map = [x for x in itertools.product(*action_lists)]
 
         self.set_demand_list(self.demand.simulate_normal_no_season(mean=15.136056239015815, std=2.259090732346191))
