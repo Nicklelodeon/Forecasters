@@ -155,8 +155,11 @@ class State:
             for i in range(self.periods):
                 self.update_state(i)
             lst.append(self.calculate_profits())
-        print("mean:", np.mean(lst))
-        print("std:", np.std(lst, ddof=1)/(self.iterations)**0.5)
+            total_sum += self.calculate_profits()
+        
+        # print("mean:", np.mean(lst))
+        # print("std:", np.std(lst, ddof=1)/(self.iterations)**0.5)
+        return total_sum / self.iterations
                     
     def show_network(self):
         """Creates a tree graph of the supply chain system

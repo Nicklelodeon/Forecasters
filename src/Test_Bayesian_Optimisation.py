@@ -57,7 +57,7 @@ state2.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
 
 # objective function
 def objective(lst):
-    start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1 = lst
+    s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1 = lst
     # n = len(lst) // 6
     # s_DC1 = lst[:n]
     # S_DC1 = lst[n:2*n]
@@ -65,7 +65,7 @@ def objective(lst):
     # S_DC2 = lst[3*n:4*n]
     # s_r1 = lst[4*n:5*n] 
     # S_r1 = lst[5*n:]
-    profit = state2.run(start_inventory, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1)
+    profit = state2.run(s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1)
     return profit
  
 # surrogate or approximation for the objective function
@@ -101,7 +101,7 @@ def opt_acquisition(X, y, model):
     Xsamples = []
 
     for x in range(iterations):
-        Xsamples.append([random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10))])
+        Xsamples.append([random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10))])
     Xsamples = asarray(Xsamples)
     #  Xsamples = Xsamples.reshape(1200, 6)
     # calculate the acquisition function for each sample
@@ -125,7 +125,7 @@ def opt_acquisition(X, y, model):
 # sample the domain sparsely with noise
 X = []
 for x in range(iterations):
-    X.append([random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10))])
+    X.append([random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10))])
 X = asarray(X)
 y = asarray([objective(lst) for lst in X])
 # reshape into rows and cols
