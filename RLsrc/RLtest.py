@@ -34,8 +34,8 @@ torch.manual_seed(random_seed)
 np.random.seed(random_seed)
 
 ppo_agent = PPO(state_dim, action_dim, lr_actor, lr_critic, gamma, K_epochs, eps_clip, has_continuous_action_space, action_std)
-ppo_agent.policy_old.load_state_dict(torch.load(map_location=torch.device('cpu'),f=".\RLmodel4.pt"))
-ppo_agent.policy.load_state_dict(torch.load(map_location=torch.device('cpu'),f=".\RLmodel4.pt"))
+ppo_agent.policy_old.load_state_dict(torch.load(map_location=torch.device('cpu'),f="RLmodel4.pt"))
+ppo_agent.policy.load_state_dict(torch.load(map_location=torch.device('cpu'),f="RLmodel4.pt"))
 
 np.random.seed(7890)
 #### Generate New Demand ####
@@ -73,3 +73,56 @@ def test_no_season():
         reward_RL.append(reward_total)
     return reward_RL
 
+def test_no_season_24_period():
+    period = 24
+    iterations = 500
+    np.random.seed(1357)
+    demand_matrix = np.reshape(demand_generator.simulate_normal_no_season(\
+            periods = period * iterations, mean=mean, std=std),\
+                (iterations, period))
+    
+    reward_RL = []
+    for demand_list in demand_matrix:
+        reward_total = 0
+        state = env.reset()
+        env.set_demand_list(demand_list)
+        done = False
+        reward_sub = 0
+        
+        for i in range(period):
+            action = ppo_agent.select_action(state)
+            state, reward, done = env.step(action)
+            reward_sub += reward
+            if done:
+                break
+        reward_total += reward_sub
+        reward_RL.append(reward_sub)
+        reward_RL.append(reward_total)
+    return reward_RL
+
+def test_poisson_no_season():
+    period = 108
+    iterations = 500
+    np.random.seed(12340)
+    demand_matrix = np.reshape(demand_generator.simulate_poisson_no_season(\
+            periods = period * iterations, mean=mean),\
+                (iterations, period))
+    
+    reward_RL = []
+    for demand_list in demand_matrix:
+        reward_total = 0
+        state = env.reset()
+        env.set_demand_list(demand_list)
+        done = False
+        reward_sub = 0
+        
+        while not done:
+            action = ppo_agent.select_action(state)
+            state, reward, done = env.step(action)
+            reward_sub += reward
+            if done:
+                break
+        reward_total += reward_sub
+        reward_RL.append(reward_sub)
+        reward_RL.append(reward_total)
+    return reward_RL
