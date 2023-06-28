@@ -65,20 +65,22 @@ def test(model, mean, std, tests):
         if s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1:
             continue
 
-        params = torch.tensor([1, mean, std, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1])
-        preds = model(params)
+        params = [1, mean, std, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1]
+        preds = model(torch.tensor(np.array(params, dtype=np.float64)).float())
         if preds > curr_max:
             curr_max = preds
             lst = [s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1]
     for x in tests:
         params = [1, mean, std]
         params.extend(x)
-        preds = model(torch.tensor(params))
+        pred =model(torch.tensor(np.array(params, dtype=np.float64)).float())
         if preds > curr_max:
             curr_max = preds
             lst = x
 
     return [curr_max, lst]
+
+    # predictors = torch.tensor(data.drop(['profit'], axis=1).to_numpy(dtype=np.float64))
 
 # print('result', model.predict([1, mean, std, 0.0, 54, 63, 42, 47, 42, 49]))
 
