@@ -1,12 +1,28 @@
 import math
 import numpy as np
 import scipy.stats
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
 
 
 class GenerateDemandMonthly:
     def __init__(self):
         self.demand = []
         self.quantiles = []
+        
+    def visualize(self):
+        lst = self.demand
+        df = pd.DataFrame(lst, columns = ["values"])
+        length = len(df)
+        df = df["values"].value_counts()/(length)
+        new_df = pd.DataFrame(df)
+        sns.barplot(x=new_df.index, y=new_df["count"])
+        plt.title("Probability mass function of demands")
+        plt.xlabel("Demand value")
+        plt.xticks(rotation=45)
+        plt.ylabel("Probability")
+        plt.show()
         
     def simulate_normal_no_season(self, periods=108, mean=30, std = 4):
         """Creates random demand with no season

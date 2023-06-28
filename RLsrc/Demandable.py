@@ -128,6 +128,7 @@ class Demandable:
         lead_time = demandable.get_lead_time(t)
         #lead_time = self.stochastic_lead_time.get_lead_time() #removed to get constant lead time for each dc at each t
         self.arrivals.append([t + lead_time, item, ordered_amt])
+        #print("Demandable: {}, time: {}, Item: {}, amount: {}".format(self.name,t + lead_time, item, ordered_amt))
         self.ordering_costs[t] += ordered_amt * item.get_cost()
         self.total_costs += ordered_amt * item.get_cost()
 
