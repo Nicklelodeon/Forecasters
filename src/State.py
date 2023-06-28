@@ -106,10 +106,6 @@ class State:
         self.network_list = network_list
         self.create_changeable_network()
         self.root.set_optimal_selling_price(5)
-        print([x for x in self.demand_generator.simulate_normal_no_season(\
-            periods = self.periods * self.iterations, mean=self.mean, std=self.std) if x < 0])
-        print("mean:", mean, "std:", std)
-        self.demand_generator.visualize()
 
 
     def create_normal_demand(self, period = 108, iterations = 500, mean = 5, std = 2): 
@@ -155,11 +151,8 @@ class State:
             for i in range(self.periods):
                 self.update_state(i)
             lst.append(self.calculate_profits())
-            total_sum += self.calculate_profits()
-        
-        # print("mean:", np.mean(lst))
-        # print("std:", np.std(lst, ddof=1)/(self.iterations)**0.5)
-        return total_sum / self.iterations
+        print("mean:", np.mean(lst))
+        print("std:", np.std(lst, ddof=1)/(self.iterations)**0.5)
                     
     def show_network(self):
         """Creates a tree graph of the supply chain system

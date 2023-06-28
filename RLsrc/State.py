@@ -66,7 +66,7 @@ class State():
         for demandable in self.changeable_network:
             demandable.change_s(1000)
             
-        action_lists = [[40, 50, 60, 70, 80, 90, 100, 110] for x in range(len(self.changeable_network))]
+        action_lists = [[40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120] for x in range(len(self.changeable_network))]
         self.action_map = [x for x in itertools.product(*action_lists)]
 
         self.set_demand_list(self.demand.simulate_normal_no_season(mean=15.136056239015815, std=2.259090732346191))
@@ -79,6 +79,12 @@ class State():
         self.demand_list = demand_list
         
     def step(self, action):
+        """ if self.curr_time == -1:
+            self.state = self.reset(action)
+            reward = 0
+            self.curr_time += 1
+            done = False
+            return self.state, reward, done """
         
         action_map = self.action_map[action]
         #print("action map:", action_map)
@@ -129,6 +135,7 @@ class State():
             demand (_type_): _description_
             t (int): time
         """
+        #self.update_order_point(t)
         self.root.update_all_inventory(t)
         self.root.update_all_demand(self.demand_list[t], t)
         self.root.update_all_cost(t)
@@ -247,5 +254,4 @@ class State():
         sns.pointplot(data=df, x='time', y='rewards', ax=ax)
         plt.show()
     
-
 
