@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error as MSE
 from sklearn.metrics import mean_absolute_error as MAE
 from sklearn.metrics import mean_absolute_percentage_error as MAPE
+from statsmodels.stats.outliers_influence import variance_inflation_factor as vif
 import numpy as np 
 from State import State
 import random
@@ -59,13 +60,13 @@ def test(model, mean, std, tests):
         if s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1:
             continue
 
-        params = [1, mean, std, 0.0, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1]
+        params = [1, mean, std, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1]
         preds = model.predict(params)
         if preds > curr_max:
             curr_max = preds
             lst = [s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1]
     for x in tests:
-        params = [1, mean, std, 0.0]
+        params = [1, mean, std]
         params.extend(x)
         preds = model.predict(params)
         if preds > curr_max:
@@ -74,15 +75,24 @@ def test(model, mean, std, tests):
 
     return [curr_max, lst]
 
-print('result', model.predict([1, mean, std, 0.0, 54, 63, 42, 47, 42, 49]))
+# print('result', model.predict([1, mean, std, 0.0, 54, 63, 42, 47, 42, 49]))
 
 print(test(model, mean, std, tests))
 
+def vif_analysis(data):
+    """VIF analysis on the data dataframe"""
+    for i in range(len(data.columns)):
+        v=vif(np.matrix(data),i)
+        print("Variance inflation factor for {}: {}".format(data.columns[i],round(v,2)))
+
+vif_analysis(X_train)
 
 
 
-# print(model.summary())
-# print("mse: " + str(MSE(y_test, preds)))
-# print("mae: " + str(MAE(y_test, preds)))
-# print("mape: " + str(MAPE(y_test, preds)))
+
+
+print(model.summary())
+print("mse: " + str(MSE(y_test, preds)))
+print("mae: " + str(MAE(y_test, preds)))
+print("mape: " + str(MAPE(y_test, preds)))
 

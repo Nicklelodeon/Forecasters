@@ -156,7 +156,7 @@ class State:
         
         # print("mean:", np.mean(lst))
         # print("std:", np.std(lst, ddof=1)/(self.iterations)**0.5)
-        return total_sum / self.iterations
+        return lst
                     
     def show_network(self):
         """Creates a tree graph of the supply chain system

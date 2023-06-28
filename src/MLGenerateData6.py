@@ -47,7 +47,7 @@ class MLGenerateData6:
             return None
         self.state.set_demand_matrix(self.state.create_normal_demand(mean=mean, std=std))
         profit = self.state.run(s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1)
-        self.df = self.update_df(self.df, [[mean, std, 0], [s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1], profit])
+        self.df = self.update_df(self.df, [[mean, std], [s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1], profit])
         
 
     def logic_poisson(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1, mean):
@@ -75,7 +75,7 @@ class MLGenerateData6:
         return [string + str(x) for x in range(1, 109)]
 
     def create_df_col_names(self):
-        lst = ['mean', 'std', 'distribution']
+        lst = ['mean', 'std']
         lst.extend(["s_DC1", "S_DC1", "s_DC2", "S_DC2", "s_r1", "S_r1", "profit"])
         self.df = pd.concat([self.df, pd.DataFrame(columns=lst)])
         
@@ -111,7 +111,7 @@ class MLGenerateData6:
                 self.logic_normal(random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), mean, std)
                 # if log2 is not None:
                 #     self.df = self.update_df(self.df, log2)
-                self.logic_poisson(random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), mean)
+                # self.logic_poisson(random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), mean)
                     # if log3 is not None:
                     #     self.df = self.update_df(self.df, log3)
                 
