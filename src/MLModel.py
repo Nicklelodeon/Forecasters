@@ -1,34 +1,45 @@
-from MLGenerateData import MLGenerateData
 
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
-from sklearn.model_selection import train_test_split
+import pandas as pd
+import numpy as np 
+from State import State
+import random
 
-data = MLGenerateData()
-data.create_data()
+df = pd.read_csv("./src/TOTALSA.csv")
+mean = df['TOTALSA'].mean()
+std = df['TOTALSA'].std()
 
+model = TheModelClass(*args, **kwargs)
+model.load_state_dict(torch.load("src/DNNmodel.pt"))
+model.eval()
 
-target = data.df['profit']
-predictors = data.df.drop(['profit'], axis=1)
-X_train, X_test, y_train, y_test = train_test_split(predictors, target, test_size=0.33, random_state=42)
-n_cols = predictors.shape[1]
+tests = [[54, 63, 42, 47, 42, 49], np.round([42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117])]
 
+def test(model, mean, std, tests):
+    state = State()
+    state.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
+    curr_max = 0
+    lst = []
+    for x in range(1000000):
+        # s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1 = [random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8))]
+        s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1 = [random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10))]
+        if s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1:
+            continue
 
+        params = [1, mean, std, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1]
+        preds = model.predict(params)
+        if preds > curr_max:
+            curr_max = preds
+            lst = [s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1]
+    for x in tests:
+        params = [1, mean, std]
+        params.extend(x)
+        preds = model.predict(params)
+        if preds > curr_max:
+            curr_max = preds
+            lst = x
 
-model = keras.Sequential()
-model.add(layers.Dense(12, activation='selu', input_shape=(n_cols,)))
-model.add(layers.BatchNormalization())
-model.add(layers.Dense(12, activation='selu'))
-model.add(layers.BatchNormalization())
-#model.add(layers.Dropout(0.25))
-model.add(layers.Dense(1, activation='selu'))
+    return [curr_max, lst]
 
-model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mean_squared_error'])
-model.fit(X_train, y_train)
-#results = model.predict(X_test)
-#print(results)
-print(model.evaluate(X_test, y_test))
+# print('result', model.predict([1, mean, std, 0.0, 54, 63, 42, 47, 42, 49]))
 
-
-
+print(test(model, mean, std, tests))

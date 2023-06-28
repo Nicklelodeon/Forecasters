@@ -34,7 +34,10 @@ from State import State
 from GenerateDemandMonthly import GenerateDemandMonthly
 import matplotlib.pyplot as plt
 import seaborn as sns 
-from .RLsrc import RLSsrc
+import sys
+sys.path.append("RLsrc/")
+import RLtest
+
 
 
 #### Generate New Demand ####
