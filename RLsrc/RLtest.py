@@ -34,14 +34,14 @@ torch.manual_seed(random_seed)
 np.random.seed(random_seed)
 
 ppo_agent = PPO(state_dim, action_dim, lr_actor, lr_critic, gamma, K_epochs, eps_clip, has_continuous_action_space, action_std)
-ppo_agent.policy_old.load_state_dict(torch.load(map_location=torch.device('cpu'),f="RLsrc\RLmodel4.pt"))
-ppo_agent.policy.load_state_dict(torch.load(map_location=torch.device('cpu'),f="RLsrc\RLmodel4.pt"))
+ppo_agent.policy_old.load_state_dict(torch.load(map_location=torch.device('cpu'),f=".\RLmodel4.pt"))
+ppo_agent.policy.load_state_dict(torch.load(map_location=torch.device('cpu'),f=".\RLmodel4.pt"))
 
 np.random.seed(7890)
 #### Generate New Demand ####
 demand_generator = GenerateDemandMonthly()
 
-df = pd.read_csv("src\TOTALSA.csv")
+df = pd.read_csv("..\src\TOTALSA.csv")
 mean = df['TOTALSA'].mean()
 std = df['TOTALSA'].std()
 
