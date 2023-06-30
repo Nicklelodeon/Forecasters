@@ -44,7 +44,7 @@ class MLGenerateData6:
         s_DC2 = round(s_DC2)
         S_DC2 = round(S_DC2)
         if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
-            return None
+            return
         self.state.set_demand_matrix(self.state.create_normal_demand(mean=mean, std=std))
         profit = self.state.run(s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1)
         self.df = self.update_df(self.df, [[mean, std], [s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1], profit])
@@ -107,8 +107,8 @@ class MLGenerateData6:
             # if log1 is not None:
             #     self.df = self.update_df(self.df, log1)
 
-            for x in range(50):
-                self.logic_normal(random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), mean, std)
+            for x in range(500):
+                self.logic_normal(random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), mean, std)
                 # if log2 is not None:
                 #     self.df = self.update_df(self.df, log2)
                 # self.logic_poisson(random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), random.randint(round(mean * 2), round(mean * 4)), random.randint(round(mean * 5), round(mean * 8)), mean)
