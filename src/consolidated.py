@@ -53,11 +53,18 @@ rl_poisson =RLresult.poisson()
 # 
 
 
-ax = sns.boxplot(data=[bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson])
-ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML'])
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods, mean = {}', round(mean, 2)))
-plt.show()
+# ax = sns.boxplot(data=[bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson])
+# ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML'])
+# ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods, mean = {}', round(mean, 2)))
+# plt.show()
 
+tick_labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML']
+colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple'}
+ax = sns.pointplot(data = [bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson], errorbar=("se",2), join = False, capsize=0,markers="+")
+ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML'])
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods,\nstandard error of 2 std, mean = {}', round(mean, 2)))
+plt.show()
+# blue orange green red purple
 print(np.mean(bayesian_poisson))
 print(np.mean(ga_poisson))
 print(np.mean(ols_poisson))
@@ -79,6 +86,13 @@ print(np.mean(ml_poisson))
 ax = sns.boxplot(data=[bayesian_24, ga_24, ols_24, rl_24, ml_24])
 ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML'])
 ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 24 periods, mean = {}, std = {}', round(mean, 2), round(std, 2)))
+plt.show()
+
+tick_labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML']
+colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple'}
+ax = sns.pointplot(data = [bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson], errorbar=("se",2), join = False, capsize=0,markers="+")
+ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML'])
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 24 periods,\nstandard error of 2 std, mean = {}, std = {}', round(mean, 2), round(std, 2)))
 plt.show()
 
 print(np.mean(bayesian_24))
