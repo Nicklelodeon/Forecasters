@@ -45,6 +45,8 @@ df = pd.read_csv("..\src\TOTALSA.csv")
 mean = df['TOTALSA'].mean()
 std = df['TOTALSA'].std()
 
+real_data = df['TOTALSA'].round().tolist()
+
 
 def test_no_season():
     period = 108
@@ -126,3 +128,18 @@ def test_poisson_no_season():
         reward_RL.append(reward_sub)
         reward_RL.append(reward_total)
     return reward_RL
+
+
+def test_real_data():
+    total_sum = 0
+    state = env.reset()
+    done = False
+    
+    env.set_demand_list(real_data)
+    while not done:
+            action = ppo_agent.select_action(state)
+            state, reward, done = env.step(action)
+            total_sum += reward
+            if done:
+                break
+    return total_sum
