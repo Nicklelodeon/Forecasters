@@ -48,6 +48,7 @@ ml_real = state.test_real_data(37, 41, 142, 149, 32, 35)
 rl = RLresult.no_season()
 rl_24 = RLresult.non_season_24()
 rl_poisson =RLresult.poisson()
+rl_real = 554512.7999999998
 
 
 # Random search
@@ -60,7 +61,9 @@ print("real bayesian:", bayesian_real)
 print("ga real", ga_real)
 print("ols real", ols_real)
 print("ml real:", ml_real)
+print("rl real", 554512.7999999998)
 print("random real", random_real)
+
 
 # df_108 = pd.DataFrame( {'bayesian': bayesian,
 #                         'GA': ga,
