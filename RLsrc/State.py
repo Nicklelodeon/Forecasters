@@ -79,12 +79,6 @@ class State():
         self.demand_list = demand_list
         
     def step(self, action):
-        """ if self.curr_time == -1:
-            self.state = self.reset(action)
-            reward = 0
-            self.curr_time += 1
-            done = False
-            return self.state, reward, done """
         
         action_map = self.action_map[action]
         #print("action map:", action_map)

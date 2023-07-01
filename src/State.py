@@ -133,6 +133,20 @@ class State:
                 self.update_state(i)
             total_sum += self.calculate_profits()
         return total_sum / self.iterations
+    
+    def test_real_data(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+        self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
+        self.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
+        self.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
+        df = pd.read_csv("./src/TOTALSA.csv")
+        data = df["TOTALSA"].round().tolist()
+        self.reset(self.start_inventory)
+        self.set_demand_list(data)
+        total_sum = 0
+        for i in range(len(self.demand_list)):
+            self.update_state(i)
+            total_sum += self.calculate_profits()
+        return total_sum
 
 
     def test_no_season(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):

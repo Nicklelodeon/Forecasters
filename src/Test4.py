@@ -1,18 +1,30 @@
-from Demandable import Demandable
-from Item import Item
+
 import numpy as np
+import pandas as pd
+
 from State import State
-from Retailer import Retailer
+from GenerateDemandMonthly import GenerateDemandMonthly
+import matplotlib.pyplot as plt
+import seaborn as sns 
+import RLresult
 
-np.random.seed(1234)
 
-demandable_state = [-1, 0, 0, 1, 1]
 
+#### Generate New Demand ####
+
+
+df = pd.read_csv("./src/TOTALSA.csv")
+mean = df['TOTALSA'].mean()
+std = df['TOTALSA'].std()
 state = State()
-state.create_state(demandable_state)
-state.print_network()
-print(state.demand_list)
+state.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
 
-for i in range(6):
-    state.update_state(i)
-    print(state.print_state(i))
+# Bayesian
+# print('r1', state.run(42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117))
+bayesian_real = state.test_real_data(42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117)
+print("real:", bayesian_real)
+bayesian = state.test_no_season(42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117)
+bayesian_poisson = state.test_poisson_no_season(42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117)
+bayesian_24 = state.test_no_season_24_period(42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117)
+
+
