@@ -47,6 +47,7 @@ rl = RLresult.no_season()
 rl_24 = RLresult.non_season_24()
 rl_poisson =RLresult.poisson()
 
+print(np.mean(rl))
 # print(bayesian)
 # print(ga)
 # print(ols)
