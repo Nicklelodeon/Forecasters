@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 
@@ -24,45 +23,67 @@ state.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
 bayesian = state.test_no_season(42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117)
 bayesian_poisson = state.test_poisson_no_season(42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117)
 bayesian_24 = state.test_no_season_24_period(42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117)
-
+bayesian_real = state.test_real_data(42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117)
 
 # GA
 # print('r1', state.run(54, 63, 42, 47, 42, 49))
 ga = state.test_no_season(54, 63, 42, 47, 42, 49)
 ga_poisson = state.test_poisson_no_season(54, 63, 42, 47, 42, 49)
 ga_24 = state.test_no_season_24_period(54, 63, 42, 47, 42, 49)
+ga_real = state.test_real_data(54, 63, 42, 47, 42, 49)
 
 # OLS
 # print('r1', state.run(36, 44, 41, 48, 34, 38))
 ols = state.test_no_season(36, 44, 41, 48, 34, 38)
 ols_poisson = state.test_poisson_no_season(36, 44, 41, 48, 34, 38)
 ols_24 = state.test_no_season_24_period(36, 44, 41, 48, 34, 38)
+ols_real = state.test_real_data(36, 44, 41, 48, 34, 38)
 
 ml = state.test_no_season(37, 41, 142, 149, 32, 35)
 ml_poisson = state.test_poisson_no_season(37, 41, 142, 149, 32, 35)
 ml_24 = state.test_no_season_24_period(37, 41, 142, 149, 32, 35)
+ml_real = state.test_real_data(37, 41, 142, 149, 32, 35)
 
 #Reinforcement Learning
 rl = RLresult.no_season()
 rl_24 = RLresult.non_season_24()
 rl_poisson =RLresult.poisson()
 
-print(np.mean(rl))
-# print(bayesian)
-# print(ga)
-# print(ols)
-# 
 
+# Random search
+random = state.test_no_season(55, 70, 70, 75, 41, 45)
+random_poisson = state.test_poisson_no_season(55, 70, 70, 75, 41, 45)
+random_24 = state.test_no_season_24_period(55, 70, 70, 75, 41, 45)
+random_real = state.test_real_data(55, 70, 70, 75, 41, 45)
 
-# ax = sns.boxplot(data=[bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson])
-# ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML'])
-# ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods, mean = {}', round(mean, 2)))
-# plt.show()
+print("real bayesian:", bayesian_real)
+print("ga real", ga_real)
+print("ols real", ols_real)
+print("ml real:", ml_real)
+print("random real", random_real)
 
-tick_labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML']
-colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple'}
-ax = sns.pointplot(data = [bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson], errorbar=("se",2), join = False, capsize=0,markers="+")
-ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML'])
+# df_108 = pd.DataFrame( {'bayesian': bayesian,
+#                         'GA': ga,
+#                         'OLS': ols,
+#                         'ML': ml,
+#                         'RL': rl,
+#                         'Random': random})
+# print(df_108)
+
+ax = sns.boxplot(data=[bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson, random_poisson])
+ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random'])
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods, mean = {}', round(mean, 2)))
+plt.show()
+
+tick_labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random']
+colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Random': 'brown'}
+ax = sns.pointplot(data = [bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson, random_poisson],
+                   errorbar=("se",2),
+                   join = False,
+                   capsize=0,
+                   markers="_",
+                   palette=[colors[label] for label in tick_labels])
+ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random'])
 ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods,\nstandard error of 2 std, mean = {}', round(mean, 2)))
 plt.show()
 # blue orange green red purple
@@ -84,15 +105,21 @@ print(np.mean(ml_poisson))
 # plt.show()
 
 
-ax = sns.boxplot(data=[bayesian_24, ga_24, ols_24, rl_24, ml_24])
-ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML'])
+ax = sns.boxplot(data=[bayesian_24, ga_24, ols_24, rl_24, ml_24, random_24])
+ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random'])
 ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 24 periods, mean = {}, std = {}', round(mean, 2), round(std, 2)))
 plt.show()
 
-tick_labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML']
-colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple'}
-ax = sns.pointplot(data = [bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson], errorbar=("se",2), join = False, capsize=0,markers="+")
-ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML'])
+tick_labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random']
+colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Random': 'brown'}
+ax = sns.pointplot(data=[bayesian_24, ga_24, ols_24, rl_24, ml_24, random_24],
+                   errorbar=("se",2),
+                   join = False,
+                   capsize=0,
+                   markers="_",
+                   palette=[colors[label] for label in tick_labels])
+
+ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random'])
 ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 24 periods,\nstandard error of 2 std, mean = {}, std = {}', round(mean, 2), round(std, 2)))
 plt.show()
 
