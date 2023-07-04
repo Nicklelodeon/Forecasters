@@ -107,7 +107,7 @@ class MLGenerateData6:
             # if log1 is not None:
             #     self.df = self.update_df(self.df, log1)
 
-            for x in range(500):
+            for x in range(10000):
                 self.logic_normal(random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), random.randint(round(mean * 2), round(mean * 10)), mean, std)
                 # if log2 is not None:
                 #     self.df = self.update_df(self.df, log2)
