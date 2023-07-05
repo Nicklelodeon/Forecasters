@@ -9,7 +9,6 @@ import RLresult
 
 from scipy import stats
 
-
 #### Generate New Demand ####
 
 
@@ -74,11 +73,9 @@ print(stats.sem(ml_real))
 state.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
 # Reinforcement Learning
 rl = RLresult.no_season()
-print(stats.sem(rl))
-
 rl_24 = RLresult.non_season_24()
-print(stats.sem(rl_24))
 rl_poisson =RLresult.poisson()
+rl_real = 554512.7999999998
 print(stats.sem(rl_poisson))
 
 
@@ -109,6 +106,27 @@ print(stats.sem(random_real))
 # #                         'RL': rl,
 # #                         'Best Random': random})
 # # print(df_108)
+
+y_1 = [bayesian_real, ga_real, ols_real, rl_real, ml_real, random_real]
+x_1 = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random']
+df1 = pd.DataFrame({"y":y_1,
+                   "x":x_1})
+
+ax = sns.barplot(data=df1, x="x", y="y")
+ax.set(xlabel='Methods', ylabel='Profit', title='Using real monthly data from figure 4.1')
+plt.show()
+
+tick_labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random']
+colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Best Random': 'brown'}
+ax = sns.pointplot(data = [bayesian, ga, ols, rl, ml, random],
+                   errorbar=("se",2),
+                   join = False,
+                   capsize=0,
+                   markers="_",
+                   palette=[colors[label] for label in tick_labels])
+ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random'])
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods, mean = {}, std = {}', round(mean, 2), round(std, 2)))
+plt.show()
 
 ax = sns.boxplot(data=[bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson, random_poisson], showfliers=False)
 ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random'])
@@ -171,14 +189,4 @@ df = pd.DataFrame({"y":y_1,
 ax = sns.barplot(data=df, x="x", y="y")
 ax.set(xlabel='Methods', ylabel='Profit', title='Using real monthly data from figure 4.1')
 
-tick_labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random']
-colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Best Random': 'brown'}
-ax = sns.pointplot(data = [bayesian, ga, ols, rl, ml, random],
-                   errorbar=("se",2),
-                   join = False,
-                   capsize=0,
-                   markers="_",
-                   palette=[colors[label] for label in tick_labels])
-ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random'])
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods, mean = {}, std = {}', round(mean, 2), round(std, 2)))
-plt.show()
+
