@@ -57,13 +57,47 @@ random_poisson = state.test_poisson_no_season(55, 70, 70, 75, 41, 45)
 random_24 = state.test_no_season_24_period(55, 70, 70, 75, 41, 45)
 random_real = state.test_real_data(55, 70, 70, 75, 41, 45)
 
+## Random Result:
+print("random normal", np.mean(random))
+print("random poisson", np.mean(random_poisson))
+print("random normal 24", np.mean(random_24))
+
 print("real bayesian:", bayesian_real)
 print("ga real", ga_real)
 print("ols real", ols_real)
-print("ml real:", ml_real)
 print("rl real", 554512.7999999998)
+print("ml real:", ml_real)
 print("random real", random_real)
 
+ax = sns.boxplot(data=[bayesian, ga, ols, rl, ml, random])
+ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random'])
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods, mean = {}, std = {}', round(mean, 2), round(std, 2)))
+plt.show()
+
+tick_labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random']
+colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Random': 'brown'}
+ax = sns.pointplot(data = [bayesian, ga, ols, rl, ml, random],
+                   errorbar=("se",2),
+                   join = False,
+                   capsize=0,
+                   markers="_",
+                   palette=[colors[label] for label in tick_labels])
+ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random'])
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods, mean = {}, std = {}', round(mean, 2), round(std, 2)))
+plt.show()
+
+
+y_1 = [bayesian_real, ga_real, ols_real, rl_real, ml_real, random_real]
+x_1 = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random']
+df = pd.DataFrame({"y":y_1,
+                   "x":x_1})
+
+ax = sns.barplot(data=df, x="x", y="y")
+ax.set(xlabel='Methods', ylabel='Profit', title='Using real monthly data from figure 4.1')
+
+
+#ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random'])
+plt.show()
 
 # df_108 = pd.DataFrame( {'bayesian': bayesian,
 #                         'GA': ga,
