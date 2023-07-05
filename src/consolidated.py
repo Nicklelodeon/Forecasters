@@ -81,6 +81,7 @@ print(stats.sem(rl_24))
 rl_poisson =RLresult.poisson()
 print(stats.sem(rl_poisson))
 
+
 state.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
 # Random search
 random_og = state.run(55, 70, 70, 75, 41, 45)
