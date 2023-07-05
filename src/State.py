@@ -125,6 +125,7 @@ class State:
         self.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
         self.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
         total_sum = 0
+        lst = []
         np.random.seed(5678)
         for z in range(self.iterations):
             self.reset(self.start_inventory)
@@ -132,7 +133,8 @@ class State:
             for i in range(self.periods):
                 self.update_state(i)
             total_sum += self.calculate_profits()
-        return total_sum / self.iterations
+            lst.append(self.calculate_profits())
+        return lst
     
     def test_real_data(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
         self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))

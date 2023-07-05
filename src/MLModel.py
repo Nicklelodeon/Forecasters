@@ -47,9 +47,11 @@ model = nn.Sequential(
     nn.ReLU(),
     nn.Linear(100, 50),
     nn.ReLU(),
-    nn.Linear(50, 1)
+    nn.Linear(50, 25),
+    nn.ReLU(),
+    nn.Linear(25, 1)
 )
-model.load_state_dict(torch.load("src/DNNmodel.pt"))
+model.load_state_dict(torch.load("src/model_mape.pt"))
 model.eval()
 
 tests = [[54, 63, 42, 47, 42, 49], np.round([42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117])]
@@ -74,6 +76,7 @@ def test(model, mean, std, tests):
         params = [1, mean, std]
         params.extend(x)
         pred =model(torch.tensor(np.array(params, dtype=np.float64)).float())
+        print(pred)
         if preds > curr_max:
             curr_max = preds
             lst = x
