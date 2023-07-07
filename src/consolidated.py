@@ -107,8 +107,12 @@ print(stats.sem(random_real))
 # #                         'Best Random': random})
 # # print(df_108)
 
+labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random']
+colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Best Random': 'brown'}
+
+
 y_1 = [bayesian_real, ga_real, ols_real, rl_real, ml_real, random_real]
-x_1 = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random']
+x_1 = labels
 df1 = pd.DataFrame({"y":y_1,
                    "x":x_1})
 
@@ -116,32 +120,30 @@ ax = sns.barplot(data=df1, x="x", y="y")
 ax.set(xlabel='Methods', ylabel='Profit', title='Using real monthly data from figure 4.1')
 plt.show()
 
-tick_labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random']
-colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Best Random': 'brown'}
+tick_labels = labels
 ax = sns.pointplot(data = [bayesian, ga, ols, rl, ml, random],
                    errorbar=("se",2),
                    join = False,
                    capsize=0,
                    markers="_",
                    palette=[colors[label] for label in tick_labels])
-ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random'])
+ax.set_xticklabels(labels)
 ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods, mean = {}, std = {}', round(mean, 2), round(std, 2)))
 plt.show()
 
 ax = sns.boxplot(data=[bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson, random_poisson], showfliers=False)
-ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random'])
+ax.set_xticklabels(labels)
 ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods, mean = {}', round(mean, 2)))
 plt.show()
 
-tick_labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random']
-colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Best Random': 'brown'}
+tick_labels = labels
 ax = sns.pointplot(data = [bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson, random_poisson],
                    errorbar=("se",2),
                    join = False,
                    capsize=0,
                    markers="_",
                    palette=[colors[label] for label in tick_labels])
-ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random'])
+ax.set_xticklabels(labels)
 ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods,\nstandard error of 2 std, mean = {}', round(mean, 2)))
 plt.show()
 # blue orange green red purple
@@ -158,18 +160,17 @@ print(np.mean(ml_poisson))
 # print(np.mean(ml))
 
 ax = sns.boxplot(data=[bayesian, ga, ols, rl, ml, random], showfliers=False)
-ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random'])
+ax.set_xticklabels(labels)
 ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods, mean = {}, std = {}', round(mean, 2), round(std, 2)))
 plt.show()
 
 
 ax = sns.boxplot(data=[bayesian_24, ga_24, ols_24, rl_24, ml_24, random_24], showfliers=False)
-ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random'])
+ax.set_xticklabels(labels)
 ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 24 periods, mean = {}, std = {}', round(mean, 2), round(std, 2)))
 plt.show()
 
-tick_labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random']
-colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Best Random': 'brown'}
+tick_labels = labels
 ax = sns.pointplot(data=[bayesian_24, ga_24, ols_24, rl_24, ml_24, random_24],
                    errorbar=("se",2),
                    join = False,
@@ -177,12 +178,12 @@ ax = sns.pointplot(data=[bayesian_24, ga_24, ols_24, rl_24, ml_24, random_24],
                    markers="_",
                    palette=[colors[label] for label in tick_labels])
 
-ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random'])
+ax.set_xticklabels(labels)
 ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 24 periods,\nstandard error of 2 std, mean = {}, std = {}', round(mean, 2), round(std, 2)))
 plt.show()
 
 y_1 = [bayesian_real, ga_real, ols_real, rl_real, ml_real, random_real]
-x_1 = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random']
+x_1 = labels
 df = pd.DataFrame({"y":y_1,
                    "x":x_1})
 
