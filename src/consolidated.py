@@ -24,6 +24,7 @@ bayesian = state.test_no_season(42.65454086832623, 55.47066141610458, 45.2311033
 bayesian_poisson = state.test_poisson_no_season(42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117)
 bayesian_24 = state.test_no_season_24_period(42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117)
 bayesian_real = state.test_real_data(42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117)
+bayesian_poisson_lead_time = state.test_no_season_poisson_lead_time(42.65454086832623, 55.47066141610458, 45.23110339190882 , 69.56550258424139, 30.0, 50.14861820830117)
 
 # GA
 # print('r1', state.run(54, 63, 42, 47, 42, 49))
@@ -31,6 +32,7 @@ ga = state.test_no_season(54, 63, 42, 47, 42, 49)
 ga_poisson = state.test_poisson_no_season(54, 63, 42, 47, 42, 49)
 ga_24 = state.test_no_season_24_period(54, 63, 42, 47, 42, 49)
 ga_real = state.test_real_data(54, 63, 42, 47, 42, 49)
+ga_poisson_lead_time = state.test_no_season_poisson_lead_time(54, 63, 42, 47, 42, 49)
 
 # OLS
 # print('r1', state.run(36, 44, 41, 48, 34, 38))
@@ -38,11 +40,14 @@ ols = state.test_no_season(36, 44, 41, 48, 34, 38)
 ols_poisson = state.test_poisson_no_season(36, 44, 41, 48, 34, 38)
 ols_24 = state.test_no_season_24_period(36, 44, 41, 48, 34, 38)
 ols_real = state.test_real_data(36, 44, 41, 48, 34, 38)
+ols_poisson_lead_time =  state.test_no_season_poisson_lead_time(36, 44, 41, 48, 34, 38)
+
 
 ml = state.test_no_season(37, 41, 142, 149, 32, 35)
 ml_poisson = state.test_poisson_no_season(37, 41, 142, 149, 32, 35)
 ml_24 = state.test_no_season_24_period(37, 41, 142, 149, 32, 35)
 ml_real = state.test_real_data(37, 41, 142, 149, 32, 35)
+ml_poisson_lead_time = state.test_no_season_poisson_lead_time(37, 41, 142, 149, 32, 35)
 
 #Reinforcement Learning
 rl = RLresult.no_season()
@@ -56,18 +61,19 @@ random = state.test_no_season(55, 70, 70, 75, 41, 45)
 random_poisson = state.test_poisson_no_season(55, 70, 70, 75, 41, 45)
 random_24 = state.test_no_season_24_period(55, 70, 70, 75, 41, 45)
 random_real = state.test_real_data(55, 70, 70, 75, 41, 45)
+random_poisson_lead_time =  state.test_no_season_poisson_lead_time(55, 70, 70, 75, 41, 45)
 
 ## Random Result:
-print("random normal", np.mean(random))
-print("random poisson", np.mean(random_poisson))
-print("random normal 24", np.mean(random_24))
+# print("random normal", np.mean(random))
+# print("random poisson", np.mean(random_poisson))
+# print("random normal 24", np.mean(random_24))
 
-print("real bayesian:", bayesian_real)
-print("ga real", ga_real)
-print("ols real", ols_real)
-print("rl real", 554512.7999999998)
-print("ml real:", ml_real)
-print("random real", random_real)
+# print("real bayesian:", bayesian_real)
+# print("ga real", ga_real)
+# print("ols real", ols_real)
+# print("rl real", 554512.7999999998)
+# print("ml real:", ml_real)
+# print("random real", random_real)
 
 ax = sns.boxplot(data=[bayesian, ga, ols, rl, ml, random])
 ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random'])
@@ -165,3 +171,23 @@ print(np.mean(ga_24))
 print(np.mean(ols_24))
 print(np.mean(rl_24))
 print(np.mean(ml_24))
+
+ax = sns.boxplot(data=[bayesian_poisson_lead_time, ga_poisson_lead_time, ols_poisson_lead_time,
+                       rl_24, ml_poisson_lead_time, random_poisson_lead_time])
+ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random'])
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods with poisson lead time, mean = {}, std = {}', round(mean, 2), round(std, 2)))
+plt.show()
+
+tick_labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random']
+colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Random': 'brown'}
+ax = sns.pointplot(data=[bayesian_poisson_lead_time, ga_poisson_lead_time, ols_poisson_lead_time,
+                       rl_24, ml_poisson_lead_time, random_poisson_lead_time],
+                   errorbar=("se",2),
+                   join = False,
+                   capsize=0,
+                   markers="_",
+                   palette=[colors[label] for label in tick_labels])
+
+ax.set_xticklabels(['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Random'])
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods with poisson lead time,\nstandard error of 2 std, mean = {}, std = {}', round(mean, 2), round(std, 2)))
+plt.show()
