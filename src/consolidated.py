@@ -268,5 +268,9 @@ ax = sns.pointplot(data=[bayesian_both_poisson, ga_both_poisson, ols_both_poisso
                    palette=[colors[label] for label in tick_labels])
 
 ax.set_xticklabels(labels)
+<<<<<<< HEAD
 ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods,\n standard error of 2 std, mean = {},\n with shifted Poisson lead time', round(mean, 2)))
+=======
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods,\n standard error of 2 std, mean = {},\n and shifted Poisson lead time', round(mean, 2)))
+>>>>>>> refs/remotes/origin/main
 plt.show()
