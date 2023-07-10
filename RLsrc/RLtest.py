@@ -10,6 +10,8 @@ import pandas as pd
 from State import State
 from GenerateDemandMonthly import GenerateDemandMonthly
 
+from Poisson_Stochastic_Lead_Time import Poisson_Stochastic_Lead_Time
+
 from PPO import PPO
 #print(pwd)
 env = State()
@@ -129,6 +131,65 @@ def test_poisson_no_season():
         reward_RL.append(reward_total)
     return reward_RL
 
+def test_no_season_poisson_lead_time():
+    period = 108
+    iterations = 500
+    stl = Poisson_Stochastic_Lead_Time()
+    env.add_lead_time(stl)
+
+    np.random.seed(9988) # set same demand matrix
+    demand_matrix = np.reshape(demand_generator.simulate_normal_no_season(\
+            periods = period * iterations, mean=mean, std=std),\
+                (iterations, period))
+    
+    reward_RL = []
+    for demand_list in demand_matrix:
+        reward_total = 0
+        state = env.reset()
+        env.set_demand_list(demand_list)
+        done = False
+        reward_sub = 0
+        
+        while not done:
+            action = ppo_agent.select_action(state)
+            state, reward, done = env.step(action)
+            reward_sub += reward
+            if done:
+                break
+        reward_total += reward_sub
+        reward_RL.append(reward_sub)
+        reward_RL.append(reward_total)
+    return reward_RL
+
+def test_poisson_no_season_poisson_lead_time():
+    period = 108
+    iterations = 500
+    stl = Poisson_Stochastic_Lead_Time()
+    env.add_lead_time(stl)
+
+    np.random.seed(24865) # set same demand matrix
+    demand_matrix = np.reshape(demand_generator.simulate_poisson_no_season(\
+            periods = period * iterations, mean=mean),\
+                (iterations, period))
+    
+    reward_RL = []
+    for demand_list in demand_matrix:
+        reward_total = 0
+        state = env.reset()
+        env.set_demand_list(demand_list)
+        done = False
+        reward_sub = 0
+        
+        while not done:
+            action = ppo_agent.select_action(state)
+            state, reward, done = env.step(action)
+            reward_sub += reward
+            if done:
+                break
+        reward_total += reward_sub
+        reward_RL.append(reward_sub)
+        reward_RL.append(reward_total)
+    return reward_RL
 
 def test_real_data():
     total_sum = 0

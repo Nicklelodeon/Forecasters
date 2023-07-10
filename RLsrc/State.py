@@ -75,6 +75,10 @@ class State():
         
         """ print("Demand List:", self.demand_list) """
     
+    def add_lead_time(self, stochastic_lead_time):
+        for demandable in self.network_list:
+            demandable.add_lead_time(stochastic_lead_time)
+    
     def set_demand_list(self, demand_list):
         self.demand_list = demand_list
         
