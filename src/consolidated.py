@@ -154,12 +154,12 @@ ax = sns.pointplot(data = [bayesian, ga, ols, rl, ml, random],
                    markers="_",
                    palette=[colors[label] for label in tick_labels])
 ax.set_xticklabels(labels)
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods, mean = {}, std = {} with floored triangle lead time distribution', round(mean, 2), round(std, 2)))
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods,\nmean = {}, std = {} with floored triangle lead time distribution', round(mean, 2), round(std, 2)))
 plt.show()
 
 ax = sns.boxplot(data=[bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson, random_poisson], showfliers=False)
 ax.set_xticklabels(labels)
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods, mean = {} with floored triangle lead time distribution', round(mean, 2)))
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods,\nmean = {} with floored triangle lead time distribution', round(mean, 2)))
 plt.show()
 
 tick_labels = labels
@@ -170,7 +170,7 @@ ax = sns.pointplot(data = [bayesian_poisson, ga_poisson, ols_poisson, rl_poisson
                    markers="_",
                    palette=[colors[label] for label in tick_labels])
 ax.set_xticklabels(labels)
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods,\nstandard error of 2 std, mean = {} with floored triangle lead time distribution', round(mean, 2)))
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods, standard error of 2 std,\n mean = {} with floored triangle lead time distribution', round(mean, 2)))
 plt.show()
 # blue orange green red purple
 print(np.mean(bayesian_poisson))
@@ -187,13 +187,13 @@ print(np.mean(ml_poisson))
 
 ax = sns.boxplot(data=[bayesian, ga, ols, rl, ml, random], showfliers=False)
 ax.set_xticklabels(labels)
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods, mean = {}, std = {} with floored triangle lead time distribution', round(mean, 2), round(std, 2)))
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods,\nmean = {}, std = {} with floored triangle lead time distribution', round(mean, 2), round(std, 2)))
 plt.show()
 
 
 ax = sns.boxplot(data=[bayesian_24, ga_24, ols_24, rl_24, ml_24, random_24], showfliers=False)
 ax.set_xticklabels(labels)
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 24 periods, mean = {}, std = {} with floored triangle lead time distribution', round(mean, 2), round(std, 2)))
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 24 periods,\nmean = {}, std = {} with floored triangle lead time distribution', round(mean, 2), round(std, 2)))
 plt.show()
 
 tick_labels = labels
@@ -205,7 +205,7 @@ ax = sns.pointplot(data=[bayesian_24, ga_24, ols_24, rl_24, ml_24, random_24],
                    palette=[colors[label] for label in tick_labels])
 
 ax.set_xticklabels(labels)
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 24 periods,\nstandard error of 2 std, mean = {}, std = {} with floored triangle lead time distribution', round(mean, 2), round(std, 2)))
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 24 periods,standard error of 2 std, \nmean = {}, std = {} with floored triangle lead time distribution', round(mean, 2), round(std, 2)))
 plt.show()
 
 y_1 = [bayesian_real, ga_real, ols_real, rl_real, ml_real, random_real]
@@ -230,7 +230,7 @@ print(np.mean(random_poisson_lead_time))
 ax = sns.boxplot(data=[bayesian_poisson_lead_time, ga_poisson_lead_time, ols_poisson_lead_time,
                        rl_poisson_lead_time, ml_poisson_lead_time, random_poisson_lead_time], showfliers = False)
 ax.set_xticklabels(labels)
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods, mean = {}, std = {},\n with shifted Poisson lead time', round(mean, 2), round(std, 2)))
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods,\nmean = {}, std = {}, with shifted Poisson lead time', round(mean, 2), round(std, 2)))
 plt.show()
 
 ax = sns.pointplot(data=[bayesian_poisson_lead_time, ga_poisson_lead_time, ols_poisson_lead_time,
@@ -242,7 +242,7 @@ ax = sns.pointplot(data=[bayesian_poisson_lead_time, ga_poisson_lead_time, ols_p
                    palette=[colors[label] for label in tick_labels])
 
 ax.set_xticklabels(labels)
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods,\n standard error of 2 std, mean = {}, std = {},\n with shifted Poisson lead time', round(mean, 2), round(std, 2)))
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods, standard error of 2 std, \nmean = {}, std = {}, with shifted Poisson lead time', round(mean, 2), round(std, 2)))
 plt.show()
 
 print('mean both poisson')
@@ -256,7 +256,7 @@ print(np.mean(random_both_poisson))
 ax = sns.boxplot(data=[bayesian_both_poisson, ga_both_poisson, ols_both_poisson,
                        rl_both_poisson, ml_both_poisson, random_both_poisson], showfliers = False)
 ax.set_xticklabels(labels)
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods, mean = {},\n with shifted Poisson lead time', round(mean, 2)))
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods,\nmean = {}, with shifted Poisson lead time', round(mean, 2)))
 plt.show()
 
 ax = sns.pointplot(data=[bayesian_both_poisson, ga_both_poisson, ols_both_poisson,
@@ -268,9 +268,5 @@ ax = sns.pointplot(data=[bayesian_both_poisson, ga_both_poisson, ols_both_poisso
                    palette=[colors[label] for label in tick_labels])
 
 ax.set_xticklabels(labels)
-<<<<<<< HEAD
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods,\n standard error of 2 std, mean = {},\n with shifted Poisson lead time', round(mean, 2)))
-=======
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods,\n standard error of 2 std, mean = {},\n and shifted Poisson lead time', round(mean, 2)))
->>>>>>> refs/remotes/origin/main
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods, standard error of 2 std, \n mean = {}, with shifted Poisson lead time', round(mean, 2)))
 plt.show()
