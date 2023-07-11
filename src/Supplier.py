@@ -7,6 +7,12 @@ class Supplier(Demandable):
         super().__init__(name, 0, 0, 0, 0)
     
     def add_item_downstream(self, item, amount=65):
+        """adds specified amount of item to each downstream demandable
+
+        Args:
+            item (Item)
+            amount (int, optional): amount of an item to be added. Defaults to 65.
+        """
         self.add_item(item, np.inf)
         if self.downstream: # Check if list empty
             downstream_demandable = self.downstream[0]
