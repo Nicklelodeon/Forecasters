@@ -35,6 +35,11 @@ class Demandable:
         self.orders = {}
 
     def reset(self, amount=65):
+        """Resets state
+
+        Args:
+            amount (int, optional): inventory amount. Defaults to 65.
+        """
         self.inv_level  = dict.fromkeys(self.inv_level, amount)
         self.inv_pos = dict.fromkeys(self.inv_pos, amount)
         self.ordering_costs = []
@@ -84,6 +89,8 @@ class Demandable:
         self.S = new_S
 
     def reset_orders(self):
+        """reset orders
+        """
         self.orders = {}
 
     def update_all_demand(self, num_demands: int, t) -> None:
@@ -100,6 +107,11 @@ class Demandable:
 
 
     def fufill_orders(self, t):
+        """produce orders and settle back orders
+
+        Args:
+            t (int): time stamp
+        """
         backorders = {}
         orders = {}
         for item in self.orders:
@@ -124,11 +136,16 @@ class Demandable:
 
 
     def order_items(self, item, t, ordered_amt):
+        """Order item at current time t with x ordered amount
+
+        Args:
+            item (Item): Item to order
+            t (int): time stamp
+            ordered_amt (int): amount of item
+        """
         demandable = self.inv_map[item]
         lead_time = demandable.get_lead_time(t)
-        #lead_time = self.stochastic_lead_time.get_lead_time() #removed to get constant lead time for each dc at each t
         self.arrivals.append([t + lead_time, item, ordered_amt])
-        # self.ordering_costs[t] += ordered_amt * item.get_cost()
         self.total_costs += ordered_amt * item.get_cost()
 
     def update_demand(self, num_get: int):
@@ -154,6 +171,14 @@ class Demandable:
         return min_item
     
     def get_lead_time(self, t):
+        """Gets lead time when asking for order
+
+        Args:
+            t (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
         curr_lead_time = self.lead_time
         if t == self.lead_time[0]:
             return self.lead_time[1]
@@ -176,14 +201,6 @@ class Demandable:
             self.inv_pos[item] += amt
             demandable.inv_pos[item] -= amt
             self.orders[item] = amt
-                # if ordered_amt > 0:
-                #     lead_time = demandable.get_lead_time(t)
-                #     self.inv_pos[item] += ordered_amt
-                #     #lead_time = self.stochastic_lead_time.get_lead_time() #removed to get constant lead time for each dc at each t
-                #     self.arrivals.append([t + lead_time, item, ordered_amt])
-                #     self.ordering_costs[t] += ordered_amt * item.get_cost()
-                #     self.total_costs += ordered_amt * item.get_cost()
-                # demandable.check_s(item, t)
 
     def produce_order(self, item, amt_ordered):
         """Determine amount to be ordered
@@ -206,7 +223,6 @@ class Demandable:
         """
         self.upstream.append(demandable)
         demandable.add_downstream(self)
-        # Change later, perhaps random starting inventory ISSUE here
 
     def add_downstream(self, demandable: "Demandable") -> None:
         """Adds a demandable into downstream, called after
@@ -304,7 +320,6 @@ class Demandable:
             for item in self.inv_level:
                 if amt_backordered > 0:
                     demandable.arrivals.append([t + lead_time, item, amt_backordered])
-                    # demandable.ordering_costs[t] += amt_backordered * item.get_cost()
                     demandable.total_costs += amt_backordered * item.get_cost()
 
     def update_all_inventory(self, t):
@@ -313,16 +328,13 @@ class Demandable:
         Args:
             t (int): timestamp
         """
-        #initialise cost to 0 at curr t 
-        # self.costs.append(0)
-        # self.backorder_costs.append(0)
-        # self.ordering_costs.append(0)
-        # self.holding_costs.append(0)
         self.update_inventory(t)
         for demandable in self.upstream:
             demandable.update_all_inventory(t)
 
     def plot_cost(self):
+        """Plots cost against time
+        """
         if not self.upstream:
             return
         df = pd.DataFrame(columns=["time", "cost", "type"])
@@ -334,15 +346,13 @@ class Demandable:
             df.loc[len(df.index)] = [i, val, "order cost"]
         fig, ax = plt.subplots(figsize=(11, 6))
         sns.pointplot(data=df, x='time', y='cost', hue='type', ax=ax)
-        # label points on the plot
-        # for x, y in zip(df['time'], df['cost']):
-        #     plt.text(x = x, y = y+10, s = "{:.0f}".format(y), color = "purple") 
-        # # sns.relplot(kind='line', data=df, x='time', y='cost', hue='type')
         plt.show()
         for demandable in self.upstream:
             demandable.plot_cost()
 
     def plot_inv_level(self):
+        """plots inventory level against time
+        """
         if not self.upstream:
             return
         df = pd.DataFrame(columns=["time", "level", "item"])
@@ -357,10 +367,12 @@ class Demandable:
         for demandable in self.upstream:
             demandable.plot_inv_level()
 
-
-        
- 
     def find_optimal_cost(self):
+        """Finds minimum selling cost recursively
+
+        Returns:
+            int: Min selling amount for subnetwork
+        """
         curr_cost = 0
         if self.upstream:
             expected_holding_time = self.stochastic_lead_time.get_expected_value()
@@ -396,21 +408,18 @@ class Demandable:
         return total
 
     def get_curr_total_costs(self, t):
+        """_summary_
+
+        Args:
+            t (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
         total = self.get_curr_cost(t)
         for demandable in self.upstream:
             total += demandable.get_curr_total_costs(t)
         return total
-
-    # def get_curr_cost(self, t):
-    #     """Retrieves total cost at specified time stamp for curr demandable
-
-    #     Args:
-    #         t (int): time stamp
-
-    #     Returns:
-    #         int: cost at specified time stamp
-    #     """
-    #     return self.costs[t]
 
     def update_all_cost(self, t):
         """Add hc into total cost
@@ -418,29 +427,24 @@ class Demandable:
         Args:
             t (int): curr timestamp
         """
-        # self.holding_costs[t] += self.get_hc()
         self.total_costs += self.get_hc()
-        # self.backorder_costs[t] += self.backorder * self.backorder_cost
         self.total_costs += self.backorder * self.backorder_cost
-        # self.costs[t] = self.holding_costs[t] + self.backorder_costs[t] + self.ordering_costs[t]
         self.inv_level_plot.append(self.inv_level.copy())
         self.reset_orders()
         for demandable in self.upstream:
             demandable.update_all_cost(t)
 
     def print_upstream(self):
+        """Recursively prints the name of the network
+
+        Returns:
+            list[str]: list of demandable names
+        """
         name = [self.name]
         if self.upstream:
             for demandable in self.upstream:
                 name += demandable.print_upstream()
         return name
-
-    # def print_upstream_cost(self, t):
-    #     cost = [self.name, self.get_curr_cost(t)]
-    #     if self.upstream:
-    #         for demandable in self.upstream:
-    #             cost += demandable.print_upstream_cost(t)
-    #     return cost
 
     def print_inv_level(self):
         return "inv level: " + str(self.inv_level)
@@ -478,13 +482,6 @@ class Demandable:
     
     def print_total_costs(self):
         return "all accumulated costs: " + str(self.get_total_cost())
-    
-    # def __str__(self):
-    #     return self.name + "\n" + self.print_inv_level() + "\n" + self.print_inv_pos() + "\n" + self.print_orders() + "\n" + self.print_total_cost() \
-    #     + "\n" + self.print_holding_cost() + "\n" + self.print_ordering_cost() + "\n" + self.print_backorder_cost() + "\n" + self.print_inv_map() \
-    #     + "\n" + self.print_s() + "\n" + self.print_total_costs()
-
-
     
     def __repr__(self):
         return "Demandable({})".format(self.name)

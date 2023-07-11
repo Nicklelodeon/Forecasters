@@ -133,8 +133,8 @@ print("RANDOM",stats.sem(random_both_poisson))
 # #                         'Best Random': random})
 # # print(df_108)
 
-labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random']
-colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Best Random': 'brown'}
+# labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random']
+# colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Best Random': 'brown'}
 
 
 # y_1 = [bayesian_real, ga_real, ols_real, rl_real, ml_real, random_real]
