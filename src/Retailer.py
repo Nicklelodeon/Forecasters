@@ -1,11 +1,10 @@
 from Demandable import Demandable
 
 class Retailer(Demandable):
-    def __init__(self, name, selling_price):
+    def __init__(self, name):
         super().__init__(name, 2, 10, 40, 90)
-        #super().__init__(name, 1, 2, 3, 40, 90)
         self.amount_sold = []
-        self.selling_price = selling_price
+        self.selling_price = None
         self.amount_sold_total = 0
         self.profits = []
         
@@ -19,14 +18,11 @@ class Retailer(Demandable):
         
 
     def reset(self, amount = 65):
-        """ self.inv_level  = dict.fromkeys(self.inv_level, amount)
-        self.inv_pos = dict.fromkeys(self.inv_pos, amount)
-        self.ordering_costs = []
-        self.holding_costs = []
-        self.backorder_costs = []
-        self.backorder = 0
-        self.costs = []
-        self.arrivals = [] """
+        """Resets state
+
+        Args:
+            amount (int, optional): Inventory amount. Defaults to 65.
+        """
         super().reset(amount)
         self.amount_sold = []
         self.amount_sold_total = 0
@@ -37,12 +33,6 @@ class Retailer(Demandable):
         Args:
             t (int): timestamp
         """
-        #initialise cost to 0 at curr t
-        # self.amount_sold.append(0) 
-        # self.costs.append(0)
-        # self.backorder_costs.append(0)
-        # self.ordering_costs.append(0)
-        # self.holding_costs.append(0)
         self.update_inventory(t)
         for demandable in self.upstream:
             demandable.update_all_inventory(t)
@@ -55,7 +45,6 @@ class Retailer(Demandable):
             t (int): time stamp
         """
         amount_sold = self.update_demand(num_demands)
-        # self.amount_sold[t] += amount_sold
         self.amount_sold_total += amount_sold
         for item in self.inv_level:
             self.check_s(item, t)
@@ -67,7 +56,6 @@ class Retailer(Demandable):
         Args:
             t (int): timestamp
         """
-        # self.inv_pos = self.inv_level.copy()
         index = []
         for i in range(len(self.arrivals)):
             arrival = self.arrivals[i]
@@ -75,7 +63,6 @@ class Retailer(Demandable):
             if t == time:
                 self.inv_level[item] += amt
                 index.append(i)
-            # self.inv_pos[item] += amt
         self.arrivals = [arrival for i, arrival in enumerate(self.arrivals) if i not in index]
 
         if self.backorder > 0:
@@ -84,14 +71,14 @@ class Retailer(Demandable):
                 self.inv_level[item] -= amt_backordered
             self.backorder -= amt_backordered
             self.amount_sold_total += amt_backordered
-            # self.amount_sold[t] += amt_backordered
 
     def calculate_profit(self):
-        return self.amount_sold_total * self.selling_price - super().get_total_cost()
+        """Finds total profit made
 
-    # def calculate_curr_profit(self, t):
-    #     print('curr cost', super().get_curr_total_costs(t))
-    #     return self.amount_sold[t] * self.selling_price - super().get_curr_total_costs(t)
+        Returns:
+            int: total profit
+        """
+        return self.amount_sold_total * self.selling_price - super().get_total_cost()
     
     def __repr__(self):
         return "Retailer({})".format(self.name)
