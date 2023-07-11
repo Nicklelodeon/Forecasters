@@ -42,16 +42,26 @@ class State:
         self.mean = None
         self.std = None
         
+
+    def reset(self, amount=65):
+        """Resets state
+        """
+        for demandable in self.changeable_network:
+            demandable.reset(amount)
+        self.demand_list = None
+        self.s_S_list = None
+        self.rewards = 0
+
     def create_network(self, demandables, network):
         """Creates the network of demandables based on demandables list
 
         Args:
-            demandables (list<int>): list of integers s.t list[i] <= list[j] for i <= j and 
+            demandables (list): list of integers s.t list[i] <= list[j] for i <= j and 
             list[-1] == -1 which represents the root (retailer)
-            network (list<Demandable>): list of Demandables, len(demandables) == len(network) 
+            network (list): list of Demandables, len(demandables) == len(network) 
 
         Returns:
-            list<Demandable>: returns list of Demandables with complete connection based
+            list: returns list of Demandables with complete connection based
             on demandables list
         """
         for i in range(1,len(demandables)):
@@ -60,6 +70,8 @@ class State:
         return network
     
     def create_changeable_network(self):
+        """create network connecting Supplier, Distribution Center and Retailer
+        """
         self.changeable_network = self.root.find_changeable_network()
         
     def set_demand_list(self, demand_list):
@@ -70,22 +82,31 @@ class State:
         self.demand_matrix = demand_matrix
         
     def create_state(self, demandables, amount=65, period=108, iterations=500, mean=5, std=2):
-        """create state
+        """defines attributes of State class
 
         Args:
-            demandables (list<int>): list of integers
+            demandables (list): list of integers s.t list[i] <= list[j] for i <= j and 
+            list[-1] == -1 which represents the root (retailer)
+            amount (int, optional): Starting inventory of each demandable. Defaults to 65.
+            period (int, optional): Time period for each simulation. Defaults to 108.
+            iterations (int, optional): Number of iterations of each simulation. Defaults to 500.
+            mean (int, optional): mean of demand distribution. Defaults to 5.
+            std (int, optional): std of demand distribution. Defaults to 2.
         """
         self.periods = period
         self.iterations = iterations
         self.mean = mean
         self.std = std
-        np.random.seed(1234) # set same demand matrix
+        # set same demand matrix
+        np.random.seed(1234) 
+        # create demand matrix with normal demand distribution of mean and std defined, in shape of (iteration, period)
         self.demand_matrix = np.reshape(self.demand_generator.simulate_normal_no_season(\
             periods = self.periods * self.iterations, mean=self.mean, std=self.std),\
                 (self.iterations, self.periods))
         
         self.demandables = demandables
         network_list = []
+        # connect the Basic demandables together
         for i in range(len(demandables)):   
             new_demandable = Basic(chr(i + 65))
             network_list.append(new_demandable)
@@ -93,14 +114,18 @@ class State:
         
         stl = Stochastic_Lead_Time()
         
+        # convert Basic to their respective Demandables based on their position 
         for i in range(len(network_list)):
             network_list[i] = network_list[i].define_demandable()
             network_list[i].add_lead_time(stl)
         network_list = self.create_network(demandables, network_list)
 
+        # set root as retailer
         self.root = network_list[0]
+        # find suppliers
         list_end_upstream = self.root.find_end_upstream()
         
+        # add items downstream from suppliers to distribution centers to retailers
         for i in range(len(list_end_upstream)):
             end_demandable = list_end_upstream[i]
             item = Item(str(i+1), 1)
@@ -111,17 +136,52 @@ class State:
         self.root.set_optimal_selling_price(5)
 
 
-    def create_normal_demand(self, period = 108, iterations = 500, mean = 5, std = 2): 
+    def create_normal_demand(self, period = 108, iterations = 500, mean = 5, std = 2):  
+        """create demand matrix containing normal distribution with specified parameters
+
+        Args:
+            period (int, optional): Time period for each simulation. Defaults to 108.
+            iterations (int, optional): Number of iterations of each simulation. Defaults to 500.
+            mean (int, optional): mean of demand distribution. Defaults to 5.
+            std (int, optional): std of demand distribution. Defaults to 2.
+
+        Returns:
+            list: demand matrix of shape (iterations, period)
+        """
         return np.reshape(self.demand_generator.simulate_normal_no_season(\
             periods = period * iterations, mean=mean, std=std),\
                 (iterations, period))
     
     def create_poisson_demand(self, period = 108, iterations = 500, mean = 5): 
+        """create demand matrix containing Poisson distribution with specified parameters
+
+        Args:
+            period (int, optional): Time period for each simulation. Defaults to 108.
+            iterations (int, optional): Number of iterations of each simulation. Defaults to 500.
+            mean (int, optional): mean of demand distribution. Defaults to 5.
+
+        Returns:
+            list: demand matrix of shape (iterations, period)
+        """
         return np.reshape(self.demand_generator.simulate_poisson_no_season(\
             periods = period * iterations, mean=mean),\
                 (iterations, period))
         
-    def run(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1): #6 params
+    def run(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+        """runs the specified (s, S) policy over 500 iterations on the normal demand distribution with 108 time period and 
+        floored triangle lead time distribution (training case)
+
+        Args:
+            s_DC1 (int)
+            S_DC1 (int)
+            s_DC2 (int)
+            S_DC2 (int)
+            s_r1 (int)
+            S_r1 (int)
+
+        Returns:
+            list: list of integers containing the profit generated from each iteration (total 500)
+        """
         if (s_DC1 >= S_DC1 or s_DC2 >= S_DC2 or s_r1 >= S_r1):
             return -100000
         self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
@@ -140,6 +200,19 @@ class State:
         return lst
     
     def test_real_data(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+        """runs the (s, S) policy on data found on the web
+
+        Args:
+            s_DC1 (int)
+            S_DC1 (int)
+            s_DC2 (int)
+            S_DC2 (int)
+            s_r1 (int)
+            S_r1 (int)
+
+        Returns:
+            float: profit from specified (s, S) policy
+        """
         self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
         self.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
         self.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
@@ -155,6 +228,20 @@ class State:
 
 
     def test_no_season(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+        """tests the specified (s, S) policy over 500 iterations on the normal demand distribution with 108 time period and 
+        floored triangle lead time distribution (testing case)
+
+        Args:
+            s_DC1 (int)
+            S_DC1 (int)
+            s_DC2 (int)
+            S_DC2 (int)
+            s_r1 (int)
+            S_r1 (int)
+
+        Returns:
+            list: list of integers containing the profit generated from each iteration (total 500)
+        """
         self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
         self.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
         self.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
@@ -172,12 +259,25 @@ class State:
                 self.update_state(i)
             lst.append(self.calculate_profits())
             total_sum += self.calculate_profits()
-        
-        # print("mean:", np.mean(lst))
-        # print("std:", np.std(lst, ddof=1)/(self.iterations)**0.5)
+    
         return lst
 
     def test_poisson_no_season(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+        """tests the specified (s, S) policy over 500 iterations on the Poisson demand distribution with 108 time period and 
+        floored triangle lead time distribution
+        
+
+        Args:
+            s_DC1 (int)
+            S_DC1 (int)
+            s_DC2 (int)
+            S_DC2 (int)
+            s_r1 (int)
+            S_r1 (int)
+
+        Returns:
+            list: list of integers containing the profit generated from each iteration (total 500)
+        """
         self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
         self.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
         self.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
@@ -196,11 +296,23 @@ class State:
             lst.append(self.calculate_profits())
             total_sum += self.calculate_profits()
         
-        # print("mean:", np.mean(lst))
-        # print("std:", np.std(lst, ddof=1)/(self.iterations)**0.5)
         return lst
     
     def test_no_season_24_period(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+        """tests the specified (s, S) policy over 500 iterations on the normal demand distribution with 24 time period and 
+        floored triangle lead time distribution
+
+        Args:
+            s_DC1 (int)
+            S_DC1 (int)
+            s_DC2 (int)
+            S_DC2 (int)
+            s_r1 (int)
+            S_r1 (int)
+
+        Returns:
+            list: list of integers containing the profit generated from each iteration (total 500)
+        """
         period = 24
         self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
         self.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
@@ -220,11 +332,23 @@ class State:
             lst.append(self.calculate_profits())
             total_sum += self.calculate_profits()
         
-        # print("mean:", np.mean(lst))
-        # print("std:", np.std(lst, ddof=1)/(self.iterations)**0.5)
         return lst
     
     def test_no_season_poisson_lead_time(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+        """runs the specified (s, S) policy over 500 iterations on the normal demand distribution with 108 time period
+        and Poisson lead time distribution
+
+        Args:
+            s_DC1 (int)
+            S_DC1 (int)
+            s_DC2 (int)
+            S_DC2 (int)
+            s_r1 (int)
+            S_r1 (int)
+
+        Returns:
+            list: list of integers containing the profit generated from each iteration (total 500)
+        """
         self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
         self.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
         self.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
@@ -248,6 +372,20 @@ class State:
         return lst
         
     def test_poisson_no_season_poisson_lead_time(self, s_DC1, S_DC1, s_DC2, S_DC2, s_r1, S_r1):
+        """runs the specified (s, S) policy over 500 iterations on the Poisson demand distribution with 108 time period
+        and Poisson lead time distribution
+
+        Args:
+            s_DC1 (int)
+            S_DC1 (int)
+            s_DC2 (int)
+            S_DC2 (int)
+            s_r1 (int)
+            S_r1 (int)
+
+        Returns:
+            list: list of integers containing the profit generated from each iteration (total 500)
+        """
         self.changeable_network[0].change_order_point(round(s_r1), round(S_r1))
         self.changeable_network[1].change_order_point(round(s_DC1), round(S_DC1))
         self.changeable_network[2].change_order_point(round(s_DC2), round(S_DC2))
@@ -339,115 +477,62 @@ class State:
         """Assign the array to the s_S_list
 
         Args:
-            array (list<int>): list of integers
+            array (list): list of integers
         """
         self.s_S_list = array
 
-    def create_array(self, s_min, s_max, S_min, S_max):
-        arr = []
-        for x in range(len(self.changeable_network)):
-            s = random.sample([x for x in range(s_min, s_max + 1)], 12)
-            S = random.sample([x for x in range(S_min, S_max + 1)], 12)
-            for i in range(12):
-                arr.append(s[i])
-                arr.append(S[i])
-        self.take_vector(arr)
     
-    def valid_check(self, X):
-        """Checks the validity of s_S List
-
-        Returns:
-            boolean: True if valid else False
-        """
-        for i in range(len(X)//2):
-            index = 2 * i
-            if X[index] > X[index + 1]:
-                return False
-        return True
         
 
     def total_sum(self):
-        """returns cumulative score
+        """returns cumulative profit
 
         Returns:
-           int: sum of all rewards up to this point in time
+           int: sum of all profit up to this point in time
         """
         return self.rewards
-
-
-        
+   
     def print_network(self):
         """Debugging function to print Demandables in network
         """
         print(self.root.print_upstream())
-        
-    def update_order_point(self, t):
-        """Changes small and big s and S
-
-        Args:
-            t (int): time
-        """
-        for i in range(len(self.changeable_network)):
-            demandable = self.changeable_network[i]
-            point = i * 24 + (2 * t)
-            small_s = self.s_S_list[point]
-            big_S = self.s_S_list[point + 1]
-            demandable.change_order_point(small_s, big_S)
-            
-    def reset(self, amount=65):
-        """Resets state
-        """
-        for demandable in self.changeable_network:
-            demandable.reset(amount)
-        self.demand_list = None
-        self.s_S_list = None
-        self.rewards = 0
+                   
     
-    """ def run(self, X):
-        for j in range(len(self.changeable_network)):
-            small_s = X[2 * j]
-            big_S = X[2 * j + 1]
-            demandable = self.changeable_network[j]
-            demandable.change_order_point(small_s, big_S)
-        self.reset()
-                
-        for i in range(len(self.demand_list)):
-            self.update_state(i)
-            
-        return self.total_sum() """
+    
     
     def update_state(self, t):
-        """Discrete update state
+        """Update inventory, demand and costs in each time period
 
         Args:
-            demand (_type_): _description_
             t (int): time
         """
-        #self.update_order_point(t)
         self.root.update_all_inventory(t)
         self.root.update_all_demand(self.demand_list[t], t)
         self.root.update_all_cost(t)
-        # self.rewards += self.root.calculate_curr_profit(t)
-        # self.rewards_list.append(self.root.calculate_curr_profit(t))
+        self.rewards += self.root.calculate_curr_profit(t)
+        self.rewards_list.append(self.root.calculate_curr_profit(t))
         
 
 
     def calculate_profits(self):
+        """returns profit generated up to this time period
+
+        Returns:
+            int: cumulative profit
+        """
         return self.root.calculate_profit()
     
     def print_state(self, t):
         return "time " + str(t) +": \n" + self.root.print_upstream_state()
     
     def plot_rewards(self):
+        """plots rewards against time
+        """
         df = pd.DataFrame(columns=["time", "rewards"])
         for i, val in enumerate(self.rewards_list):
             df.loc[len(df.index)] = [i, val]
         fig, ax = plt.subplots(figsize=(11, 6))
         sns.pointplot(data=df, x='time', y='rewards', ax=ax)
-        # label points on the plot
-        # for x, y in zip(df['time'], df['cost']):
-        #     plt.text(x = x, y = y+10, s = "{:.0f}".format(y), color = "purple") 
-        # # sns.relplot(kind='line', data=df, x='time', y='cost', hue='type')
         plt.show()
     
 

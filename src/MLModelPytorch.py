@@ -12,9 +12,7 @@ from torchmetrics import MeanAbsolutePercentageError
  
 
 data = pd.read_csv("./src/6_24months_car_data.csv")
-# data = pd.read_csv("src/6_24months_mldata.csv")
-# data = pd.read_csv("src/72_onlinemldata.csv")
-# data = pd.read_csv("src/144_mldata.csv.csv")
+
 
 
 #code adapted from https://machinelearningmastery.com/building-a-regression-model-in-pytorch/
@@ -45,12 +43,9 @@ model = nn.Sequential(
     nn.ReLU(),
     nn.Linear(200, 1)
 )
-# for param in model.parameters():
-#     param.requires_grad = True
-# loss function and optimizer
-# loss_fn = nn.L1Loss()  # mean square error
-# loss_fn = nn.MSELoss()
-loss_fn = MeanAbsolutePercentageError()
+
+loss_fn = nn.MSELoss()
+
 optimizer = optim.Adam(model.parameters(), lr=0.001)
  
 n_epochs = 2000   # number of epochs to run
@@ -102,13 +97,3 @@ print("RMSE: %.2f" % np.sqrt(best_mse))
 plt.plot(history)
 plt.plot(predictions)
 plt.show()
-
-# model.eval()
-# with torch.no_grad():
-#     # Test out inference with 5 samples
-#     for i in range(5):
-#         X_sample = X_test_raw[i: i+1]
-#         X_sample = scaler.transform(X_sample)
-#         X_sample = torch.tensor(X_sample, dtype=torch.float32)
-#         y_pred = model(X_sample)
-#         print(f"{X_test_raw[i]} -> {y_pred[0].numpy()} (expected {y_test[i].numpy()})")
