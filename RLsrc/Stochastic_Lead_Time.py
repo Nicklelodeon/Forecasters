@@ -11,20 +11,30 @@ class Stochastic_Lead_Time:
         self.low = 1
         self.high = 5
         self.mode = 2.5
-        self.function = lambda x: np.floor(
-            np.random.triangular(self.low, self.mode, self.high, x))
         
     def get_lead_time(self):
-        return self.function(1)[0]
+        """Samples integer from distribution
+
+        Returns:
+            int: lead time
+        """
+        return np.floor(np.random.triangular(self.low, self.mode, self.high, 1)[0])
     
     def get_expected_value(self):
-        list = self.function(1000000)
-        return np.round(np.mean(list),2)
+        """Expected value of the distribution solved analytically
+
+        Returns:
+            float: expected value
+        """
+        return 7/3
     
     def visual(self):
-        lst = np.array(self.function(1000))
+        """Creates the pmf
+        """
+        samples = 1000000
+        lst = np.array(np.floor(np.random.triangular(self.low, self.mode, self.high, samples)))
         df = pd.DataFrame(lst, columns = ["values"])
-        df = df["values"].value_counts()/1000
+        df = df["values"].value_counts()/samples
         new_df = pd.DataFrame(df)
         sns.barplot(x=new_df.index, y=new_df["count"])
         plt.title("Probability mass function")

@@ -9,16 +9,36 @@ class Basic(Demandable):
         super().__init__(name, 0, 0, 0, 0)
     
     def make_supplier(self):
+        """Converts basic to supplier
+
+        Returns:
+            Supplier
+        """
         return Supplier(self.name)
     
     def make_retailer(self):
-        return Retailer(self.name, 700) 
+        """Converts basic to retailer
 
-    
+        Returns:
+            retailer
+        """
+        return Retailer(self.name) 
+
     def make_distcentre(self):
+        """Converts basic to distribution centre
+
+        Returns:
+            Distribution Centre
+        """
         return DistributionCenter(self.name)
     
     def define_demandable(self):
+        """Converts basic demandables to respective stakeholders
+        based on the location in the network
+
+        Returns:
+            Demandable: Supplier, Retailer or Distribution Centre
+        """
         if not self.upstream: ## Upstream is empty return supplier
             return self.make_supplier()
         elif not self.downstream: ## Downstream is empty return retailer
