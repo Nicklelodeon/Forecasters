@@ -509,8 +509,6 @@ class State:
         self.root.update_all_inventory(t)
         self.root.update_all_demand(self.demand_list[t], t)
         self.root.update_all_cost(t)
-        self.rewards += self.root.calculate_curr_profit(t)
-        self.rewards_list.append(self.root.calculate_curr_profit(t))
         
 
 
