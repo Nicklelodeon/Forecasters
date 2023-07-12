@@ -119,32 +119,32 @@ print(stats.sem(random_poisson_lead_time))
 random_both_poisson = state.test_poisson_no_season_poisson_lead_time(55, 70, 70, 75, 41, 45)
 print("RANDOM",stats.sem(random_both_poisson))
 
-# print("real bayesian:", bayesian_real)
-# print("ga real", ga_real)
-# print("ols real", ols_real)
-# print("ml real:", ml_real)
-# print("random real", random_real)
+print("real bayesian:", bayesian_real)
+print("ga real", ga_real)
+print("ols real", ols_real)
+print("ml real:", ml_real)
+print("random real", random_real)
 
-# # df_108 = pd.DataFrame( {'bayesian': bayesian,
-# #                         'GA': ga,
-# #                         'OLS': ols,
-# #                         'ML': ml,
-# #                         'RL': rl,
-# #                         'Best Random': random})
-# # print(df_108)
+# df_108 = pd.DataFrame( {'bayesian': bayesian,
+#                         'GA': ga,
+#                         'OLS': ols,
+#                         'ML': ml,
+#                         'RL': rl,
+#                         'Best Random': random})
+# print(df_108)
 
-# labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random']
-# colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Best Random': 'brown'}
+labels = ['Bayesian', 'GA', 'OLS', 'RL', 'ML', 'Best Random']
+colors = {'Bayesian': 'blue', 'GA': 'orange', 'OLS': 'green', 'RL': 'red', 'ML': 'purple', 'Best Random': 'brown'}
 
 
-# y_1 = [bayesian_real, ga_real, ols_real, rl_real, ml_real, random_real]
-# x_1 = labels
-# df1 = pd.DataFrame({"y":y_1,
-#                    "x":x_1})
+y_1 = [bayesian_real, ga_real, ols_real, rl_real, ml_real, random_real]
+x_1 = labels
+df1 = pd.DataFrame({"y":y_1,
+                   "x":x_1})
 
-# ax = sns.barplot(data=df1, x="x", y="y")
-# ax.set(xlabel='Methods', ylabel='Profit', title='Using real monthly data from figure 4.1')
-# plt.show()
+ax = sns.barplot(data=df1, x="x", y="y")
+ax.set(xlabel='Methods', ylabel='Profit', title='Using real monthly data from figure 4.1')
+plt.show()
 
 tick_labels = labels
 ax = sns.pointplot(data = [bayesian, ga, ols, rl, ml, random],
