@@ -1,8 +1,8 @@
-from Demandable import Demandable
-from Supplier import Supplier
-from DistributionCenter import DistributionCenter
-from Retailer import Retailer
-from Basic import Basic
+from RLDemandable import RLDemandable
+from RLSupplier import RLSupplier
+from RLDistributionCenter import RLDistributionCenter
+from RLRetailer import RLRetailer
+from RLBasic import RLBasic
 from GenerateDemandMonthly import GenerateDemandMonthly
 from Stochastic_Lead_Time import Stochastic_Lead_Time
 import matplotlib.pyplot as plt
@@ -16,9 +16,9 @@ import pandas as pd
 
 import itertools
 
-class State():
+class RLState():
     def __init__(self):
-        self.root = Basic(chr(65))
+        self.root = RLBasic(chr(65))
         self.demandables = None
         self.changeable_network = []
         self.network_list = None
@@ -30,17 +30,22 @@ class State():
         
         self.state = None #network.getcurrstate
         self.curr_time = self.start_time
+        
+        self.mean = None
+        self.std = None
     
-    def create_state(self, demandables, amount=65, cost=1):
+    def create_state(self, demandables, mean, std, amount=65, cost=1):
         """create state
 
         Args:
             demandables (list<int>): list of integers
         """
+        self.mean = mean
+        self.std = std
         self.demandables = demandables
         network_list = []
         for i in range(len(demandables)):   
-            new_demandable = Basic(chr(i + 65))
+            new_demandable = RLBasic(chr(i + 65))
             network_list.append(new_demandable)
         network_list = self.create_network(demandables, network_list)
         
@@ -65,27 +70,43 @@ class State():
         
         for demandable in self.changeable_network:
             demandable.change_s(1000)
-            
+        
+        # Creates a list of action that the RL model can take
         action_lists = [[40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120] for x in range(len(self.changeable_network))]
         self.action_map = [x for x in itertools.product(*action_lists)]
 
-        self.set_demand_list(self.demand.simulate_normal_no_season(mean=15.136056239015815, std=2.259090732346191))
+        self.set_demand_list(self.demand.simulate_normal_no_season(mean=mean, std=std))
         self.reset()
         self.state = self.get_state()
-        
-        """ print("Demand List:", self.demand_list) """
     
     def add_lead_time(self, stochastic_lead_time):
+        """Adds different lead time distribution to demandables
+        in network
+
+        Args:
+            stochastic_lead_time (Lead time distribution): Lead time
+        """
         for demandable in self.network_list:
             demandable.add_lead_time(stochastic_lead_time)
     
     def set_demand_list(self, demand_list):
+        """Sets demand list
+
+        Args:
+            demand_list (list[int]): list of demand
+        """
         self.demand_list = demand_list
         
     def step(self, action):
-        
+        """State takes one time step
+
+        Args:
+            action (int): maps int to action map
+
+        Returns:
+            state: state after step
+        """
         action_map = self.action_map[action]
-        #print("action map:", action_map)
         for i in range(len(self.changeable_network)):
             demandable = self.changeable_network[i]
             current_action = action_map[i]
@@ -103,27 +124,37 @@ class State():
         return self.state, reward, done
     
     def get_state(self):
+        """gets current state
+
+        Returns:
+            State: current state
+        """
         lst = []
         for demandable in self.changeable_network:
             lst.extend(demandable.get_state())
         return lst
 
     def render(self):
-        # Implement viz
+        """render visualization (None)
+        """
         pass
     
     def reset(self, amount=65):
-        """Resets state
+        """resets state
+
+        Args:
+            amount (int, optional): amount level. Defaults to 65.
+
+        Returns:
+            state: current state
         """
         for demandable in self.changeable_network:
             demandable.reset(amount)
         self.rewards = 0
         self.rewards_list = []
         self.curr_time = self.start_time
-        self.set_demand_list(self.demand.simulate_normal_no_season(mean=15.136056239015815, std=2.259090732346191))        
+        self.set_demand_list(self.demand.simulate_normal_no_season(mean=self.mean, std=self.std))        
         self.state = self.get_state()
-        """ print("reset amt:", amount)
-        print("state after reset:", self.state) """
         return self.state 
 
     def update_state(self, t):
@@ -161,6 +192,8 @@ class State():
         return network
     
     def create_changeable_network(self):
+        """creates changeable network
+        """
         self.changeable_network = self.root.find_changeable_network()
             
     def show_network(self):
@@ -205,9 +238,9 @@ class State():
         dic2 = {}
         for demandable in self.network_list:
             name = demandable.name
-            if isinstance(demandable, Retailer):
+            if isinstance(demandable, RLRetailer):
                 dic2[name] = "Retailer: \n" + name
-            elif isinstance(demandable, DistributionCenter):
+            elif isinstance(demandable, RLDistributionCenter):
                 dic2[name] = "DC: \n" + name
             else:
                 dic2[name] = "Supplier: \n" + name
@@ -243,13 +276,5 @@ class State():
 
     def print_state(self, t):
         return "time " + str(t) +": \n" + self.root.print_upstream_state()
-    
-    def plot_rewards(self):
-        df = pd.DataFrame(columns=["time", "rewards"])
-        for i, val in enumerate(self.rewards_list):
-            df.loc[len(df.index)] = [i, val]
-        fig, ax = plt.subplots(figsize=(11, 6))
-        sns.pointplot(data=df, x='time', y='rewards', ax=ax)
-        plt.show()
     
 

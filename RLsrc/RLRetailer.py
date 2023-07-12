@@ -1,11 +1,10 @@
-from Demandable import Demandable
+from RLDemandable import RLDemandable
 
-class Retailer(Demandable):
-    def __init__(self, name, selling_price):
+class RLRetailer(RLDemandable):
+    def __init__(self, name):
         super().__init__(name, 2, 10, 40, 90)
-        #super().__init__(name, 1, 2, 3, 40, 90)
         self.amount_sold = []
-        self.selling_price = selling_price
+        self.selling_price = None
         self.amount_sold_total = 0
         self.profits = []
         
@@ -19,6 +18,11 @@ class Retailer(Demandable):
         
 
     def reset(self, amount = 65):
+        """Resets state
+
+        Args:
+            amount (int, optional): inventory level. Defaults to 65.
+        """
         super().reset(amount)
         self.amount_sold = []
         self.amount_sold_total = 0
@@ -79,10 +83,22 @@ class Retailer(Demandable):
             self.amount_sold[t] += amt_backordered
 
     def calculate_profit(self):
+        """calculate profit
+
+        Returns:
+            int: profit
+        """
         return self.amount_sold_total * self.selling_price - super().get_total_cost()
 
     def calculate_curr_profit(self, t):
-        #print('curr cost', super().get_curr_total_costs(t))
+        """calculate profit at time t
+
+        Args:
+            t (int): time stamp
+
+        Returns:
+            int: profit at time t
+        """
         return self.amount_sold[t] * self.selling_price - super().get_curr_total_costs(t)
     
     def __repr__(self):

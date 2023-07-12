@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.distributions import MultivariateNormal
 from torch.distributions import Categorical
-from State import State
+from RLState import RLState
 
 ################################## set device ##################################
 print("============================================================================================")

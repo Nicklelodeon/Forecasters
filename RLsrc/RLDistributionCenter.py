@@ -1,6 +1,6 @@
-from Demandable import Demandable
+from RLDemandable import RLDemandable
 
-class DistributionCenter(Demandable):
+class RLDistributionCenter(RLDemandable):
     def __init__(self, name):
         super().__init__(name, 1, 5, 40, 90)
 

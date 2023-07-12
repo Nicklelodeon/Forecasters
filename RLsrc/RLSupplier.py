@@ -1,8 +1,8 @@
-from Demandable import Demandable
+from RLDemandable import RLDemandable
 import numpy as np
 from Item import Item
 
-class Supplier(Demandable):
+class RLSupplier(RLDemandable):
     def __init__(self, name):
         super().__init__(name, 0, 0, 0, 0)
     
