@@ -1,15 +1,14 @@
-from Demandable import Demandable
+from RLDemandable import RLDemandable
 from Item import Item
 import numpy as np
-from State import State
-from SyntheticDemand import GenerateDemand
+from RLState import RLState
 from GenerateDemandMonthly import GenerateDemandMonthly
 
 np.random.seed(1234)
 demandable_state = [-1,0, 1, 1, 2, 2]
 demand = GenerateDemandMonthly()
 
-state = State()
+state = RLState()
 state.create_state(demandable_state)
 
 #state.show_network()

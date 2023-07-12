@@ -1,10 +1,9 @@
-from Demandable import Demandable
-from Supplier import Supplier
-from Retailer import Retailer
-from DistributionCenter import DistributionCenter
+from RLDemandable import RLDemandable
+from RLSupplier import RLSupplier
+from RLRetailer import RLRetailer
+from RLDistributionCenter import RLDistributionCenter
 
-
-class Basic(Demandable):
+class RLBasic(RLDemandable):
     def __init__(self, name):
         super().__init__(name, 0, 0, 0, 0)
     
@@ -14,7 +13,7 @@ class Basic(Demandable):
         Returns:
             Supplier
         """
-        return Supplier(self.name)
+        return RLSupplier(self.name)
     
     def make_retailer(self):
         """Converts basic to retailer
@@ -22,7 +21,7 @@ class Basic(Demandable):
         Returns:
             retailer
         """
-        return Retailer(self.name) 
+        return RLRetailer(self.name) 
 
     def make_distcentre(self):
         """Converts basic to distribution centre
@@ -30,7 +29,7 @@ class Basic(Demandable):
         Returns:
             Distribution Centre
         """
-        return DistributionCenter(self.name)
+        return RLDistributionCenter(self.name)
     
     def define_demandable(self):
         """Converts basic demandables to respective stakeholders

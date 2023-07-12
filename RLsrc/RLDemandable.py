@@ -5,9 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd 
 import seaborn as sns 
 
-
-
-class Demandable:
+class RLDemandable:
     def __init__(self, name, holding_cost, backorder_cost, s, S):
         self.name = name
         self.inv_level = {}  ## Each item has multiple inv level
