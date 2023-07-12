@@ -5,7 +5,7 @@ from State import State
 from GenerateDemandMonthly import GenerateDemandMonthly
 import matplotlib.pyplot as plt
 import seaborn as sns 
-import RLresult
+import RLtest
 
 from scipy import stats
 
@@ -92,12 +92,12 @@ print("ML",stats.sem(ols_both_poisson))
 
 state.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
 # Reinforcement Learning
-rl = RLresult.no_season()
-rl_24 = RLresult.non_season_24()
-rl_poisson =RLresult.poisson()
-rl_real = 554512.7999999998
-rl_poisson_lead_time = RLresult.poisson()
-rl_both_poisson = RLresult.both_poisson()
+rl = RLtest.test_no_season()
+rl_24 = RLtest.test_no_season_24_period()()
+rl_poisson =RLtest.test_poisson_no_season()
+rl_real = RLtest.test_real_data()
+rl_poisson_lead_time = RLtest.test_no_season_poisson_lead_time()
+rl_both_poisson = RLtest.test_poisson_no_season_poisson_lead_time()
 print("RL sem poisson",stats.sem(rl_poisson_lead_time))
 print("RL sem both poisson", stats.sem(rl_both_poisson))
 
