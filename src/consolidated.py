@@ -93,17 +93,31 @@ print("ML",stats.sem(ols_both_poisson))
 state.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
 
 # Reinforcement Learning
+print("RL Results")
 rl_data = pd.read_csv('src\RL_Dataframe.csv', index_col=0)
 
 rl = rl_data['RL_no_season'].tolist()
-rl_24 = rl_data['RL_no_season_24'].tolist()
-rl_poisson = rl_data['RL_poisson_no_season'].tolist()
-rl_real = 554512.7999
-rl_poisson_lead_time = rl_data['RL_no_season_poisson_lead_time'].tolist()
-rl_both_poisson = rl_data['RL_poisson_no_season_poisson_lead_time'].tolist()
+print(np.mean(rl))
+print(stats.sem(rl))
 
-print("RL sem poisson",stats.sem(rl_poisson_lead_time))
-print("RL sem both poisson", stats.sem(rl_both_poisson))
+rl_24 = rl_data['RL_no_season_24'].tolist()
+print(np.mean(rl_24))
+print(stats.sem(rl_24))
+
+rl_poisson = rl_data['RL_poisson_no_season'].tolist()
+print(np.mean(rl_poisson))
+print(stats.sem(rl_poisson))
+
+rl_real = 554512.7999
+#
+rl_poisson_lead_time = rl_data['RL_no_season_poisson_lead_time'].tolist()
+print(np.mean(rl_poisson_lead_time))
+print(stats.sem(rl_poisson_lead_time))
+
+rl_both_poisson = rl_data['RL_poisson_no_season_poisson_lead_time'].tolist()
+print(np.mean(rl_both_poisson))
+print(stats.sem(rl_both_poisson))
+print("RL end")
 
 
 state.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
@@ -150,6 +164,13 @@ ax = sns.barplot(data=df1, x="x", y="y")
 ax.set(xlabel='Methods', ylabel='Profit', title='Using real monthly data from figure 4.1')
 plt.show()
 
+####
+
+ax = sns.boxplot(data=[bayesian, ga, ols, rl, ml, random], showfliers=False)
+ax.set_xticklabels(labels)
+ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods,\nmean = {}, std = {} with floored triangle lead time distribution', round(mean, 2), round(std, 2)))
+plt.show()
+
 tick_labels = labels
 ax = sns.pointplot(data = [bayesian, ga, ols, rl, ml, random],
                    errorbar=("se",2),
@@ -160,6 +181,8 @@ ax = sns.pointplot(data = [bayesian, ga, ols, rl, ml, random],
 ax.set_xticklabels(labels)
 ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods,\nmean = {}, std = {} with floored triangle lead time distribution', round(mean, 2), round(std, 2)))
 plt.show()
+
+###
 
 ax = sns.boxplot(data=[bayesian_poisson, ga_poisson, ols_poisson, rl_poisson, ml_poisson, random_poisson], showfliers=False)
 ax.set_xticklabels(labels)
@@ -177,6 +200,7 @@ ax.set_xticklabels(labels)
 ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Poisson demand over 108 periods, standard error of 2 std,\n mean = {} with floored triangle lead time distribution', round(mean, 2)))
 plt.show()
 # blue orange green red purple
+print("Poisson demand ofver 108 periods")
 print(np.mean(bayesian_poisson))
 print(np.mean(ga_poisson))
 print(np.mean(ols_poisson))
@@ -189,11 +213,7 @@ print(np.mean(ml_poisson))
 # print(np.mean(rl))
 # print(np.mean(ml))
 
-ax = sns.boxplot(data=[bayesian, ga, ols, rl, ml, random], showfliers=False)
-ax.set_xticklabels(labels)
-ax.set(xlabel='Methods', ylabel='Profit', title=str.format('Normal demand over 108 periods,\nmean = {}, std = {} with floored triangle lead time distribution', round(mean, 2), round(std, 2)))
-plt.show()
-
+###
 
 ax = sns.boxplot(data=[bayesian_24, ga_24, ols_24, rl_24, ml_24, random_24], showfliers=False)
 ax.set_xticklabels(labels)
