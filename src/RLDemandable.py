@@ -80,6 +80,8 @@ class RLDemandable:
         self.S = new_S
 
     def reset_orders(self):
+        """reset orders
+        """
         self.orders = {}
 
     def update_all_demand(self, num_demands: int, t) -> None:
@@ -95,9 +97,19 @@ class RLDemandable:
         self.fufill_orders(t)
 
     def get_state(self):
+        """get state for RL
+
+        Returns:
+            State: RL state
+        """
         return [min(list(self.inv_pos.values())), min(list(self.inv_level.values())), len(self.arrivals)]
 
     def fufill_orders(self, t):
+        """produce orders and settle back orders
+
+        Args:
+            t (int): time stamp
+        """
         backorders = {}
         orders = {}
         for item in self.orders:
@@ -122,11 +134,16 @@ class RLDemandable:
 
 
     def order_items(self, item, t, ordered_amt):
+        """Order item at current time t with x ordered amount
+
+        Args:
+            item (Item): Item to order
+            t (int): time stamp
+            ordered_amt (int): amount of item
+        """
         demandable = self.inv_map[item]
         lead_time = demandable.get_lead_time(t)
-        #lead_time = self.stochastic_lead_time.get_lead_time() #removed to get constant lead time for each dc at each t
         self.arrivals.append([t + lead_time, item, ordered_amt])
-        #print("Demandable: {}, time: {}, Item: {}, amount: {}".format(self.name,t + lead_time, item, ordered_amt))
         self.ordering_costs[t] += ordered_amt * item.get_cost()
         self.total_costs += ordered_amt * item.get_cost()
 
@@ -139,7 +156,6 @@ class RLDemandable:
         Returns:
             items_out (int): amount available to be ordered
         """
-
         if self.inv_level:
             min_item = min(min(list(self.inv_level.values())), num_get)
         else:
@@ -153,6 +169,14 @@ class RLDemandable:
         return min_item
     
     def get_lead_time(self, t):
+        """Gets lead time when asking for order
+
+        Args:
+            t (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
         curr_lead_time = self.lead_time
         if t == self.lead_time[0]:
             return self.lead_time[1]
@@ -190,7 +214,7 @@ class RLDemandable:
         self.inv_level[item] -= amt_ordered
 
 
-    def add_upstream(self, demandable: "Demandable") -> None:
+    def add_upstream(self, demandable: "RLDemandable") -> None:
         """Adds a demandable into upstream
 
         Args:
@@ -200,7 +224,7 @@ class RLDemandable:
         demandable.add_downstream(self)
         # Change later, perhaps random starting inventory ISSUE here
 
-    def add_downstream(self, demandable: "Demandable") -> None:
+    def add_downstream(self, demandable: "RLDemandable") -> None:
         """Adds a demandable into downstream, called after
         add_upstream function
 
@@ -315,6 +339,8 @@ class RLDemandable:
             demandable.update_all_inventory(t)
 
     def plot_cost(self):
+        """Plots cost against time
+        """
         if not self.upstream:
             return
         df = pd.DataFrame(columns=["time", "cost", "type"])
@@ -335,6 +361,8 @@ class RLDemandable:
             demandable.plot_cost()
 
     def plot_inv_level(self):
+        """plots inventory level against time
+        """
         if not self.upstream:
             return
         df = pd.DataFrame(columns=["time", "level", "item"])
@@ -349,10 +377,12 @@ class RLDemandable:
         for demandable in self.upstream:
             demandable.plot_inv_level()
 
-
-        
- 
     def find_optimal_cost(self):
+        """Finds minimum selling cost recursively
+
+        Returns:
+            int: Min selling amount for subnetwork
+        """
         curr_cost = 0
         if self.upstream:
             expected_holding_time = self.stochastic_lead_time.get_expected_value()
@@ -388,6 +418,14 @@ class RLDemandable:
         return total
 
     def get_curr_total_costs(self, t):
+        """_summary_
+
+        Args:
+            t (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
         total = self.get_curr_cost(t)
         for demandable in self.upstream:
             total += demandable.get_curr_total_costs(t)
@@ -428,6 +466,11 @@ class RLDemandable:
         return name
 
     def print_upstream_cost(self, t):
+        """Recursively prints the name of the network
+
+        Returns:
+            list[str]: list of demandable names
+        """
         cost = [self.name, self.get_curr_cost(t)]
         if self.upstream:
             for demandable in self.upstream:

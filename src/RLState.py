@@ -5,6 +5,7 @@ from RLRetailer import RLRetailer
 from RLBasic import RLBasic
 from GenerateDemandMonthly import GenerateDemandMonthly
 from Stochastic_Lead_Time import Stochastic_Lead_Time
+from State import State
 import matplotlib.pyplot as plt
 import networkx as nx
 
@@ -16,7 +17,7 @@ import pandas as pd
 
 import itertools
 
-class RLState():
+class RLState(State):
     def __init__(self):
         self.root = RLBasic(chr(65))
         self.demandables = None
@@ -195,84 +196,6 @@ class RLState():
         """creates changeable network
         """
         self.changeable_network = self.root.find_changeable_network()
-            
-    def show_network(self):
-        """Creates a tree graph of the supply chain system
-        """
-        def find_points(i):
-            lst = []
-            x = i - 1
-            interval = 2 * x
-            small_interval = interval/(i+1)
-            for i in range(1, i+1):
-                lst.append(x - (i * small_interval))
-            return lst
-                
-        adj_lst = []
-        demandables_list = ["A"]
-        for i in range(1, len(self.demandables)):
-            demandables_list.append(chr(i + 65))
-            head = self.demandables[i]
-            adj_lst.append((chr(head + 65), chr(i + 65)))
-        x_pos = [0] * len(self.demandables)
-        
-        for i in range(1, len(self.demandables)):
-            head = self.demandables[i]
-            x_pos[i] = x_pos[head] + 1
-        depth_count = [0] * (max(x_pos) + 1)
-        
-        for i in x_pos:
-            depth_count[i] += 1
-        lst = list(map(lambda x, y: [x, y], demandables_list, x_pos ))
-        dic = {}
-        
-        for i in range(len(depth_count)):
-            dic[i] = find_points(depth_count[i])
-            
-        for i in range(len(lst)):
-            curr_list = lst[i]
-            curr_depth = curr_list[1]
-            get_y = dic[curr_depth].pop()
-            curr_list.append(get_y)
-        
-        dic2 = {}
-        for demandable in self.network_list:
-            name = demandable.name
-            if isinstance(demandable, RLRetailer):
-                dic2[name] = "Retailer: \n" + name
-            elif isinstance(demandable, RLDistributionCenter):
-                dic2[name] = "DC: \n" + name
-            else:
-                dic2[name] = "Supplier: \n" + name
-        
-        for i in range(len(adj_lst)):
-            pos1 = adj_lst[i][0]
-            pos2 = adj_lst[i][1]
-            adj_lst[i] = (dic2[pos1], dic2[pos2])
-            
-        G = nx.DiGraph()
-        for i in lst:
-            G.add_node(dic2[i[0]], pos=(i[1], i[2]))
-        G.add_edges_from(adj_lst)
-        pos = nx.get_node_attributes(G, 'pos')
-        plt.figure(figsize=(6, 6))
-        nx.draw(G, pos, with_labels=True, node_size=750, node_color='lightblue', font_size=12, font_weight='bold', width=2,
-        arrowstyle='<-', arrowsize=15)
-        plt.axis('equal')
-        plt.show()
-        
-    def total_sum(self):
-        """returns cumulative score
-
-        Returns:
-           int: sum of all rewards up to this point in time
-        """
-        return self.rewards
-
-    def print_network(self):
-        """Debugging function to print Demandables in network
-        """
-        print(self.root.print_upstream())
 
     def print_state(self, t):
         return "time " + str(t) +": \n" + self.root.print_upstream_state()

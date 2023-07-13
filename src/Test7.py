@@ -1,6 +1,9 @@
-import RLtest as RLtest
+import pandas as pd
+import numpy as np
 
-# print(RLtest.test_no_season())
-# print(RLtest.test_no_season_24_period())
-# print(RLtest.test_real_data())
-print(RLtest.test_poisson_no_season_poisson_lead_time())
+rl_data = pd.read_csv('src\RL_Dataframe.csv', index_col=0)
+rl = rl_data['RL_no_season'].tolist()
+rl_24 = rl_data['RL_no_season_24'].tolist()
+rl_poisson = rl_data['RL_poisson_no_season'].tolist()
+rl_poisson_lead_time = rl_data['RL_no_season_poisson_lead_time'].tolist()
+rl_both_poisson = rl_data['RL_poisson_no_season_poisson_lead_time'].tolist()

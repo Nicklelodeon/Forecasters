@@ -4,6 +4,7 @@ import numpy as np
 from RLState import RLState
 from GenerateDemandMonthly import GenerateDemandMonthly
 import pandas as pd
+import RLtest
 
-df = pd.read_csv("src\RL_no_season.csv",header = None)
-print(df)
+
+print(RLtest.test_poisson_no_season_poisson_lead_time())
