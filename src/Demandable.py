@@ -10,12 +10,16 @@ import seaborn as sns
 class Demandable:
     def __init__(self, name, holding_cost, backorder_cost, s, S):
         self.name = name
-        self.inv_level = {}  ## Each item has multiple inv level
+        # each item has multiple inv level
+        self.inv_level = {}
         self.inv_pos = {}
-        self.inv_map = {} ## Has the inventory to Demandable
-        self.upstream = []  ## Each upstream Demandables
-        self.downstream = [] ## Each downstream Demandables
-        self.holding_cost = holding_cost  ## Possibly change for each item. perhaps a multiplier
+        # maps the inventory to Demandable
+        self.inv_map = {} 
+        # stores upstream demandables
+        self.upstream = []  
+        # stores downstream Demandables
+        self.downstream = [] 
+        self.holding_cost = holding_cost  
         self.ordering_costs = []
         self.holding_costs = []
         self.backorder_costs = []
@@ -24,7 +28,8 @@ class Demandable:
         self.backorder = 0
         self.backorder_cost = backorder_cost
         self.stochastic_lead_time = None
-        self.lead_time = [-1, 0] #Time and lead_time
+        # time and lead_time
+        self.lead_time = [-1, 0] 
         
         self.costs = []
         self.arrivals = []
@@ -361,8 +366,10 @@ class Demandable:
                 df.loc[len(df.index)] = [i, value, key.get_name()[:9]]
         fig, ax = plt.subplots(figsize=(11, 6))
         ax = sns.pointplot(data=df, x='time', y='level', hue='item', ax=ax)
-        plt.setp(ax.collections, alpha=.3) #for the markers
-        plt.setp(ax.lines, alpha=.3)       #for the lines
+        #for the markers
+        plt.setp(ax.collections, alpha=.3)
+        #for the lines
+        plt.setp(ax.lines, alpha=.3)       
         plt.show()
         for demandable in self.upstream:
             demandable.plot_inv_level()
