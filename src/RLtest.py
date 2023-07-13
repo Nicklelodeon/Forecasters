@@ -262,7 +262,7 @@ np.savetxt("./src/RL_no_season_poisson_lead_time.csv", d)
 e = test_poisson_no_season_poisson_lead_time()
 np.savetxt("./src/RL_poisson_no_season_poisson_lead_time.csv", e)
 
-f = (test_real_data()
+f = (test_real_data())
 np.savetxt("./src/RL_real_data.csv", f)
 lst.append(a)
 lst.append(b)
