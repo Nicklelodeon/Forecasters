@@ -80,5 +80,6 @@ class Retailer(Demandable):
         """
         return self.amount_sold_total * self.selling_price - super().get_total_cost()
     
+    
     def __repr__(self):
         return "Retailer({})".format(self.name)
