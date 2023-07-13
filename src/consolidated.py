@@ -91,13 +91,17 @@ ml_both_poisson = state.test_poisson_no_season_poisson_lead_time(37, 41, 142, 14
 print("ML",stats.sem(ols_both_poisson))
 
 state.create_state([-1 ,0, 1, 1, 2, 2], mean=mean, std=std)
+
 # Reinforcement Learning
-rl = RLtest.test_no_season()
-rl_24 = RLtest.test_no_season_24_period()()
-rl_poisson =RLtest.test_poisson_no_season()
-rl_real = RLtest.test_real_data()
-rl_poisson_lead_time = RLtest.test_no_season_poisson_lead_time()
-rl_both_poisson = RLtest.test_poisson_no_season_poisson_lead_time()
+rl_data = pd.read_csv('src\RL_Dataframe.csv', index_col=0)
+
+rl = rl_data['RL_no_season'].tolist()
+rl_24 = rl_data['RL_no_season_24'].tolist()
+rl_poisson = rl_data['RL_poisson_no_season'].tolist()
+rl_real = 554512.7999
+rl_poisson_lead_time = rl_data['RL_no_season_poisson_lead_time'].tolist()
+rl_both_poisson = rl_data['RL_poisson_no_season_poisson_lead_time'].tolist()
+
 print("RL sem poisson",stats.sem(rl_poisson_lead_time))
 print("RL sem both poisson", stats.sem(rl_both_poisson))
 

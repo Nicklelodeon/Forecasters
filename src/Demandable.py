@@ -60,7 +60,6 @@ class Demandable:
             stl (Stochastic Lead Time): Samples lead time from distribution
         """
         self.stochastic_lead_time = stl
-
         
     def change_order_point(self, new_small_s, new_big_s):
         """Changes lower and upper bound s and S

@@ -247,30 +247,32 @@ def test_real_data():
     return total_sum
 
 
-a = test_no_season()
-np.savetxt("./src/RL_no_season.csv", a)
+# a = test_no_season()
+# # np.savetxt("./src/RL_no_season.csv", a)
 
-b = test_no_season_24_period()
-np.savetxt("./src/RL_no_season_24.csv", b)
+# b = test_no_season_24_period()
+# # np.savetxt("./src/RL_no_season_24.csv", b)
 
-c = test_poisson_no_season()
-np.savetxt("./src/RL_poisson_no_season.csv", c)
+# c = test_poisson_no_season()
+# # np.savetxt("./src/RL_poisson_no_season.csv", c)
 
-d = test_no_season_poisson_lead_time()
-np.savetxt("./src/RL_no_season_poisson_lead_time.csv", d)
+# d = test_no_season_poisson_lead_time()
+# # np.savetxt("./src/RL_no_season_poisson_lead_time.csv", d)
 
-e = test_poisson_no_season_poisson_lead_time()
-np.savetxt("./src/RL_poisson_no_season_poisson_lead_time.csv", e)
+# e = test_poisson_no_season_poisson_lead_time()
+# np.savetxt("./src/RL_poisson_no_season_poisson_lead_time.csv", e)
+# print("test", test_real_data())
+# f = np.array(test_real_data())
+# print(f)
+# np.savetxt("./src/RL_real_data.csv", f)
 
-f = (test_real_data()
-np.savetxt("./src/RL_real_data.csv", f)
-lst.append(a)
-lst.append(b)
-lst.append(c)
-lst.append(d)
-lst.append(e)
 
-arr = np.array()
-df = pd.DataFrame({
-    
-})
+
+
+# df = pd.DataFrame({"RL_no_season": a,
+#                    "RL_no_season_24" : b,
+#                    "RL_poisson_no_season": c,
+#                    "RL_no_season_poisson_lead_time": d,
+#                    "RL_poisson_no_season_poisson_lead_time":e})
+
+# df.to_csv("./src/RL_Dataframe.csv")
