@@ -11,11 +11,12 @@ from RLState import RLState
 from GenerateDemandMonthly import GenerateDemandMonthly
 
 from Poisson_Stochastic_Lead_Time import Poisson_Stochastic_Lead_Time
+from Stochastic_Lead_Time import Stochastic_Lead_Time
 
 from PPO import PPO
 
 # Read Data
-df = pd.read_csv("..\src\TOTALSA.csv")
+df = pd.read_csv('./src/TOTALSA.csv')
 mean = df['TOTALSA'].mean()
 std = df['TOTALSA'].std()
 
@@ -46,8 +47,8 @@ np.random.seed(random_seed)
 
 # Load model
 ppo_agent = PPO(state_dim, action_dim, lr_actor, lr_critic, gamma, K_epochs, eps_clip, has_continuous_action_space, action_std)
-ppo_agent.policy_old.load_state_dict(torch.load(map_location=torch.device('cpu'),f="RLmodel.pt"))
-ppo_agent.policy.load_state_dict(torch.load(map_location=torch.device('cpu'),f="RLmodel.pt"))
+ppo_agent.policy_old.load_state_dict(torch.load(map_location=torch.device('cpu'),f="./src/RLmodel.pt"))
+ppo_agent.policy.load_state_dict(torch.load(map_location=torch.device('cpu'),f="./src/RLmodel.pt"))
 
 demand_generator = GenerateDemandMonthly()
 
@@ -62,6 +63,8 @@ def test_no_season():
     """
     period = 108
     iterations = 500
+    stl = Stochastic_Lead_Time()
+    env.add_lead_time(stl)
 
     np.random.seed(7890)
     demand_matrix = np.reshape(demand_generator.simulate_normal_no_season(\
@@ -84,7 +87,6 @@ def test_no_season():
                 break
         reward_total += reward_sub
         reward_RL.append(reward_sub)
-        reward_RL.append(reward_total)
     return reward_RL
 
 def test_no_season_24_period():
@@ -95,6 +97,8 @@ def test_no_season_24_period():
     """
     period = 24
     iterations = 500
+    stl = Stochastic_Lead_Time()
+    env.add_lead_time(stl)
     np.random.seed(1357)
     demand_matrix = np.reshape(demand_generator.simulate_normal_no_season(\
             periods = period * iterations, mean=mean, std=std),\
@@ -116,7 +120,6 @@ def test_no_season_24_period():
                 break
         reward_total += reward_sub
         reward_RL.append(reward_sub)
-        reward_RL.append(reward_total)
     return reward_RL
 
 def test_poisson_no_season():
@@ -127,6 +130,8 @@ def test_poisson_no_season():
     """
     period = 108
     iterations = 500
+    stl = Stochastic_Lead_Time()
+    env.add_lead_time(stl)
     np.random.seed(12340)
     demand_matrix = np.reshape(demand_generator.simulate_poisson_no_season(\
             periods = period * iterations, mean=mean),\
@@ -148,7 +153,6 @@ def test_poisson_no_season():
                 break
         reward_total += reward_sub
         reward_RL.append(reward_sub)
-        reward_RL.append(reward_total)
     return reward_RL
 
 def test_no_season_poisson_lead_time():
@@ -184,7 +188,6 @@ def test_no_season_poisson_lead_time():
                 break
         reward_total += reward_sub
         reward_RL.append(reward_sub)
-        reward_RL.append(reward_total)
     return reward_RL
 
 def test_poisson_no_season_poisson_lead_time():
@@ -220,7 +223,6 @@ def test_poisson_no_season_poisson_lead_time():
                 break
         reward_total += reward_sub
         reward_RL.append(reward_sub)
-        reward_RL.append(reward_total)
     return reward_RL
 
 def test_real_data():
@@ -229,6 +231,8 @@ def test_real_data():
     Returns:
         int: result
     """
+    stl = Stochastic_Lead_Time()
+    env.add_lead_time(stl)
     total_sum = 0
     state = env.reset()
     done = False
@@ -241,3 +245,32 @@ def test_real_data():
             if done:
                 break
     return total_sum
+
+
+a = test_no_season()
+np.savetxt("./src/RL_no_season.csv", a)
+
+b = test_no_season_24_period()
+np.savetxt("./src/RL_no_season_24.csv", b)
+
+c = test_poisson_no_season()
+np.savetxt("./src/RL_poisson_no_season.csv", c)
+
+d = test_no_season_poisson_lead_time()
+np.savetxt("./src/RL_no_season_poisson_lead_time.csv", d)
+
+e = test_poisson_no_season_poisson_lead_time()
+np.savetxt("./src/RL_poisson_no_season_poisson_lead_time.csv", e)
+
+f = (test_real_data()
+np.savetxt("./src/RL_real_data.csv", f)
+lst.append(a)
+lst.append(b)
+lst.append(c)
+lst.append(d)
+lst.append(e)
+
+arr = np.array()
+df = pd.DataFrame({
+    
+})
