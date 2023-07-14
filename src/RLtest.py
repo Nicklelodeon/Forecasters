@@ -245,34 +245,3 @@ def test_real_data():
             if done:
                 break
     return total_sum
-
-
-# a = test_no_season()
-# # np.savetxt("./src/RL_no_season.csv", a)
-
-# b = test_no_season_24_period()
-# # np.savetxt("./src/RL_no_season_24.csv", b)
-
-# c = test_poisson_no_season()
-# # np.savetxt("./src/RL_poisson_no_season.csv", c)
-
-# d = test_no_season_poisson_lead_time()
-# # np.savetxt("./src/RL_no_season_poisson_lead_time.csv", d)
-
-# e = test_poisson_no_season_poisson_lead_time()
-# np.savetxt("./src/RL_poisson_no_season_poisson_lead_time.csv", e)
-# print("test", test_real_data())
-# f = np.array(test_real_data())
-# print(f)
-# np.savetxt("./src/RL_real_data.csv", f)
-
-
-
-
-# df = pd.DataFrame({"RL_no_season": a,
-#                    "RL_no_season_24" : b,
-#                    "RL_poisson_no_season": c,
-#                    "RL_no_season_poisson_lead_time": d,
-#                    "RL_poisson_no_season_poisson_lead_time":e})
-
-# df.to_csv("./src/RL_Dataframe.csv")
