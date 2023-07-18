@@ -5,8 +5,6 @@ import matplotlib.pyplot as plt
 import pandas as pd 
 import seaborn as sns 
 
-
-
 class Demandable:
     def __init__(self, name, holding_cost, backorder_cost, s, S):
         self.name = name
@@ -491,5 +489,3 @@ class Demandable:
     
     def __repr__(self):
         return "Demandable({})".format(self.name)
-
-    
