@@ -10,8 +10,6 @@ from Poisson_Stochastic_Lead_Time import Poisson_Stochastic_Lead_Time
 
 import matplotlib.pyplot as plt
 import networkx as nx
-from concurrent import futures
-from multiprocessing import Pool, freeze_support, cpu_count
 import os
 
 from Item import Item
@@ -481,9 +479,6 @@ class State:
         """
         self.s_S_list = array
 
-    
-        
-
     def total_sum(self):
         """returns cumulative profit
 
@@ -496,9 +491,6 @@ class State:
         """Debugging function to print Demandables in network
         """
         print(self.root.print_upstream())
-                   
-    
-    
     
     def update_state(self, t):
         """Update inventory, demand and costs in each time period
@@ -506,12 +498,11 @@ class State:
         Args:
             t (int): time
         """
+        self.root.clear_previous_time()
         self.root.update_all_inventory(t)
         self.root.update_all_demand(self.demand_list[t], t)
         self.root.update_all_cost(t)
         
-
-
     def calculate_profits(self):
         """returns profit generated up to this time period
 

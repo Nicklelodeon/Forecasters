@@ -1,25 +1,30 @@
-from RLDemandable import RLDemandable
-from RLSupplier import RLSupplier
-from RLDistributionCenter import RLDistributionCenter
-from RLRetailer import RLRetailer
-from RLBasic import RLBasic
+from Demandable import Demandable
+from Supplier import Supplier
+from DistributionCenter import DistributionCenter
+from Retailer import Retailer
+from Basic import Basic
 from GenerateDemandMonthly import GenerateDemandMonthly
-from Stochastic_Lead_Time import Stochastic_Lead_Time
 from State import State
+
+from Stochastic_Lead_Time import Stochastic_Lead_Time
+from Poisson_Stochastic_Lead_Time import Poisson_Stochastic_Lead_Time
+
 import matplotlib.pyplot as plt
 import networkx as nx
+import os
 
 from Item import Item
 import numpy as np
 import random
 import seaborn as sns 
+import matplotlib.pyplot as plt
 import pandas as pd
 
 import itertools
 
 class RLState(State):
     def __init__(self):
-        self.root = RLBasic(chr(65))
+        self.root = Basic(chr(65))
         self.demandables = None
         self.changeable_network = []
         self.network_list = None
@@ -46,7 +51,7 @@ class RLState(State):
         self.demandables = demandables
         network_list = []
         for i in range(len(demandables)):   
-            new_demandable = RLBasic(chr(i + 65))
+            new_demandable = Basic(chr(i + 65))
             network_list.append(new_demandable)
         network_list = self.create_network(demandables, network_list)
         
@@ -115,7 +120,7 @@ class RLState(State):
         
         self.update_state(self.curr_time)
         self.state = self.get_state()
-        reward = self.root.calculate_curr_profit(self.curr_time)
+        reward = self.root.calculate_current_profit()
         self.curr_time += 1
         if self.curr_time >= len(self.demand_list):
             done = True
@@ -159,18 +164,14 @@ class RLState(State):
         return self.state 
 
     def update_state(self, t):
-        """Discrete update state
+        """Update inventory, demand and costs in each time period
 
         Args:
-            demand (_type_): _description_
             t (int): time
         """
-        #self.update_order_point(t)
-        self.root.update_all_inventory(t)
-        self.root.update_all_demand(self.demand_list[t], t)
-        self.root.update_all_cost(t)
-        self.rewards += self.root.calculate_curr_profit(t)
-        self.rewards_list.append(self.root.calculate_curr_profit(t))
+        super().update_state(t)
+        self.rewards += self.root.calculate_current_profit()
+        self.rewards_list.append(self.root.calculate_current_profit())
 
     def calculate_profits(self):
         return self.root.calculate_profit()
