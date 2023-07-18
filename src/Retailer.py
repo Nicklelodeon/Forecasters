@@ -3,10 +3,10 @@ from Demandable import Demandable
 class Retailer(Demandable):
     def __init__(self, name):
         super().__init__(name, 2, 10, 40, 90)
-        self.amount_sold = []
+        self.curr_amount_sold = 0
         self.selling_price = None
         self.amount_sold_total = 0
-        self.profits = []
+        #self.profits = []
         
     def set_optimal_selling_price(self, multiplier):
         """Sets optimal price * multipler
@@ -24,8 +24,14 @@ class Retailer(Demandable):
             amount (int, optional): Inventory amount. Defaults to 65.
         """
         super().reset(amount)
-        self.amount_sold = []
+        self.curr_amount_sold = 0
         self.amount_sold_total = 0
+    
+    def clear_previous_time(self):
+        """Clears previous time trackers
+        """
+        self.curr_amount_sold = 0
+        super().clear_previous_time()
 
     def update_all_inventory(self, t):
         """Updates inv level for all upstream demandables
@@ -45,6 +51,7 @@ class Retailer(Demandable):
             t (int): time stamp
         """
         amount_sold = self.update_demand(num_demands)
+        self.curr_amount_sold += amount_sold
         self.amount_sold_total += amount_sold
         for item in self.inv_level:
             self.check_s(item, t)
@@ -71,6 +78,7 @@ class Retailer(Demandable):
                 self.inv_level[item] -= amt_backordered
             self.backorder -= amt_backordered
             self.amount_sold_total += amt_backordered
+            self.curr_amount_sold += amt_backordered
 
     def calculate_profit(self):
         """Finds total profit made
@@ -80,6 +88,15 @@ class Retailer(Demandable):
         """
         return self.amount_sold_total * self.selling_price - super().get_total_cost()
     
-    
+    def calculate_current_profit(self):
+        """Get proft at current time
+
+        Returns:
+            int: get profit for current time
+        """
+        profit_sold = self.curr_amount_sold * self.selling_price
+        cost_incurred = super().get_total_current_cost()
+        return profit_sold - cost_incurred
+
     def __repr__(self):
         return "Retailer({})".format(self.name)

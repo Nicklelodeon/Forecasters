@@ -148,7 +148,9 @@ class Demandable:
         demandable = self.inv_map[item]
         lead_time = demandable.get_lead_time(t)
         self.arrivals.append([t + lead_time, item, ordered_amt])
-        self.total_costs += ordered_amt * item.get_cost()
+        current_costs = ordered_amt * item.get_cost()
+        self.current_costs += current_costs
+        self.total_costs += current_costs
 
     def update_demand(self, num_get: int):
         """Update inv level and inv pos and cost
@@ -191,13 +193,14 @@ class Demandable:
     
 
     def check_s(self, item, t):
-        """recursively checks if inv pos < s for all upstream demandables. Adds order cost to total cost
+        """recursively checks if inv pos < s for all upstream demandables. Adds order cost to total cost.
+        recursively checks if inv pos < S for RL for all upstream demandable
 
         Args:
             item (Item): item to be ordered
             t (int): time stamp
         """
-        if self.inv_pos[item] < self.s and item in self.inv_map:
+        if self.inv_pos[item] < self.s and self.inv_pos[item] < self.S and item in self.inv_map:
             demandable = self.inv_map[item]
             amt = self.S - self.inv_pos[item]
             self.inv_pos[item] += amt
@@ -215,7 +218,6 @@ class Demandable:
             int: amount available to be ordered
         """
         self.inv_level[item] -= amt_ordered
-
 
     def add_upstream(self, demandable: "Demandable") -> None:
         """Adds a demandable into upstream
@@ -309,7 +311,6 @@ class Demandable:
             if t == time:
                 self.inv_level[item] += amt
                 index.append(i)
-            # self.inv_pos[item] += amt
         self.arrivals = [arrival for i, arrival in enumerate(self.arrivals) if i not in index]
 
         if self.backorder > 0:
@@ -333,6 +334,13 @@ class Demandable:
         self.update_inventory(t)
         for demandable in self.upstream:
             demandable.update_all_inventory(t)
+    
+    def clear_previous_time(self):
+        """Clears previous time trackers
+        """
+        self.current_costs = 0
+        for demandable in self.upstream:
+            demandable.clear_previous_time()
 
     def plot_cost(self):
         """Plots cost against time
@@ -411,7 +419,7 @@ class Demandable:
             total += demandable.get_total_cost()
         return total
 
-    def get_curr_total_costs(self, t):
+    def get_total_current_cost(self):
         """_summary_
 
         Args:
@@ -420,10 +428,10 @@ class Demandable:
         Returns:
             _type_: _description_
         """
-        total = self.get_curr_cost(t)
+        current = self.current_costs
         for demandable in self.upstream:
-            total += demandable.get_curr_total_costs(t)
-        return total
+            current += demandable.get_total_current_cost()
+        return current
 
     def update_all_cost(self, t):
         """Add hc into total cost
@@ -431,12 +439,21 @@ class Demandable:
         Args:
             t (int): curr timestamp
         """
-        self.total_costs += self.get_hc()
-        self.total_costs += self.backorder * self.backorder_cost
+        current_costs = self.get_hc() + self.backorder * self.backorder_cost
+        self.total_costs += current_costs
+        self.current_costs += current_costs
         self.inv_level_plot.append(self.inv_level.copy())
         self.reset_orders()
         for demandable in self.upstream:
             demandable.update_all_cost(t)
+    
+    def get_state(self):
+        """get state for RL
+
+        Returns:
+            State: RL state
+        """
+        return [min(list(self.inv_pos.values())), min(list(self.inv_level.values())), len(self.arrivals)]
 
     def print_upstream(self):
         """Recursively prints the name of the network
